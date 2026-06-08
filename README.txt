@@ -1,11 +1,10 @@
-EXPLORA PWA - Archivos para GitHub Pages
+EXPLORA PWA FINAL - Fotos reales y diseño suave
 
-Subir/reemplazar TODOS estos archivos en el repositorio:
+Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - index.html
 - manifest.json
 - service-worker.js
 - icon-192.png
 - icon-512.png
 
-Si GitHub ya está publicado, reemplaza estos archivos y presiona Commit changes.
-En la tablet, abre la URL y recarga. Si no ves cambios, espera 1 minuto o borra caché/abre desde el ícono nuevamente.
+Luego presionar Commit changes. En la tablet, recargar la app o borrar caché si no ves cambios.
