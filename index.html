@@ -1832,6 +1832,154 @@ body.not-started .login-saved-btn{
 /* Scroll más fluido */
 html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!important;}
 
+
+
+/* ===== AJUSTE FINAL: fluidez, verde seleccionado, promo solo ida y vuelta ===== */
+/* Más vendido en verde para no confundirse con precio/botón dorado */
+.badge.top-badge,.top-badge{
+  background:linear-gradient(135deg,#22c55e,#15803d)!important;
+  color:#04130a!important;
+  border:1px solid rgba(187,247,208,.55)!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.20)!important;
+  font-size:11px!important;
+  letter-spacing:.45px!important;
+  padding:7px 10px!important;
+}
+/* Solo ida / ida y vuelta: selector moderno y verde cuando está seleccionado */
+.trip-choice{
+  background:#0d0d0d!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+.trip-choice-btn{
+  background:#171717!important;
+  color:#e5e7eb!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+}
+.trip-choice-btn.active{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#031407!important;
+  border-color:rgba(187,247,208,.55)!important;
+  box-shadow:0 5px 12px rgba(34,197,94,.16)!important;
+}
+.airport-transfer-pill{
+  color:#bbf7d0!important;
+  border-color:rgba(34,197,94,.28)!important;
+  background:rgba(22,163,74,.10)!important;
+}
+.transfer-title{color:#d1d5db!important;}
+.transfer-icon{color:#22c55e!important;}
+/* Botón Agregar queda verde cuando el servicio ya fue seleccionado; Anular queda rojo */
+.add-btn.selected-add{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#031407!important;
+  border-color:rgba(187,247,208,.55)!important;
+}
+.remove-btn.selected-remove{
+  background:linear-gradient(135deg,#ef4444,#b91c1c)!important;
+  color:#fff!important;
+  border-color:rgba(254,202,202,.35)!important;
+}
+.remove-btn.disabled-remove{opacity:.70!important;}
+/* Total fijo en verde */
+.summary .total,.summary.compact-summary .total,#totalText{
+  color:#22c55e!important;
+  text-shadow:none!important;
+}
+/* Fotos más grandes y scroll más liviano */
+.duration{display:none!important;}
+.card-actions-mini{margin-bottom:6px!important;}
+.card,.featured-card{
+  content-visibility:auto!important;
+  contain:layout paint style!important;
+  contain-intrinsic-size:430px 540px!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.22)!important;
+  transition:none!important;
+}
+.card:hover,.featured-card:hover{transform:none!important;box-shadow:0 3px 10px rgba(0,0,0,.22)!important;}
+.card img,.featured-card img{
+  filter:none!important;
+  transition:none!important;
+  transform:none!important;
+  will-change:auto!important;
+  background:#0c0c0c!important;
+}
+@media (min-width:900px){
+  .card img,.featured-card img{height:245px!important;}
+  .card-content{padding:13px!important;min-height:250px!important;}
+  .card h3{font-size:20px!important;min-height:46px!important;margin-bottom:7px!important;}
+  .price{font-size:23px!important;margin:9px 0!important;}
+  .cards{gap:16px!important;}
+}
+@media (min-width:1120px){
+  .card img,.featured-card img{height:235px!important;}
+}
+@media (max-width:899px){
+  .card img,.featured-card img{height:190px!important;}
+}
+
+
+
+/* ===== LOGIN TABLET: idioma/moneda como botones, sin desplegable nativo ===== */
+.start-native-hidden{
+  position:absolute!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+}
+.start-choice-group{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:10px!important;
+  width:100%!important;
+}
+.start-choice{
+  min-height:58px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(215,180,55,.32)!important;
+  background:#080808!important;
+  color:#f3f3f3!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+  touch-action:manipulation!important;
+}
+.start-choice.active{
+  background:#16a34a!important;
+  color:#ffffff!important;
+  border-color:#22c55e!important;
+  box-shadow:0 7px 18px rgba(22,163,74,.18)!important;
+}
+.start-choice:active{transform:scale(.985)!important;filter:brightness(.96)!important;}
+@media(max-width:520px){
+  .start-choice-group{gap:7px!important;}
+  .start-choice{min-height:44px!important;border-radius:14px!important;font-size:14px!important;}
+}
+/* Cuando aparece el teclado Android, permitimos desplazar el login para no tapar Nombre/WhatsApp */
+body.not-started.keyboard-mode{overflow:auto!important;height:auto!important;}
+body.not-started.keyboard-mode .start-screen{
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding-top:18px!important;
+  padding-bottom:45vh!important;
+}
+body.not-started.keyboard-mode .start-card{
+  overflow:visible!important;
+  margin-bottom:40vh!important;
+}
+@media(min-width:700px){
+  body.not-started .start-choice{min-height:54px!important;font-size:17px!important;border-radius:16px!important;}
+}
+@media(max-height:650px) and (min-width:700px){
+  body.not-started .start-choice{min-height:40px!important;font-size:14px!important;border-radius:12px!important;}
+  .start-choice-group{gap:8px!important;}
+}
+
 </style>
 </head>
 <body class="not-started">
@@ -1843,12 +1991,17 @@ html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!import
     </div>
 
     <div class="start-field">
-      <label for="startLanguage" id="startLanguageLabel">Idioma</label>
-      <select id="startLanguage">
+      <label id="startLanguageLabel">Idioma</label>
+      <select id="startLanguage" class="start-native-hidden" aria-hidden="true" tabindex="-1">
         <option value="es">Español</option>
         <option value="en">English</option>
         <option value="pt">Português</option>
       </select>
+      <div class="start-choice-group" id="startLanguageChoices" role="group" aria-label="Idioma">
+        <button type="button" class="start-choice active" data-start-lang="es">Español</button>
+        <button type="button" class="start-choice" data-start-lang="en">English</button>
+        <button type="button" class="start-choice" data-start-lang="pt">Português</button>
+      </div>
     </div>
 
     <div class="start-row">
@@ -1857,12 +2010,17 @@ html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!import
         <input type="text" id="startName" placeholder="Ej: Ariel">
       </div>
       <div class="start-field">
-        <label for="startCurrency" id="startCurrencyLabel">Moneda</label>
-        <select id="startCurrency">
+        <label id="startCurrencyLabel">Moneda</label>
+        <select id="startCurrency" class="start-native-hidden" aria-hidden="true" tabindex="-1">
           <option value="ARS">ARS $</option>
           <option value="USD">USD $</option>
           <option value="BRL">BRL R$</option>
         </select>
+        <div class="start-choice-group start-currency-group" id="startCurrencyChoices" role="group" aria-label="Moneda">
+          <button type="button" class="start-choice active" data-start-currency="ARS">ARS</button>
+          <button type="button" class="start-choice" data-start-currency="USD">USD</button>
+          <button type="button" class="start-choice" data-start-currency="BRL">BRL</button>
+        </div>
       </div>
     </div>
 
@@ -2161,24 +2319,27 @@ function priceByType(a,type){
     return base;
 }
 function hasBrazilPark(){return getSelectedNames().includes(brazilPromoBase);}
+function hasBrazilParkRound(){return selected.some(i=>i.name===brazilPromoBase && (i.type||"one")==="round");}
 function isBrazilPromoItem(name){return brazilPromoItems.includes(name);}
 function hasArgentinaPromoBase(){const names=getSelectedNames();return argentinaPromoBaseItems.every(n=>names.includes(n));}
+function hasArgentinaPromoBaseRound(){return argentinaPromoBaseItems.every(n=>selected.some(i=>i.name===n && (i.type||"one")==="round"));}
 function isArgentinaAttraction(name){const a=getAttraction(name);return a && a.category && a.category.includes("Argentina");}
-function isArgentinaPromoItem(name){return hasArgentinaPromoBase() && isArgentinaAttraction(name) && !argentinaPromoExcluded.includes(name);}
-function argentinaPromoDiscountByType(type){return type==="one"?argentinaPromoOneDiscount:argentinaPromoRoundDiscount;}
-function normalLinePrice(item){const a=getAttraction(item.name);return a?priceByType(a,item.type||"round"):0;}
+function isArgentinaPromoItem(name,type="round"){return type==="round" && hasArgentinaPromoBaseRound() && isArgentinaAttraction(name) && !argentinaPromoExcluded.includes(name);}
+function argentinaPromoDiscountByType(type){return type==="round"?argentinaPromoRoundDiscount:0;}
+function normalLinePrice(item){const a=getAttraction(item.name);return a?priceByType(a,item.type||"one"):0;}
 function effectiveLinePrice(item){
-    if(hasBrazilPark() && isBrazilPromoItem(item.name)) return brazilPromoPrice;
+    const type=item.type||"one";
+    if(type==="round" && hasBrazilParkRound() && isBrazilPromoItem(item.name)) return brazilPromoPrice;
     const normal=normalLinePrice(item);
-    if(isArgentinaPromoItem(item.name)){
-        return Math.max(0, normal-argentinaPromoDiscountByType(item.type||"round"));
+    if(isArgentinaPromoItem(item.name,type)){
+        return Math.max(0, normal-argentinaPromoDiscountByType(type));
     }
     return normal;
 }
 function displayedCardPrice(a,type){
-    if(hasBrazilPark() && isBrazilPromoItem(a.name)) return brazilPromoPrice;
+    if(type==="round" && hasBrazilParkRound() && isBrazilPromoItem(a.name)) return brazilPromoPrice;
     const normal=priceByType(a,type);
-    if(isArgentinaPromoItem(a.name)) return Math.max(0, normal-argentinaPromoDiscountByType(type));
+    if(isArgentinaPromoItem(a.name,type)) return Math.max(0, normal-argentinaPromoDiscountByType(type));
     return normal;
 }
 function calculateBudget(){
@@ -2193,9 +2354,9 @@ function calculateBudget(){
         if(normal>effective){
             const promoDiscount=normal-effective;
             discount+=promoDiscount;
-            if(hasBrazilPark() && isBrazilPromoItem(item.name)){
+            if((item.type||"one")==="round" && hasBrazilParkRound() && isBrazilPromoItem(item.name)){
                 activeCombos.push({name:`Promo Brasil: ${item.name} a ${formatPrice(brazilPromoPrice)}`,discount:promoDiscount});
-            }else if(isArgentinaPromoItem(item.name)){
+            }else if(isArgentinaPromoItem(item.name,item.type||"one")){
                 activeCombos.push({name:`Promo Argentina: ${item.name}`,discount:promoDiscount});
             }else{
                 activeCombos.push({name:`Promo: ${item.name}`,discount:promoDiscount});
@@ -2208,11 +2369,11 @@ function calculateBudget(){
 }
 function getSmartTips(){
     const names=getSelectedNames();let tips=[];
-    if(names.includes("Parque Nacional do Iguaçu")&&!names.includes("Parque das Aves"))tips.push("💡 Agregá Parque das Aves por solo "+formatPrice(brazilPromoPrice)+" más");
-    if(names.includes("Parque Nacional do Iguaçu")&&!names.includes("Aquafoz Acuario"))tips.push("💡 Agregá Aquafoz Acuario por solo "+formatPrice(brazilPromoPrice)+" más");
+    if(hasBrazilParkRound()&&!names.includes("Parque das Aves"))tips.push("💡 En ida y vuelta, agregá Parque das Aves por solo "+formatPrice(brazilPromoPrice)+" más");
+    if(hasBrazilParkRound()&&!names.includes("Aquafoz Acuario"))tips.push("💡 En ida y vuelta, agregá Aquafoz Acuario por solo "+formatPrice(brazilPromoPrice)+" más");
     if(names.includes("Parque Nacional Iguazú")&&!names.includes("Volver al aeropuerto"))tips.push("💡 Agregá Volver al aeropuerto y activá descuentos en otros atractivos de Argentina");
     if(names.includes("Volver al aeropuerto")&&!names.includes("Parque Nacional Iguazú"))tips.push("💡 Agregá Parque Nacional Iguazú y activá descuentos en otros atractivos de Argentina");
-    if(hasArgentinaPromoBase())tips.push("🇦🇷 Promo Argentina activa: ahorrás "+formatPrice(argentinaPromoRoundDiscount)+" en ida y vuelta o "+formatPrice(argentinaPromoOneDiscount)+" en solo ida en los demás atractivos de Argentina");
+    if(hasArgentinaPromoBaseRound())tips.push("🇦🇷 Promo Argentina activa solo en ida y vuelta: ahorrás "+formatPrice(argentinaPromoRoundDiscount)+" en los demás atractivos de Argentina");
     if(names.includes("Compras en Ciudad del Este")&&!names.includes("Saltos del Monday"))tips.push("💡 También te puede interesar: Saltos del Monday");
     if(names.includes("Parque Nacional Iguazú")&&!names.includes("Shopping Duty Free Shop"))tips.push("💡 Podés combinarlo con Shopping Duty Free Shop");
     return tips;
@@ -2252,8 +2413,8 @@ function renderCards(){
         const type=a.name==="Volver al aeropuerto" ? "one" : (existing?existing.type:"one");
         const normal=priceByType(a,type);
         const price=displayedCardPrice(a,type);
-        const promo=hasBrazilPark() && isBrazilPromoItem(a.name);
-        const argPromo=isArgentinaPromoItem(a.name);
+        const promo=type==="round" && hasBrazilParkRound() && isBrazilPromoItem(a.name);
+        const argPromo=isArgentinaPromoItem(a.name,type);
         const idx=attractions.findIndex(x=>x.name===a.name);
         const fozArgentinaMin=(getLodging()==="brasil" && a.category && a.category.includes("Argentina") && !["Parque Nacional Iguazú","Volver al aeropuerto"].includes(a.name) && !getSelectedNames().includes("Parque Nacional Iguazú"));
         const priceHtml=promo
@@ -2267,7 +2428,7 @@ function renderCards(){
         ? '<div class="trip-type-label transfer-title"><span class="transfer-icon">✈</span> Traslado</div><div class="airport-transfer-pill">Aeropuerto • solo ida</div>'
         : '<div class="trip-type-label transfer-title"><span class="transfer-icon">⇄</span> Tipo de traslado</div><div class="trip-choice" role="group" aria-label="Tipo de traslado"><button type="button" class="trip-choice-btn '+(type==='one'?'active':'')+'" data-type="one" onclick="setCardTripType(\''+a.name+'\',\'one\')">Solo ida</button><button type="button" class="trip-choice-btn '+(type==='round'?'active':'')+'" data-type="round" onclick="setCardTripType(\''+a.name+'\',\'round\')">Ida y vuelta</button></div>';
         const promoTags=(promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':'');
-        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge top-badge">TOP</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3>${promoTags?`<div class="card-actions-mini">${promoTags}</div>`:''}${transferBlock}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option add-btn ${existing?'selected-add':''}" onclick="addTrip('${a.name}')">${existing?'✓ Agregado':'+ Agregar'}</button><button class="option remove remove-btn ${existing?'selected-remove':'disabled-remove'}" onclick="removeTrip('${a.name}')">${existing?'Anular selección':translations[lang].remove}</button></div></div></div>`;
+        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge top-badge">MÁS VENDIDO</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="640" height="420" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3>${promoTags?`<div class="card-actions-mini">${promoTags}</div>`:''}${transferBlock}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option add-btn ${existing?'selected-add':''}" onclick="addTrip('${a.name}')">${existing?'✓ Agregado':'+ Agregar'}</button><button class="option remove remove-btn ${existing?'selected-remove':'disabled-remove'}" onclick="removeTrip('${a.name}')">${existing?'Anular selección':translations[lang].remove}</button></div></div></div>`;
     }
 
     htmlParts.push(`<h2 class="section-title best-title">🏆 MÁS VENDIDOS</h2><div class="cards">`);
@@ -2289,9 +2450,9 @@ function updateVisualPrice(name,type){
         const lang=getLanguage();
         const normal=priceByType(a,type);
         const price=displayedCardPrice(a,type);
-        if(hasBrazilPark() && isBrazilPromoItem(a.name)){
+        if(type==="round" && hasBrazilParkRound() && isBrazilPromoItem(a.name)){
             el.innerHTML=`<span style="text-decoration:line-through;color:#9ca3af;font-size:17px">${formatPrice(normal)}</span><br>${formatPrice(price)}<small>Promo con Parque Nacional do Iguaçu</small>`;
-        }else if(isArgentinaPromoItem(a.name)){
+        }else if(isArgentinaPromoItem(a.name,type)){
             el.innerHTML=`<span style="text-decoration:line-through;color:#9ca3af;font-size:17px">${formatPrice(normal)}</span><br>${formatPrice(price)}`;
         }else{
             const fozArgentinaMin=(getLodging()==="brasil" && a.category && a.category.includes("Argentina") && !["Parque Nacional Iguazú","Volver al aeropuerto"].includes(a.name) && !getSelectedNames().includes("Parque Nacional Iguazú"));
@@ -2692,9 +2853,17 @@ document.addEventListener("DOMContentLoaded",function(){
         pt:{language:"Idioma",name:"Nome do passageiro",namePlaceholder:"Ex: Ariel",currency:"Moeda",phone:"WhatsApp do passageiro",phonePlaceholder:"Digite o WhatsApp",button:"INICIAR ORÇAMENTO",saved:"📋 Orçamentos salvos",missingName:"Complete o nome para iniciar",missingPhone:"Complete o número de WhatsApp"}
     };
 
+    function setChoiceActive(selector, attr, value){
+        document.querySelectorAll(selector).forEach(function(btn){
+            btn.classList.toggle("active", btn.getAttribute(attr)===value);
+            btn.setAttribute("aria-pressed", btn.getAttribute(attr)===value ? "true" : "false");
+        });
+    }
+
     window.applyStartLanguage=function(){
         var langEl=document.getElementById("startLanguage");
         var lang=langEl ? langEl.value : "es";
+        setChoiceActive("[data-start-lang]","data-start-lang",lang);
         var t=startLoginText[lang] || startLoginText.es;
         var map={startLanguageLabel:t.language,startNameLabel:t.name,startCurrencyLabel:t.currency,startPhoneLabel:t.phone,startBtn:t.button,startSavedBtn:t.saved};
         Object.keys(map).forEach(function(id){var el=document.getElementById(id); if(el) el.textContent=map[id];});
@@ -2737,6 +2906,8 @@ document.addEventListener("DOMContentLoaded",function(){
         if(startLanguage) startLanguage.value=lang;
         if(startCurrency) startCurrency.value=currency;
         if(startCountryCode && profile.countryCode) startCountryCode.value=profile.countryCode;
+        setChoiceActive("[data-start-lang]","data-start-lang",lang);
+        setChoiceActive("[data-start-currency]","data-start-currency",currency);
         if(typeof applyStartLanguage==="function") applyStartLanguage();
     };
 
@@ -2788,19 +2959,53 @@ document.addEventListener("DOMContentLoaded",function(){
                 applyStartLanguage();
             });
         }
-        var startCurrency=document.getElementById("startCurrency");
-        if(startCurrency){
-            startCurrency.addEventListener("change",function(){
-                var appCurrency=document.getElementById("currency");
-                if(appCurrency) appCurrency.value=startCurrency.value;
-                try{localStorage.setItem("exploraCurrency",startCurrency.value);}catch(e){}
-                if(typeof renderCards==="function") renderCards();
-                if(typeof updateSummary==="function") updateSummary();
+        document.querySelectorAll("[data-start-lang]").forEach(function(btn){
+            btn.addEventListener("click",function(){
+                var value=btn.getAttribute("data-start-lang")||"es";
+                if(startLanguage) startLanguage.value=value;
+                applyStartLanguage();
             });
+        });
+
+        var startCurrency=document.getElementById("startCurrency");
+        function applyStartCurrency(){
+            var value=startCurrency ? startCurrency.value : "ARS";
+            setChoiceActive("[data-start-currency]","data-start-currency",value);
+            var appCurrency=document.getElementById("currency");
+            if(appCurrency) appCurrency.value=value;
+            try{localStorage.setItem("exploraCurrency",value);}catch(e){}
+            if(typeof renderCards==="function") renderCards();
+            if(typeof updateSummary==="function") updateSummary();
         }
+        if(startCurrency){
+            startCurrency.addEventListener("change",applyStartCurrency);
+        }
+        document.querySelectorAll("[data-start-currency]").forEach(function(btn){
+            btn.addEventListener("click",function(){
+                var value=btn.getAttribute("data-start-currency")||"ARS";
+                if(startCurrency) startCurrency.value=value;
+                applyStartCurrency();
+            });
+        });
+
+        function keepInputVisible(el){
+            if(!el) return;
+            document.body.classList.add("keyboard-mode");
+            setTimeout(function(){
+                try{el.scrollIntoView({behavior:"smooth",block:"center",inline:"nearest"});}catch(e){
+                    try{el.scrollIntoView(false);}catch(_e){}
+                }
+            },280);
+            setTimeout(function(){
+                try{el.scrollIntoView({behavior:"smooth",block:"center",inline:"nearest"});}catch(e){}
+            },650);
+        }
+
         ["startName","startPhone"].forEach(function(id){
             var el=document.getElementById(id);
             if(el){
+                el.addEventListener("focus",function(){keepInputVisible(el);});
+                el.addEventListener("blur",function(){setTimeout(function(){document.body.classList.remove("keyboard-mode");},220);});
                 el.addEventListener("keydown",function(e){
                     if(e.key==="Enter"){
                         e.preventDefault();
@@ -3126,6 +3331,154 @@ document.addEventListener("DOMContentLoaded",function(){
 
 /* Scroll más fluido */
 html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!important;}
+
+
+
+/* ===== AJUSTE FINAL: fluidez, verde seleccionado, promo solo ida y vuelta ===== */
+/* Más vendido en verde para no confundirse con precio/botón dorado */
+.badge.top-badge,.top-badge{
+  background:linear-gradient(135deg,#22c55e,#15803d)!important;
+  color:#04130a!important;
+  border:1px solid rgba(187,247,208,.55)!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.20)!important;
+  font-size:11px!important;
+  letter-spacing:.45px!important;
+  padding:7px 10px!important;
+}
+/* Solo ida / ida y vuelta: selector moderno y verde cuando está seleccionado */
+.trip-choice{
+  background:#0d0d0d!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)!important;
+}
+.trip-choice-btn{
+  background:#171717!important;
+  color:#e5e7eb!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+}
+.trip-choice-btn.active{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#031407!important;
+  border-color:rgba(187,247,208,.55)!important;
+  box-shadow:0 5px 12px rgba(34,197,94,.16)!important;
+}
+.airport-transfer-pill{
+  color:#bbf7d0!important;
+  border-color:rgba(34,197,94,.28)!important;
+  background:rgba(22,163,74,.10)!important;
+}
+.transfer-title{color:#d1d5db!important;}
+.transfer-icon{color:#22c55e!important;}
+/* Botón Agregar queda verde cuando el servicio ya fue seleccionado; Anular queda rojo */
+.add-btn.selected-add{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#031407!important;
+  border-color:rgba(187,247,208,.55)!important;
+}
+.remove-btn.selected-remove{
+  background:linear-gradient(135deg,#ef4444,#b91c1c)!important;
+  color:#fff!important;
+  border-color:rgba(254,202,202,.35)!important;
+}
+.remove-btn.disabled-remove{opacity:.70!important;}
+/* Total fijo en verde */
+.summary .total,.summary.compact-summary .total,#totalText{
+  color:#22c55e!important;
+  text-shadow:none!important;
+}
+/* Fotos más grandes y scroll más liviano */
+.duration{display:none!important;}
+.card-actions-mini{margin-bottom:6px!important;}
+.card,.featured-card{
+  content-visibility:auto!important;
+  contain:layout paint style!important;
+  contain-intrinsic-size:430px 540px!important;
+  box-shadow:0 3px 10px rgba(0,0,0,.22)!important;
+  transition:none!important;
+}
+.card:hover,.featured-card:hover{transform:none!important;box-shadow:0 3px 10px rgba(0,0,0,.22)!important;}
+.card img,.featured-card img{
+  filter:none!important;
+  transition:none!important;
+  transform:none!important;
+  will-change:auto!important;
+  background:#0c0c0c!important;
+}
+@media (min-width:900px){
+  .card img,.featured-card img{height:245px!important;}
+  .card-content{padding:13px!important;min-height:250px!important;}
+  .card h3{font-size:20px!important;min-height:46px!important;margin-bottom:7px!important;}
+  .price{font-size:23px!important;margin:9px 0!important;}
+  .cards{gap:16px!important;}
+}
+@media (min-width:1120px){
+  .card img,.featured-card img{height:235px!important;}
+}
+@media (max-width:899px){
+  .card img,.featured-card img{height:190px!important;}
+}
+
+
+
+/* ===== LOGIN TABLET: idioma/moneda como botones, sin desplegable nativo ===== */
+.start-native-hidden{
+  position:absolute!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+}
+.start-choice-group{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:10px!important;
+  width:100%!important;
+}
+.start-choice{
+  min-height:58px!important;
+  border-radius:18px!important;
+  border:1px solid rgba(215,180,55,.32)!important;
+  background:#080808!important;
+  color:#f3f3f3!important;
+  font-size:18px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+  touch-action:manipulation!important;
+}
+.start-choice.active{
+  background:#16a34a!important;
+  color:#ffffff!important;
+  border-color:#22c55e!important;
+  box-shadow:0 7px 18px rgba(22,163,74,.18)!important;
+}
+.start-choice:active{transform:scale(.985)!important;filter:brightness(.96)!important;}
+@media(max-width:520px){
+  .start-choice-group{gap:7px!important;}
+  .start-choice{min-height:44px!important;border-radius:14px!important;font-size:14px!important;}
+}
+/* Cuando aparece el teclado Android, permitimos desplazar el login para no tapar Nombre/WhatsApp */
+body.not-started.keyboard-mode{overflow:auto!important;height:auto!important;}
+body.not-started.keyboard-mode .start-screen{
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding-top:18px!important;
+  padding-bottom:45vh!important;
+}
+body.not-started.keyboard-mode .start-card{
+  overflow:visible!important;
+  margin-bottom:40vh!important;
+}
+@media(min-width:700px){
+  body.not-started .start-choice{min-height:54px!important;font-size:17px!important;border-radius:16px!important;}
+}
+@media(max-height:650px) and (min-width:700px){
+  body.not-started .start-choice{min-height:40px!important;font-size:14px!important;border-radius:12px!important;}
+  .start-choice-group{gap:8px!important;}
+}
 
 </style>
 

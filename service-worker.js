@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260608-110-final-ligero';
+const CACHE_NAME = 'explora-presupuesto-v20260608-login-botones-fix';
 const APP_SHELL = [
   './',
   './index.html',
