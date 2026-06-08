@@ -1,14 +1,14 @@
-EXPLORA PWA - versión final optimizada tablet
+EXPLORA PWA - versión fluida tablet
 
 Cambios incluidos:
-- Botón Agregar queda verde cuando el atractivo está seleccionado.
-- Botón Anular queda rojo cuando puede anular una selección.
-- Selector de traslado con SOLO IDA primero e IDA Y VUELTA segundo.
-- Precios de solo ida ajustados automáticamente a la mitad exacta de ida y vuelta.
-- Iconos de traslado y duración modernizados.
-- Tarjeta Volver al aeropuerto equilibrada visualmente.
-- Bandera/país en cada atractivo.
-- Optimización de CSS, menos efectos pesados y caché offline actualizado.
+- Scroll más liviano en tablet: sin filtros, blur ni transiciones pesadas.
+- Imágenes con carga más eficiente y tarjetas con content-visibility.
+- Fotos más grandes dentro de las tarjetas.
+- Se quitó el tiempo de duración visible para ganar espacio visual.
+- Más vendidos deja de usar amarillo para no confundirse con botones/precios.
+- Selector de traslado reemplazado por botones elegantes: Solo ida / Ida y vuelta.
+- Botón Agregar queda verde al seleccionar; Anular queda rojo cuando corresponde.
+- Mantiene PWA offline, manifest, service worker e iconos.
 
 Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - index.html
@@ -17,4 +17,4 @@ Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - icon-192.png
 - icon-512.png
 
-Luego presionar Commit changes. En la tablet cerrar la app, abrir la URL en Chrome, recargar, y volver a abrir desde el ícono.
+Después presionar Commit changes y esperar 1 minuto. Si la tablet sigue mostrando versión vieja, abrir Chrome, recargar la URL y luego abrir desde el ícono.

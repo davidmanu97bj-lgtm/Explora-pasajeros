@@ -1717,6 +1717,121 @@ body.not-started .login-saved-btn{
   .card-content{min-height:286px!important;}
 }
 
+
+
+/* ===== FLUIDEZ + TARJETAS PREMIUM LIVIANAS 2026-06-08 ===== */
+/* Menos trabajo para Chrome en tablet: sin filtros, sin blur, sin animaciones pesadas */
+.card,.featured-card,.summary,.modal-box,.start-card{
+  will-change:auto!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.card,.featured-card{
+  contain:layout paint style!important;
+  content-visibility:auto!important;
+  contain-intrinsic-size: 420px 520px!important;
+  transition:none!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.22)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  background:#171717!important;
+}
+.card:hover,.featured-card:hover{transform:none!important;box-shadow:0 4px 12px rgba(0,0,0,.22)!important;}
+.card img,.featured-card img{
+  filter:none!important;
+  transition:none!important;
+  transform:none!important;
+  background:#0d0d0d!important;
+  image-rendering:auto!important;
+}
+.card::before,.featured-card::before{display:none!important;}
+
+/* Más vendidos sin amarillo para no confundirse con botón/precio */
+.best-title{color:#f3f4f6!important;text-shadow:none!important;border-top:1px solid rgba(255,255,255,.10)!important;}
+.badge,.top-badge{
+  background:linear-gradient(135deg,#334155,#111827)!important;
+  color:#f8fafc!important;
+  border:1px solid rgba(148,163,184,.55)!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.22)!important;
+  letter-spacing:.8px!important;
+}
+
+/* Más foto, menos texto: se elimina tiempo y se agrandan imágenes */
+.duration{display:none!important;}
+.card-actions-mini{margin:0 0 8px!important;min-height:0!important;}
+@media (min-width:900px){
+  .card img,.featured-card img{height:228px!important;}
+  .card-content{min-height:268px!important;padding:14px!important;}
+  .card h3{font-size:21px!important;line-height:1.12!important;min-height:48px!important;margin-bottom:8px!important;}
+  .price{font-size:24px!important;margin:10px 0!important;}
+  .cards{gap:18px!important;}
+}
+@media (min-width:1120px){
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;}
+  .card img,.featured-card img{height:220px!important;}
+}
+@media (max-width:899px){
+  .card img,.featured-card img{height:175px!important;}
+}
+
+/* Selector ida / ida y vuelta moderno, sin cartel blanco */
+.transfer-title{
+  margin:8px 0 7px!important;
+  font-size:13px!important;
+  color:#d7b437!important;
+}
+.trip-choice{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  padding:5px!important;
+  margin:6px 0 10px!important;
+  border-radius:16px!important;
+  background:#0b0b0b!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.trip-choice-btn{
+  min-height:42px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#d6d6d6!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.trip-choice-btn.active{
+  background:linear-gradient(135deg,#e1be48,#c99e28,#a87918)!important;
+  color:#050505!important;
+  box-shadow:0 4px 10px rgba(215,180,55,.12)!important;
+}
+.airport-transfer-pill{
+  background:#0b0b0b!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  color:#d7b437!important;
+  min-height:46px!important;
+  border-radius:15px!important;
+  justify-content:center!important;
+}
+.type-selector{display:none!important;}
+
+/* Selección más clara */
+.option.add-btn.selected-add{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#0f7a35)!important;
+  color:#fff!important;
+  border-color:rgba(34,197,94,.75)!important;
+}
+.option.remove-btn.selected-remove{
+  background:linear-gradient(135deg,#dc2626,#991b1b,#7f1111)!important;
+  color:#fff!important;
+  border-color:rgba(220,38,38,.75)!important;
+}
+.option.remove-btn.disabled-remove{opacity:.55!important;}
+.card.is-selected{border-color:rgba(34,197,94,.42)!important;box-shadow:0 0 0 1px rgba(34,197,94,.14),0 4px 12px rgba(0,0,0,.22)!important;}
+
+/* Scroll más fluido */
+html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!important;}
+
 </style>
 </head>
 <body class="not-started">
@@ -2149,12 +2264,13 @@ function renderCards(){
         const country=countryData(a.category);
         const cardClass=`card ${featuredAttractions.includes(a.name)?'featured-card':''} ${existing?'is-selected':''} ${a.name==='Volver al aeropuerto'?'airport-card':''}`;
         const transferBlock=a.name==='Volver al aeropuerto'
-        ? '<div class="trip-type-label"><span class="transfer-icon">✈</span> Traslado</div><div class="airport-transfer-pill">Aeropuerto • solo ida</div>'
-        : '<label class="trip-type-label"><span class="transfer-icon">⇄</span> Tipo de traslado</label><select class="type-selector" onchange="updateVisualPrice(\''+a.name+'\',this.value);updateTripType(\''+a.name+'\',this.value)"><option value="one" '+(type==='one'?'selected':'')+'>Solo ida</option><option value="round" '+(type==='round'?'selected':'')+'>Ida y vuelta</option></select>';
-        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge">⭐ MÁS VENDIDO</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3><div class="card-actions-mini"><span class="duration"><span class="clock-icon">⏱</span> ${durations[a.name]||'1 a 2 horas'}</span>${promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':''}</div>${transferBlock}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option add-btn ${existing?'selected-add':''}" onclick="addTrip('${a.name}')">${existing?'✓ Agregado':'+ Agregar'}</button><button class="option remove remove-btn ${existing?'selected-remove':'disabled-remove'}" onclick="removeTrip('${a.name}')">${existing?'Anular selección':translations[lang].remove}</button></div></div></div>`;
+        ? '<div class="trip-type-label transfer-title"><span class="transfer-icon">✈</span> Traslado</div><div class="airport-transfer-pill">Aeropuerto • solo ida</div>'
+        : '<div class="trip-type-label transfer-title"><span class="transfer-icon">⇄</span> Tipo de traslado</div><div class="trip-choice" role="group" aria-label="Tipo de traslado"><button type="button" class="trip-choice-btn '+(type==='one'?'active':'')+'" data-type="one" onclick="setCardTripType(\''+a.name+'\',\'one\')">Solo ida</button><button type="button" class="trip-choice-btn '+(type==='round'?'active':'')+'" data-type="round" onclick="setCardTripType(\''+a.name+'\',\'round\')">Ida y vuelta</button></div>';
+        const promoTags=(promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':'');
+        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge top-badge">TOP</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3>${promoTags?`<div class="card-actions-mini">${promoTags}</div>`:''}${transferBlock}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option add-btn ${existing?'selected-add':''}" onclick="addTrip('${a.name}')">${existing?'✓ Agregado':'+ Agregar'}</button><button class="option remove remove-btn ${existing?'selected-remove':'disabled-remove'}" onclick="removeTrip('${a.name}')">${existing?'Anular selección':translations[lang].remove}</button></div></div></div>`;
     }
 
-    htmlParts.push(`<h2 class="section-title">⭐ MÁS VENDIDOS</h2><div class="cards">`);
+    htmlParts.push(`<h2 class="section-title best-title">🏆 MÁS VENDIDOS</h2><div class="cards">`);
     masVendidos.forEach(a=>htmlParts.push(renderCard(a)));
     htmlParts.push(`</div>`);
 
@@ -2183,10 +2299,21 @@ function updateVisualPrice(name,type){
         }
     }
 }
-function addTrip(name){
+function currentCardTripType(name){
     const card=[...document.querySelectorAll('.card')].find(c=>c.querySelector('h3')&&c.querySelector('h3').innerText===name);
-    const selector=card?card.querySelector('.type-selector'):null;
-    const type=name==="Volver al aeropuerto" ? "one" : (selector?selector.value:"one");
+    const active=card?card.querySelector('.trip-choice-btn.active'):null;
+    return active ? active.dataset.type : "one";
+}
+function setCardTripType(name,type){
+    const card=[...document.querySelectorAll('.card')].find(c=>c.querySelector('h3')&&c.querySelector('h3').innerText===name);
+    if(card){
+        card.querySelectorAll('.trip-choice-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===type));
+    }
+    updateVisualPrice(name,type);
+    updateTripType(name,type);
+}
+function addTrip(name){
+    const type=name==="Volver al aeropuerto" ? "one" : currentCardTripType(name);
     selected=selected.filter(i=>i.name!==name);
     selected.push({name,type});
     localStorage.setItem("exploraTripsV2",JSON.stringify(selected));
@@ -2884,6 +3011,121 @@ document.addEventListener("DOMContentLoaded",function(){
     background:linear-gradient(135deg,#e9c84f,#cda129)!important;
     color:#050505!important;
 }
+
+
+
+/* ===== FLUIDEZ + TARJETAS PREMIUM LIVIANAS 2026-06-08 ===== */
+/* Menos trabajo para Chrome en tablet: sin filtros, sin blur, sin animaciones pesadas */
+.card,.featured-card,.summary,.modal-box,.start-card{
+  will-change:auto!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.card,.featured-card{
+  contain:layout paint style!important;
+  content-visibility:auto!important;
+  contain-intrinsic-size: 420px 520px!important;
+  transition:none!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.22)!important;
+  border:1px solid rgba(255,255,255,.09)!important;
+  background:#171717!important;
+}
+.card:hover,.featured-card:hover{transform:none!important;box-shadow:0 4px 12px rgba(0,0,0,.22)!important;}
+.card img,.featured-card img{
+  filter:none!important;
+  transition:none!important;
+  transform:none!important;
+  background:#0d0d0d!important;
+  image-rendering:auto!important;
+}
+.card::before,.featured-card::before{display:none!important;}
+
+/* Más vendidos sin amarillo para no confundirse con botón/precio */
+.best-title{color:#f3f4f6!important;text-shadow:none!important;border-top:1px solid rgba(255,255,255,.10)!important;}
+.badge,.top-badge{
+  background:linear-gradient(135deg,#334155,#111827)!important;
+  color:#f8fafc!important;
+  border:1px solid rgba(148,163,184,.55)!important;
+  box-shadow:0 3px 8px rgba(0,0,0,.22)!important;
+  letter-spacing:.8px!important;
+}
+
+/* Más foto, menos texto: se elimina tiempo y se agrandan imágenes */
+.duration{display:none!important;}
+.card-actions-mini{margin:0 0 8px!important;min-height:0!important;}
+@media (min-width:900px){
+  .card img,.featured-card img{height:228px!important;}
+  .card-content{min-height:268px!important;padding:14px!important;}
+  .card h3{font-size:21px!important;line-height:1.12!important;min-height:48px!important;margin-bottom:8px!important;}
+  .price{font-size:24px!important;margin:10px 0!important;}
+  .cards{gap:18px!important;}
+}
+@media (min-width:1120px){
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;}
+  .card img,.featured-card img{height:220px!important;}
+}
+@media (max-width:899px){
+  .card img,.featured-card img{height:175px!important;}
+}
+
+/* Selector ida / ida y vuelta moderno, sin cartel blanco */
+.transfer-title{
+  margin:8px 0 7px!important;
+  font-size:13px!important;
+  color:#d7b437!important;
+}
+.trip-choice{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  padding:5px!important;
+  margin:6px 0 10px!important;
+  border-radius:16px!important;
+  background:#0b0b0b!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+}
+.trip-choice-btn{
+  min-height:42px!important;
+  border:0!important;
+  border-radius:12px!important;
+  background:transparent!important;
+  color:#d6d6d6!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.trip-choice-btn.active{
+  background:linear-gradient(135deg,#e1be48,#c99e28,#a87918)!important;
+  color:#050505!important;
+  box-shadow:0 4px 10px rgba(215,180,55,.12)!important;
+}
+.airport-transfer-pill{
+  background:#0b0b0b!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  color:#d7b437!important;
+  min-height:46px!important;
+  border-radius:15px!important;
+  justify-content:center!important;
+}
+.type-selector{display:none!important;}
+
+/* Selección más clara */
+.option.add-btn.selected-add{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#0f7a35)!important;
+  color:#fff!important;
+  border-color:rgba(34,197,94,.75)!important;
+}
+.option.remove-btn.selected-remove{
+  background:linear-gradient(135deg,#dc2626,#991b1b,#7f1111)!important;
+  color:#fff!important;
+  border-color:rgba(220,38,38,.75)!important;
+}
+.option.remove-btn.disabled-remove{opacity:.55!important;}
+.card.is-selected{border-color:rgba(34,197,94,.42)!important;box-shadow:0 0 0 1px rgba(34,197,94,.14),0 4px 12px rgba(0,0,0,.22)!important;}
+
+/* Scroll más fluido */
+html,body{-webkit-overflow-scrolling:touch!important;scroll-behavior:auto!important;}
 
 </style>
 
