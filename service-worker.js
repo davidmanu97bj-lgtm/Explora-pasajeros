@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260608-108-fotos-ia';
+const CACHE_NAME = 'explora-presupuesto-v20260608-110-final-ligero';
 const APP_SHELL = [
   './',
   './index.html',
