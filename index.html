@@ -11,6 +11,11 @@
 <meta name="apple-mobile-web-app-title" content="EXPLORA">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-512.png">
+<link rel="preconnect" href="https://encrypted-tbn0.gstatic.com">
+<link rel="preconnect" href="https://dynamic-media-cdn.tripadvisor.com">
+<link rel="preconnect" href="https://www.iguazuviajes.com">
+<link rel="dns-prefetch" href="https://encrypted-tbn0.gstatic.com">
+<link rel="dns-prefetch" href="https://dynamic-media-cdn.tripadvisor.com">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}body{background:#f3f6fb;color:#111827;padding-bottom:260px}header{background:linear-gradient(135deg,#0f172a,#2563eb);color:white;padding:25px;text-align:center;box-shadow:0 2px 10px rgba(0,0,0,.2)}header h1{font-size:38px;margin-bottom:10px}.controls{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:15px}select{padding:10px;border:none;border-radius:10px;font-size:15px}.container{max-width:1400px;margin:auto;padding:20px}.section-title{margin:40px 0 20px;font-size:32px;color:#0f172a}.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}.card{background:white;border-radius:20px;overflow:hidden;box-shadow:0 5px 15px rgba(0,0,0,.12);transition:.3s;position:relative}.card:hover{transform:translateY(-5px)}.card img{width:100%;height:190px;object-fit:cover;cursor:pointer}.card-content{padding:15px}.card h3{font-size:21px;margin-bottom:10px}.badge{position:absolute;top:12px;left:12px;background:#f59e0b;color:white;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:bold}.type-selector{width:100%;padding:10px;margin:8px 0 10px;border-radius:10px;border:1px solid #d1d5db;background:#f9fafb}.price{font-size:26px;font-weight:bold;color:#16a34a;margin-bottom:12px}.price small{display:block;font-size:12px;color:#6b7280;font-weight:400}.buttons{display:flex;gap:10px}.option{flex:1;padding:14px;border:none;border-radius:14px;cursor:pointer;font-weight:bold;font-size:15px;background:#2563eb;color:white}.remove{background:#dc2626}.summary{position:fixed;right:15px;bottom:15px;width:340px;max-height:82vh;overflow:auto;background:white;padding:15px;border-radius:18px;box-shadow:0 5px 24px rgba(0,0,0,.24);z-index:9999}.summary h2{font-size:18px;margin-bottom:5px}#countTrips{font-size:14px;color:#4b5563;margin-bottom:8px}.summary-line{display:flex;justify-content:space-between;gap:12px;font-size:14px;margin:6px 0;color:#374151}.discount{color:#dc2626;font-weight:bold}.combo-box,.tip-box{background:#f8fafc;border:1px solid #e5e7eb;border-radius:12px;padding:9px;margin:8px 0;font-size:13px;line-height:1.35}.tip-box{background:#eff6ff;border-color:#bfdbfe;color:#1e3a8a}.total{font-size:23px;font-weight:bold;margin:10px 0;color:#16a34a;border-top:1px solid #e5e7eb;padding-top:10px}.final{width:100%;padding:11px;background:#16a34a;color:white;border:none;border-radius:10px;font-size:14px;font-weight:bold;cursor:pointer}.clear-btn{margin-top:6px;width:100%;padding:9px;background:#6b7280;color:white;border:none;border-radius:10px;cursor:pointer;font-size:12px}.modal,.gallery-modal{position:fixed;inset:0;background:rgba(0,0,0,.65);display:none;justify-content:center;align-items:center;z-index:99999}.modal-box{background:white;padding:25px;border-radius:20px;width:90%;max-width:400px;position:relative}.modal-box input{width:100%;padding:13px;margin-top:10px;border-radius:12px;border:1px solid #ccc;font-size:15px}.modal-box input:focus{outline:none;border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.15)}header p{font-size:15px;opacity:.95}.close-modal{position:absolute;right:18px;top:12px;font-size:30px;font-weight:bold;cursor:pointer}.gallery-modal{background:rgba(0,0,0,.92);flex-direction:column}.gallery-modal img{max-width:94%;max-height:80vh;border-radius:12px}.gallery-controls{margin-top:12px;display:flex;gap:10px}.gallery-controls button{padding:10px 14px;border:none;border-radius:10px;font-weight:bold;cursor:pointer}.close-gallery{position:absolute;top:16px;right:22px;color:white;font-size:34px;cursor:pointer}@media(max-width:900px){body{padding-bottom:330px}.summary{left:10px;right:10px;bottom:10px;width:auto}.section-title{font-size:24px}header h1{font-size:28px}}
@@ -1269,6 +1274,224 @@ body:not(.not-started) .container{
 .duration,.mini-tag{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.08)!important;color:#d2d2d2!important;}
 @media (min-width:900px){.card,.featured-card{border-color:rgba(255,255,255,.10)!important;}}
 
+
+
+/* ===== Fotos reales mejoradas visualmente estilo IA EXPLORA =====
+   Mantiene fotos reales, pero mejora presencia en tablet: más nitidez, color y contraste suave. */
+.card img,
+.featured-card img{
+    filter:saturate(1.16) contrast(1.08) brightness(.96) !important;
+    image-rendering:auto !important;
+    object-position:center center !important;
+    transition:filter .25s ease, transform .25s ease !important;
+}
+.card:hover img,
+.featured-card:hover img{
+    filter:saturate(1.20) contrast(1.10) brightness(.98) !important;
+}
+.card::before,
+.featured-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:205px;
+    background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.16));
+    pointer-events:none;
+    z-index:1;
+}
+.card .badge{z-index:3!important;}
+.card-content{position:relative;z-index:2!important;}
+@media (min-width:1120px){
+    .card::before,.featured-card::before{height:190px;}
+}
+@media (min-width:1260px){
+    .card::before,.featured-card::before{height:215px;}
+}
+@media (max-width:899px){
+    .card::before,.featured-card::before{height:150px;}
+}
+
+/* Tarjetas más sobrias: fotos protagonistas, menos borde dorado agresivo */
+.card,.featured-card{
+    background:#171717!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    box-shadow:0 7px 20px rgba(0,0,0,.30)!important;
+}
+.card-content{
+    background:linear-gradient(180deg,#181818 0%,#101010 100%)!important;
+}
+.card h3{color:#ffffff!important;}
+.price{color:#e0ba3a!important;}
+.option{
+    background:linear-gradient(135deg,#e9c84f,#d3aa2f,#b9871e)!important;
+    color:#050505!important;
+    box-shadow:0 8px 18px rgba(211,170,47,.13)!important;
+}
+.badge{
+    background:linear-gradient(135deg,#e9c84f,#cda129)!important;
+    color:#050505!important;
+}
+
+
+
+/* ===== HOTFIX 2026-06-08: LOGIN CENTRADO + APP MÁS RÁPIDA EN TABLET ===== */
+/* Login: entra completo en Blackview Tab 9 / Chrome con barra visible, sin scroll */
+body.not-started{
+  overflow:hidden!important;
+  height:100vh!important;
+  height:100dvh!important;
+  background:#050505!important;
+}
+body.not-started .start-screen{
+  position:fixed!important;
+  inset:0!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  padding:10px 18px!important;
+  overflow:hidden!important;
+  min-height:100vh!important;
+  min-height:100dvh!important;
+  background:linear-gradient(180deg,#0b0b0b 0%,#050505 66%,#000 100%)!important;
+}
+body.not-started .start-card{
+  width:min(620px,92vw)!important;
+  max-width:620px!important;
+  max-height:calc(100dvh - 20px)!important;
+  padding:18px 26px!important;
+  border-radius:26px!important;
+  overflow:hidden!important;
+  box-shadow:0 10px 34px rgba(0,0,0,.38)!important;
+  backdrop-filter:none!important;
+}
+body.not-started .start-brand{margin:0 auto 8px!important;}
+body.not-started .start-logo-img{
+  width:min(300px,60%)!important;
+  max-height:82px!important;
+  object-fit:contain!important;
+  filter:none!important;
+}
+body.not-started .start-row{gap:12px!important;}
+body.not-started .start-field{margin:8px 0!important;}
+body.not-started .start-field label{
+  font-size:16px!important;
+  margin-bottom:5px!important;
+  line-height:1.1!important;
+}
+body.not-started .start-field input,
+body.not-started .start-field select{
+  min-height:48px!important;
+  height:48px!important;
+  font-size:17px!important;
+  padding:10px 15px!important;
+  border-radius:15px!important;
+}
+body.not-started .start-phone-row{
+  min-height:96px!important;
+  border-radius:15px!important;
+}
+body.not-started .start-phone-row select,
+body.not-started .start-phone-row input{
+  min-height:48px!important;
+  height:48px!important;
+  font-size:16px!important;
+  padding-top:10px!important;
+  padding-bottom:10px!important;
+}
+body.not-started .start-phone-row select{padding-left:15px!important;}
+body.not-started .start-phone-row input{padding-left:16px!important;}
+body.not-started .start-btn{
+  min-height:50px!important;
+  height:50px!important;
+  margin-top:10px!important;
+  padding:10px 14px!important;
+  font-size:18px!important;
+  border-radius:15px!important;
+  box-shadow:none!important;
+}
+body.not-started .login-saved-btn{
+  margin-top:8px!important;
+  min-height:38px!important;
+  padding:9px 12px!important;
+  font-size:14px!important;
+  border-radius:14px!important;
+}
+@media (max-width:520px){
+  body.not-started .start-screen{padding:8px 14px!important;align-items:center!important;}
+  body.not-started .start-card{width:100%!important;padding:16px 18px!important;border-radius:22px!important;}
+  body.not-started .start-logo-img{width:min(270px,72%)!important;max-height:74px!important;}
+  body.not-started .start-row{grid-template-columns:1fr!important;gap:0!important;}
+  body.not-started .start-field{margin:7px 0!important;}
+  body.not-started .start-field label{font-size:15px!important;}
+  body.not-started .start-field input,body.not-started .start-field select{height:44px!important;min-height:44px!important;font-size:16px!important;}
+  body.not-started .start-phone-row{min-height:88px!important;}
+  body.not-started .start-phone-row select,body.not-started .start-phone-row input{height:44px!important;min-height:44px!important;font-size:15px!important;}
+  body.not-started .start-btn{height:48px!important;min-height:48px!important;font-size:17px!important;margin-top:9px!important;}
+}
+@media (max-height:650px) and (min-width:700px){
+  body.not-started .start-card{width:min(560px,90vw)!important;padding:12px 24px!important;border-radius:22px!important;}
+  body.not-started .start-logo-img{width:min(240px,52%)!important;max-height:58px!important;}
+  body.not-started .start-brand{margin-bottom:4px!important;}
+  body.not-started .start-field{margin:5px 0!important;}
+  body.not-started .start-field label{font-size:14px!important;margin-bottom:4px!important;}
+  body.not-started .start-field input,body.not-started .start-field select{height:40px!important;min-height:40px!important;font-size:15px!important;padding:8px 13px!important;border-radius:13px!important;}
+  body.not-started .start-phone-row{min-height:80px!important;border-radius:13px!important;}
+  body.not-started .start-phone-row select,body.not-started .start-phone-row input{height:40px!important;min-height:40px!important;font-size:14px!important;}
+  body.not-started .start-btn{height:42px!important;min-height:42px!important;margin-top:7px!important;font-size:16px!important;border-radius:13px!important;}
+  body.not-started .login-saved-btn{height:34px!important;min-height:34px!important;padding:7px 10px!important;font-size:13px!important;margin-top:6px!important;}
+}
+
+/* Rendimiento: quitar filtros, transiciones y blur pesados de imágenes/tarjetas */
+.card,
+.featured-card,
+.summary,
+.modal-box,
+.start-card{
+  will-change:auto!important;
+  backdrop-filter:none!important;
+  -webkit-backdrop-filter:none!important;
+}
+.card,
+.featured-card{
+  transition:none!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.24)!important;
+}
+.card:hover,
+.featured-card:hover{
+  transform:none!important;
+  box-shadow:0 4px 12px rgba(0,0,0,.24)!important;
+}
+.card img,
+.featured-card img{
+  filter:none!important;
+  transition:none!important;
+  transform:none!important;
+  content-visibility:auto;
+  contain-intrinsic-size: 210px 320px;
+}
+.card:hover img,
+.featured-card:hover img{
+  filter:none!important;
+  transform:none!important;
+}
+/* Grilla tablet más liviana */
+@media (min-width:900px){
+  .container{padding-top:22px!important;}
+  .cards{gap:18px!important;}
+  .card,.featured-card{border-color:rgba(255,255,255,.09)!important;background:#171717!important;}
+  .card img,.featured-card img{height:180px!important;}
+  .card-content{padding:14px!important;}
+  .card h3{font-size:20px!important;min-height:48px!important;}
+  .price{font-size:23px!important;}
+  .option{min-height:46px!important;}
+}
+@media (min-width:1120px){
+  .cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:18px!important;}
+  .card img,.featured-card img{height:176px!important;}
+}
+
 </style>
 </head>
 <body class="not-started">
@@ -1684,7 +1907,7 @@ function renderCards(){
             : argPromo
                 ? `<span style="text-decoration:line-through;color:#9ca3af;font-size:17px">${formatPrice(normal)}</span><br>${formatPrice(price)}`
                 : `${formatPrice(price)}<small>${fozArgentinaMin?'Tarifa desde Brasil':(type==='round'?translations[lang].round:translations[lang].one)}</small>`;
-        return `<div class="card ${featuredAttractions.includes(a.name)?'featured-card':''}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge">⭐ MÁS VENDIDO</div>':''}<img src="${a.image}" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><h3>${a.name}</h3><div class="card-actions-mini"><span class="duration">🕒 ${durations[a.name]||'1 a 2 horas'}</span>${promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':''}</div>${a.name==='Volver al aeropuerto'
+        return `<div class="card ${featuredAttractions.includes(a.name)?'featured-card':''}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge">⭐ MÁS VENDIDO</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><h3>${a.name}</h3><div class="card-actions-mini"><span class="duration">🕒 ${durations[a.name]||'1 a 2 horas'}</span>${promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':''}</div>${a.name==='Volver al aeropuerto'
         ? '<div class="trip-helper" style="margin:8px 0 12px;background:#eff6ff;border-color:#bfdbfe;font-weight:bold">✈️ Traslado al aeropuerto • Solo ida</div>'
         : '<label class="trip-type-label">🚐 Tipo de traslado</label><select class="type-selector" onchange="updateVisualPrice(\''+a.name+'\',this.value);updateTripType(\''+a.name+'\',this.value)"><option value="round" '+(type==='round'?'selected':'')+'>🔁 Ida y vuelta</option><option value="one" '+(type==='one'?'selected':'')+'>➡️ Solo ida</option></select>'}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option" style="background:${existing?'#16a34a':'#2563eb'}" onclick="addTrip('${a.name}')">${existing?'✅ Agregado':'➕ Agregar'}</button><button class="option remove" style="background:${existing?'#dc2626':'#9ca3af'}" onclick="removeTrip('${a.name}')">${translations[lang].remove}</button></div></div></div>`;
     }
@@ -2359,6 +2582,66 @@ document.addEventListener("DOMContentLoaded",function(){
 .badge{background:#d7b437!important;color:#060606!important;box-shadow:0 4px 10px rgba(0,0,0,.24)!important;}
 .duration,.mini-tag{background:rgba(255,255,255,.07)!important;border-color:rgba(255,255,255,.08)!important;color:#d2d2d2!important;}
 @media (min-width:900px){.card,.featured-card{border-color:rgba(255,255,255,.10)!important;}}
+
+
+
+/* ===== Fotos reales mejoradas visualmente estilo IA EXPLORA =====
+   Mantiene fotos reales, pero mejora presencia en tablet: más nitidez, color y contraste suave. */
+.card img,
+.featured-card img{
+    filter:saturate(1.16) contrast(1.08) brightness(.96) !important;
+    image-rendering:auto !important;
+    object-position:center center !important;
+    transition:filter .25s ease, transform .25s ease !important;
+}
+.card:hover img,
+.featured-card:hover img{
+    filter:saturate(1.20) contrast(1.10) brightness(.98) !important;
+}
+.card::before,
+.featured-card::before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:0;
+    right:0;
+    height:205px;
+    background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.16));
+    pointer-events:none;
+    z-index:1;
+}
+.card .badge{z-index:3!important;}
+.card-content{position:relative;z-index:2!important;}
+@media (min-width:1120px){
+    .card::before,.featured-card::before{height:190px;}
+}
+@media (min-width:1260px){
+    .card::before,.featured-card::before{height:215px;}
+}
+@media (max-width:899px){
+    .card::before,.featured-card::before{height:150px;}
+}
+
+/* Tarjetas más sobrias: fotos protagonistas, menos borde dorado agresivo */
+.card,.featured-card{
+    background:#171717!important;
+    border:1px solid rgba(255,255,255,.11)!important;
+    box-shadow:0 7px 20px rgba(0,0,0,.30)!important;
+}
+.card-content{
+    background:linear-gradient(180deg,#181818 0%,#101010 100%)!important;
+}
+.card h3{color:#ffffff!important;}
+.price{color:#e0ba3a!important;}
+.option{
+    background:linear-gradient(135deg,#e9c84f,#d3aa2f,#b9871e)!important;
+    color:#050505!important;
+    box-shadow:0 8px 18px rgba(211,170,47,.13)!important;
+}
+.badge{
+    background:linear-gradient(135deg,#e9c84f,#cda129)!important;
+    color:#050505!important;
+}
 
 </style>
 

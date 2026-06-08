@@ -1,4 +1,10 @@
-EXPLORA PWA FINAL - Fotos reales y diseño suave
+EXPLORA PWA - versión optimizada tablet
+
+Cambios incluidos:
+- Login centrado y compacto para tablet 1200x1920, sin scroll.
+- Imágenes más rápidas: sin filtros pesados ni transiciones.
+- CSS optimizado para tarjetas en tablet.
+- Service Worker con nueva versión de caché.
 
 Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - index.html
@@ -7,4 +13,4 @@ Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - icon-192.png
 - icon-512.png
 
-Luego presionar Commit changes. En la tablet, recargar la app o borrar caché si no ves cambios.
+Luego presionar Commit changes y esperar 1 minuto. Si la tablet sigue mostrando la versión anterior, cerrar la app, abrir Chrome, recargar la URL y volver a abrir desde el ícono.
