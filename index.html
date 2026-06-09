@@ -4203,5 +4203,386 @@ body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bot
 })();
 </script>
 
+
+
+<!-- ===== EXPLORA PATCH: Modal elegante para Borrar todos ===== -->
+<style id="explora-clear-all-modal-patch">
+.clear-confirm-modal{
+  position:fixed!important;
+  inset:0!important;
+  display:none;
+  align-items:center!important;
+  justify-content:center!important;
+  background:rgba(0,0,0,.76)!important;
+  z-index:1000010!important;
+  padding:28px!important;
+}
+.clear-confirm-modal.show{display:flex!important;}
+.clear-confirm-box{
+  width:min(500px,92vw)!important;
+  background:linear-gradient(180deg,#171717 0%,#080808 100%)!important;
+  color:#f7f7f7!important;
+  border:1px solid rgba(215,180,55,.42)!important;
+  border-radius:28px!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.65), inset 0 0 0 1px rgba(255,255,255,.025)!important;
+  padding:30px 28px 26px!important;
+  text-align:center!important;
+}
+.clear-confirm-icon{
+  width:64px!important;
+  height:64px!important;
+  margin:0 auto 16px!important;
+  border-radius:50%!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:rgba(185,28,28,.18)!important;
+  color:#fecaca!important;
+  border:1px solid rgba(248,113,113,.42)!important;
+  font-size:30px!important;
+}
+.clear-confirm-box h2{
+  color:#f1d35f!important;
+  font-size:26px!important;
+  margin:0 0 10px!important;
+  font-weight:950!important;
+  letter-spacing:.2px!important;
+}
+.clear-confirm-box p{
+  color:#d8d8d8!important;
+  font-size:17px!important;
+  line-height:1.38!important;
+  margin:0 0 22px!important;
+}
+.clear-confirm-actions{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+}
+.clear-confirm-actions button{
+  min-height:56px!important;
+  border-radius:18px!important;
+  font-size:17px!important;
+  font-weight:950!important;
+  cursor:pointer!important;
+  border:1px solid transparent!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.clear-cancel-btn{
+  background:#111!important;
+  color:#f1d35f!important;
+  border-color:rgba(215,180,55,.42)!important;
+}
+.clear-delete-btn{
+  background:linear-gradient(135deg,#ef4444,#b91c1c,#7f1111)!important;
+  color:#fff!important;
+  border-color:rgba(254,202,202,.32)!important;
+  box-shadow:0 10px 22px rgba(185,28,28,.20)!important;
+}
+.clear-confirm-actions button:active{transform:scale(.985)!important;filter:brightness(.96)!important;}
+@media(max-width:520px){
+  .clear-confirm-box{padding:26px 22px 22px!important;border-radius:24px!important;}
+  .clear-confirm-actions{grid-template-columns:1fr!important;}
+  .clear-confirm-box h2{font-size:23px!important;}
+  .clear-confirm-box p{font-size:15px!important;}
+}
+</style>
+
+<div class="clear-confirm-modal" id="clearConfirmModal" aria-hidden="true">
+  <div class="clear-confirm-box" role="dialog" aria-modal="true" aria-labelledby="clearConfirmTitle">
+    <div class="clear-confirm-icon">🗑️</div>
+    <h2 id="clearConfirmTitle">Borrar presupuesto</h2>
+    <p>¿Querés eliminar todos los servicios seleccionados? Esta acción dejará el presupuesto en cero.</p>
+    <div class="clear-confirm-actions">
+      <button type="button" class="clear-cancel-btn" id="clearCancelBtn">Cancelar</button>
+      <button type="button" class="clear-delete-btn" id="clearDeleteBtn">Sí, borrar todos</button>
+    </div>
+  </div>
+</div>
+
+<script id="explora-clear-all-modal-behavior">
+(function(){
+  function modal(){return document.getElementById('clearConfirmModal');}
+  function showClearModal(){
+    var m=modal();
+    if(!m) return;
+    m.classList.add('show');
+    m.setAttribute('aria-hidden','false');
+  }
+  function hideClearModal(){
+    var m=modal();
+    if(!m) return;
+    m.classList.remove('show');
+    m.setAttribute('aria-hidden','true');
+  }
+  function performClearAll(){
+    try{
+      if(typeof selected!=='undefined') selected=[];
+      localStorage.removeItem('exploraTripsV2');
+      localStorage.removeItem('selectedTrips');
+    }catch(e){}
+    try{ if(typeof renderCards==='function') renderCards(); }catch(e){}
+    try{ if(typeof updateSummary==='function') updateSummary(); }catch(e){}
+    hideClearModal();
+  }
+  window.openClearAllModal=showClearModal;
+  window.closeClearAllModal=hideClearModal;
+  window.performExploraClearAll=performClearAll;
+
+  // Reemplaza cualquier confirm nativo anterior del botón Borrar todos.
+  document.addEventListener('click',function(ev){
+    var t=ev.target;
+    var btn=t && t.closest ? t.closest('#clearBtn') : null;
+    if(btn){
+      ev.preventDefault();
+      ev.stopPropagation();
+      if(ev.stopImmediatePropagation) ev.stopImmediatePropagation();
+      showClearModal();
+      return false;
+    }
+  },true);
+
+  document.addEventListener('click',function(ev){
+    var t=ev.target;
+    if(t && t.closest && t.closest('#clearCancelBtn')){
+      ev.preventDefault(); hideClearModal();
+    }
+    if(t && t.closest && t.closest('#clearDeleteBtn')){
+      ev.preventDefault(); performClearAll();
+    }
+    if(t && t.id==='clearConfirmModal'){
+      ev.preventDefault(); hideClearModal();
+    }
+  });
+
+  document.addEventListener('keydown',function(ev){
+    if(ev.key==='Escape') hideClearModal();
+  });
+})();
+</script>
+
+
+
+<style id="explora-combo-modal-confirm-fix">
+/* ===== EXPLORA FIX: modal de traslado con confirmación + promo Brasil clara ===== */
+.transfer-confirm{
+  display:block!important;
+  width:100%!important;
+  margin-top:18px!important;
+  height:62px!important;
+  border-radius:17px!important;
+  font-size:18px!important;
+  background:linear-gradient(135deg,#e6c24f,#c99e28)!important;
+  color:#050505!important;
+  border:1px solid rgba(215,180,55,.75)!important;
+  font-weight:900!important;
+}
+.transfer-autosave-note{display:none!important;}
+.transfer-option{min-height:82px!important;}
+.transfer-option.is-hidden{display:none!important;}
+.transfer-option.combo-only{
+  border-color:rgba(215,180,55,.65)!important;
+  background:rgba(215,180,55,.10)!important;
+}
+.transfer-option.combo-only.active{
+  border-color:#22c55e!important;
+  background:rgba(22,163,74,.12)!important;
+}
+.transfer-combo-note{
+  display:none;
+  margin:12px 0 4px;
+  padding:12px 14px;
+  border-radius:15px;
+  background:rgba(215,180,55,.10);
+  border:1px solid rgba(215,180,55,.28);
+  color:#f1d35f;
+  font-size:14px;
+  line-height:1.35;
+  font-weight:800;
+  text-align:center;
+}
+.transfer-combo-note.show{display:block;}
+.selected-transfer-state .combo-word{color:#f1d35f!important;}
+</style>
+
+<script id="explora-combo-modal-confirm-behavior">
+(function(){
+  var PROMO_PRICE = (typeof brazilPromoPrice !== 'undefined') ? brazilPromoPrice : 20000;
+  function getA(name){ return (typeof getAttraction === 'function') ? getAttraction(name) : null; }
+  function isBrazilPromoEligible(name){
+    try{return typeof hasBrazilParkRound==='function' && hasBrazilParkRound() && typeof isBrazilPromoItem==='function' && isBrazilPromoItem(name);}catch(e){return false;}
+  }
+  function ensureComboNote(){
+    var box=document.querySelector('#transferModal .transfer-modal-box');
+    if(!box) return null;
+    var note=document.getElementById('transferComboNote');
+    if(!note){
+      note=document.createElement('div');
+      note.id='transferComboNote';
+      note.className='transfer-combo-note';
+      var roundBtn=box.querySelector('.transfer-option[data-type="round"]');
+      if(roundBtn && roundBtn.parentNode){ roundBtn.parentNode.insertBefore(note, roundBtn.nextSibling); }
+      else { box.appendChild(note); }
+    }
+    return note;
+  }
+  function money(v){ try{return formatPrice(v);}catch(e){return 'ARS $'+String(v);} }
+
+  window.effectiveLinePrice=function(item){
+    var type=(item && item.type) || 'one';
+    if(isBrazilPromoEligible(item.name) && type==='one') return PROMO_PRICE;
+    var a=getA(item.name);
+    var normal=a ? priceByType(a,type) : 0;
+    try{
+      if(typeof isArgentinaPromoItem==='function' && isArgentinaPromoItem(item.name,type)){
+        return Math.max(0, normal - (typeof argentinaPromoDiscountByType==='function'?argentinaPromoDiscountByType(type):0));
+      }
+    }catch(e){}
+    return normal;
+  };
+
+  window.displayedCardPrice=function(a,type){
+    if(a && isBrazilPromoEligible(a.name) && type==='one') return PROMO_PRICE;
+    var normal=priceByType(a,type);
+    try{
+      if(typeof isArgentinaPromoItem==='function' && isArgentinaPromoItem(a.name,type)){
+        return Math.max(0, normal - (typeof argentinaPromoDiscountByType==='function'?argentinaPromoDiscountByType(type):0));
+      }
+    }catch(e){}
+    return normal;
+  };
+
+  window.chooseTransferOption=function(type){
+    pendingTransferType=type||'one';
+    var modal=document.getElementById('transferModal');
+    if(modal){
+      modal.querySelectorAll('.transfer-option').forEach(function(btn){
+        btn.classList.toggle('active',btn.dataset.type===pendingTransferType);
+      });
+    }
+  };
+
+  window.openTransferModal=function(name){
+    var a=getA(name);
+    if(!a) return;
+    if(name==='Volver al aeropuerto'){
+      addTripWithType(name,'one');
+      return;
+    }
+    pendingTransferName=name;
+    var eligible=isBrazilPromoEligible(name);
+    pendingTransferType='one';
+    var modal=document.getElementById('transferModal');
+    if(!modal) return;
+    var title=document.getElementById('transferModalTitle');
+    var one=document.getElementById('transferOnePrice');
+    var round=document.getElementById('transferRoundPrice');
+    var nameEl=document.getElementById('transferAttractionName');
+    var oneBtn=modal.querySelector('.transfer-option[data-type="one"]');
+    var roundBtn=modal.querySelector('.transfer-option[data-type="round"]');
+    var oneStrong=oneBtn ? oneBtn.querySelector('strong') : null;
+    var confirm=document.querySelector('.transfer-confirm');
+    var note=ensureComboNote();
+
+    if(title) title.innerText=eligible ? 'Promo Brasil activa' : 'Seleccione el traslado';
+    if(nameEl) nameEl.innerText=name;
+
+    if(eligible){
+      if(oneStrong) oneStrong.innerText='Solo ida combinada';
+      if(one) one.innerText=money(PROMO_PRICE);
+      if(round) round.innerText='';
+      if(roundBtn) roundBtn.classList.add('is-hidden');
+      if(oneBtn) oneBtn.classList.add('combo-only');
+      if(note){
+        note.classList.add('show');
+        note.innerHTML='Precio especial por haber elegido <strong>Parque Nacional do Iguaçu</strong>. Este traslado combinado vale solo '+money(PROMO_PRICE)+'.';
+      }
+    }else{
+      if(oneStrong) oneStrong.innerText='Solo ida';
+      if(one) one.innerText=money(displayedCardPrice(a,'one'));
+      if(round) round.innerText=money(displayedCardPrice(a,'round'));
+      if(roundBtn) roundBtn.classList.remove('is-hidden');
+      if(oneBtn) oneBtn.classList.remove('combo-only');
+      if(note){note.classList.remove('show'); note.innerHTML='';}
+    }
+    modal.querySelectorAll('.transfer-option').forEach(function(btn){
+      btn.classList.toggle('active',btn.dataset.type==='one');
+    });
+    if(confirm){
+      confirm.textContent='Confirmar traslado';
+      confirm.style.display='block';
+    }
+    modal.style.display='flex';
+  };
+
+  window.confirmTransferSelection=function(){
+    if(!pendingTransferName) return;
+    addTripWithType(pendingTransferName,pendingTransferType||'one');
+    closeTransferModal();
+  };
+
+  var oldCalc=window.calculateBudget;
+  window.calculateBudget=function(){
+    var names=getSelectedNames();
+    var subtotal=0, discount=0, activeCombos=[];
+    selected.forEach(function(item){
+      var normal=normalLinePrice(item);
+      var effective=effectiveLinePrice(item);
+      subtotal+=normal;
+      if(normal>effective){
+        var promoDiscount=normal-effective;
+        discount+=promoDiscount;
+        if(isBrazilPromoEligible(item.name) && (item.type||'one')==='one'){
+          activeCombos.push({name:'Promo Brasil: '+item.name+' combinado a '+money(PROMO_PRICE),discount:promoDiscount});
+        }else if(typeof isArgentinaPromoItem==='function' && isArgentinaPromoItem(item.name,item.type||'one')){
+          activeCombos.push({name:'Promo Argentina: '+item.name,discount:promoDiscount});
+        }else{
+          activeCombos.push({name:'Promo: '+item.name,discount:promoDiscount});
+        }
+      }
+    });
+    try{combos.forEach(function(c){if(c.items.every(function(n){return names.includes(n);})){activeCombos.push(c);discount+=c.discount;}});}catch(e){}
+    return {subtotal:subtotal,activeCombos:activeCombos,discount:discount,total:Math.max(0,subtotal-discount)};
+  };
+
+  var oldRender=window.renderCards;
+  window.renderCards=function(){
+    oldRender.apply(this,arguments);
+    try{
+      document.querySelectorAll('.card').forEach(function(card){
+        var name=card.getAttribute('data-name');
+        if(!name) return;
+        var item=selected.find(function(x){return x.name===name;});
+        if(item && isBrazilPromoEligible(name) && (item.type||'one')==='one'){
+          var state=card.querySelector('.selected-transfer-state span:last-child');
+          if(state) state.innerHTML='Solo ida combinada <span class="combo-word">Promo Brasil</span>';
+          var tagBox=card.querySelector('.card-actions-mini');
+          if(!tagBox){
+            var h=card.querySelector('h3');
+            if(h){
+              tagBox=document.createElement('div');
+              tagBox.className='card-actions-mini';
+              tagBox.innerHTML='<span class="mini-tag">Promo Brasil · '+money(PROMO_PRICE)+'</span>';
+              h.insertAdjacentElement('afterend',tagBox);
+            }
+          }
+        }
+      });
+    }catch(e){}
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    var modal=document.getElementById('transferModal');
+    if(modal){
+      var c=modal.querySelector('.transfer-confirm');
+      if(c) c.style.display='block';
+      var note=modal.querySelector('.transfer-autosave-note');
+      if(note) note.style.display='none';
+    }
+    try{renderCards(); updateSummary();}catch(e){}
+  });
+})();
+</script>
+
 </body>
 </html>

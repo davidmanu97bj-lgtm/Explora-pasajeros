@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260608-modal-transfer-final';
+const CACHE_NAME = 'explora-presupuesto-v20260608-combo-brasil-confirm-fix';
 const APP_SHELL = [
   './',
   './index.html',
