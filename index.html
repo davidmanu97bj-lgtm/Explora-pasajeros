@@ -4923,5 +4923,468 @@ body:not(.not-started) .container{padding-top:24px!important;}
 })();
 </script>
 
+
+
+<!-- ===== PATCH DAVID 2026-06-09: captura elegante con WhatsApp destacado ===== -->
+<style id="explora-capture-card-contact-patch">
+/* Presupuesto completo centrado, sin cartel automático extra */
+.explora-final-budget-modal{
+  align-items:center!important;
+  justify-content:center!important;
+  background:rgba(0,0,0,.52)!important;
+  overflow:auto!important;
+  padding:18px!important;
+}
+.explora-final-budget-modal .explora-final-box{
+  margin:0 auto!important;
+  width:min(760px,96vw)!important;
+  max-height:92vh!important;
+}
+.explora-final-choice-modal{display:none!important;}
+.explora-final-actions{
+  grid-template-columns:1fr 1fr 1fr!important;
+}
+@media(max-width:620px){.explora-final-actions{grid-template-columns:1fr!important;}}
+
+.explora-capture-modal{
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:1000012;
+  background:#050505;
+  padding:14px;
+  overflow:auto;
+  -webkit-overflow-scrolling:touch;
+}
+.explora-capture-card{
+  width:min(520px,96vw);
+  background:linear-gradient(180deg,#0b0b0b 0%,#050505 100%);
+  color:#f7f7f7;
+  border:2px solid rgba(215,180,55,.78);
+  border-radius:30px;
+  padding:22px 20px;
+  box-shadow:0 22px 70px rgba(0,0,0,.78), inset 0 0 0 1px rgba(255,255,255,.03);
+}
+.explora-capture-logo{
+  text-align:center;
+  border-bottom:1px solid rgba(215,180,55,.34);
+  padding-bottom:14px;
+  margin-bottom:14px;
+}
+.explora-capture-logo img{
+  width:190px;
+  max-width:72%;
+  height:auto;
+  display:block;
+  margin:0 auto 4px;
+}
+.explora-capture-subtitle{
+  color:#f1d35f;
+  font-size:13px;
+  font-weight:800;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+.explora-capture-lines{margin-top:8px;}
+.explora-capture-line{
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:9px 0;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  font-size:14px;
+  line-height:1.25;
+}
+.explora-capture-line span:first-child{color:#f2f2f2;}
+.explora-capture-line span:last-child{color:#f1d35f;font-weight:900;text-align:right;white-space:nowrap;}
+.explora-capture-discount{color:#8ef5b2!important;font-weight:900!important;}
+.explora-capture-total{
+  margin-top:14px;
+  padding:14px;
+  border-radius:18px;
+  background:rgba(215,180,55,.10);
+  border:1px solid rgba(215,180,55,.42);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  color:#f1d35f;
+  font-size:24px;
+  font-weight:1000;
+}
+.explora-capture-note{
+  margin-top:10px;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  padding:10px;
+  color:#f2f2f2;
+  font-size:13px;
+  line-height:1.35;
+}
+.explora-capture-contact{
+  margin-top:16px;
+  padding-top:16px;
+  border-top:1px solid rgba(215,180,55,.34);
+  text-align:center;
+}
+.explora-capture-question{
+  color:#f1d35f;
+  font-size:17px;
+  font-weight:1000;
+  margin-bottom:10px;
+}
+.explora-capture-name{
+  color:#fff;
+  font-size:21px;
+  font-weight:1000;
+  margin-bottom:3px;
+}
+.explora-capture-role{
+  color:#cfcfcf;
+  font-size:13px;
+  margin-bottom:12px;
+}
+.explora-capture-whatsapp-label{
+  color:#f1d35f;
+  font-size:14px;
+  font-weight:900;
+  margin-bottom:7px;
+}
+.explora-capture-phone-box{
+  display:inline-block;
+  border:2px solid rgba(241,211,95,.85);
+  border-radius:18px;
+  padding:12px 18px;
+  color:#050505;
+  background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22);
+  font-size:25px;
+  line-height:1.05;
+  font-weight:1000;
+  letter-spacing:.5px;
+  box-shadow:0 12px 24px rgba(215,180,55,.18);
+}
+.explora-capture-actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin:12px auto 0;
+  width:min(520px,96vw);
+}
+.explora-capture-actions button{
+  border:0;
+  border-radius:15px;
+  padding:13px 10px;
+  font-size:14px;
+  font-weight:900;
+  cursor:pointer;
+}
+.explora-capture-actions .gold{background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22);color:#050505;}
+.explora-capture-actions .dark{background:#111;color:#f1d35f;border:1px solid rgba(215,180,55,.42);}
+.explora-capture-help{
+  color:#cfcfcf;
+  font-size:12px;
+  text-align:center;
+  margin:10px auto 0;
+  width:min(520px,96vw);
+}
+@media(max-width:420px){
+  .explora-capture-card{border-radius:24px;padding:18px 15px;}
+  .explora-capture-logo img{width:160px;}
+  .explora-capture-total{font-size:21px;}
+  .explora-capture-phone-box{font-size:21px;padding:11px 14px;}
+  .explora-capture-actions{grid-template-columns:1fr;}
+}
+@media print{
+  body *{visibility:hidden!important;}
+  #exploraCaptureModal,#exploraCaptureModal *{visibility:visible!important;}
+  #exploraCaptureModal{position:absolute!important;inset:0!important;display:block!important;background:#050505!important;}
+  .explora-capture-actions,.explora-capture-help{display:none!important;}
+}
+</style>
+
+<div class="explora-capture-modal" id="exploraCaptureModal" role="dialog" aria-modal="true">
+  <div>
+    <div class="explora-capture-card" id="exploraCaptureCard">
+      <div id="exploraCaptureContent"></div>
+    </div>
+    <div class="explora-capture-actions">
+      <button type="button" class="dark" onclick="closeExploraCaptureCard()">Volver</button>
+      <button type="button" class="gold" onclick="window.print()">Imprimir / Guardar</button>
+    </div>
+    <div class="explora-capture-help">📸 Para guardar: sacá captura de pantalla. El WhatsApp de EXPLORA queda visible en la imagen.</div>
+  </div>
+</div>
+
+<script id="explora-capture-card-contact-behavior-patch">
+(function(){
+  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c;});}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function hasComboBrazil(trips){return trips.some(function(t){return t.name==='Parque das Aves'||t.name==='Aquafoz Acuario';}) && trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function calc(){try{return calculateBudget();}catch(e){return {subtotal:0,discount:0,total:0,activeCombos:[]};}}
+  function ensureFinalButtons(){
+    var box=document.querySelector('#exploraFinalBudgetModal .explora-final-actions');
+    if(!box) return;
+    box.innerHTML='<button type="button" class="explora-final-btn secondary" onclick="closeExploraFinalBudget()">Volver</button><button type="button" class="explora-final-btn secondary" onclick="takeExploraPhotoChoice()">📸 Guardar presupuesto</button><button type="button" class="explora-final-btn" onclick="showExploraSendPhone()">📲 Enviar a WhatsApp</button>';
+  }
+  function buildCapture(){
+    var trips=getTrips();
+    var b=calc();
+    var rows='';
+    trips.forEach(function(t){
+      var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+      var normal=0,effective=0;
+      try{normal=normalLinePrice({name:t.name,type:type});effective=effectiveLinePrice({name:t.name,type:type});}catch(e){}
+      rows+='<div class="explora-capture-line"><span>'+esc(t.name)+'<br><small>'+esc(type==='round'?'Ida y vuelta':'Solo ida')+'</small></span><span>'+money(effective)+'</span></div>';
+      if(normal>effective){rows+='<div class="explora-capture-line"><span class="explora-capture-discount">Descuento visible</span><span class="explora-capture-discount">-'+money(normal-effective)+'</span></div>';}
+    });
+    if((b.activeCombos||[]).length){
+      (b.activeCombos||[]).forEach(function(c){rows+='<div class="explora-capture-line"><span class="explora-capture-discount">🎁 '+esc(c.name)+'</span><span class="explora-capture-discount">-'+money(c.discount||0)+'</span></div>';});
+    }
+    var html='<div class="explora-capture-logo"><img src="icon-512.png" alt="EXPLORA"><div class="explora-capture-subtitle">Presupuesto personalizado</div></div>';
+    html+='<div class="explora-capture-lines">'+rows+'</div>';
+    if((b.discount||0)>0){html+='<div class="explora-capture-line"><span class="explora-capture-discount">Total descuentos visibles</span><span class="explora-capture-discount">-'+money(b.discount||0)+'</span></div>';}
+    html+='<div class="explora-capture-total"><span>TOTAL</span><span>'+money(b.total||0)+'</span></div>';
+    if(hasComboBrazil(trips)){html+='<div class="explora-capture-note">⚠️ Combo válido realizando Parque Nacional do Iguaçu el mismo día.</div>';}
+    html+='<div class="explora-capture-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money((b.total||0)*1.10)+'</strong></div>';
+    html+='<div class="explora-capture-contact"><div class="explora-capture-question">¿Deseas reservar?</div><div class="explora-capture-name">David Gómez</div><div class="explora-capture-role">Coordinador EXPLORA</div><div class="explora-capture-whatsapp-label">🇦🇷 WhatsApp</div><div class="explora-capture-phone-box">+54 9 3757 461564</div></div>';
+    return html;
+  }
+
+  var previousOpen=window.openModal;
+  window.openModal=function(){
+    var trips=getTrips();
+    var lang=(document.getElementById('language')||{}).value||'es';
+    if(!trips.length){alert(lang==='en'?'Select at least one tour':lang==='pt'?'Selecione pelo menos um passeio':'Seleccione al menos un paseo');return false;}
+    var content=document.getElementById('exploraFinalBudgetContent');
+    if(content && typeof window.buildExploraFinalBudget==='function') content.innerHTML=window.buildExploraFinalBudget();
+    ensureFinalButtons();
+    clearTimeout(window.__exploraChoiceTimer);
+    var choice=document.getElementById('exploraFinalChoiceModal'); if(choice) choice.style.display='none';
+    var modal=document.getElementById('exploraFinalBudgetModal'); if(modal) modal.style.display='flex';
+    return false;
+  };
+
+  window.takeExploraPhotoChoice=function(){
+    clearTimeout(window.__exploraChoiceTimer);
+    var choice=document.getElementById('exploraFinalChoiceModal'); if(choice) choice.style.display='none';
+    var content=document.getElementById('exploraCaptureContent'); if(content) content.innerHTML=buildCapture();
+    var m=document.getElementById('exploraFinalBudgetModal'); if(m) m.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='flex';
+    setTimeout(function(){try{document.getElementById('exploraCaptureCard').scrollIntoView({block:'center'});}catch(e){}},50);
+  };
+  window.closeExploraCaptureCard=function(){
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='none';
+    var modal=document.getElementById('exploraFinalBudgetModal'); if(modal) modal.style.display='flex';
+  };
+
+  var oldClose=window.closeExploraFinalBudget;
+  window.closeExploraFinalBudget=function(){
+    clearTimeout(window.__exploraChoiceTimer);
+    var c=document.getElementById('exploraFinalChoiceModal'); if(c) c.style.display='none';
+    var cap=document.getElementById('exploraCaptureModal'); if(cap) cap.style.display='none';
+    if(typeof oldClose==='function') return oldClose.apply(this,arguments);
+    var m=document.getElementById('exploraFinalBudgetModal'); if(m) m.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+  };
+  document.addEventListener('DOMContentLoaded',ensureFinalButtons);
+})();
+</script>
+
+
+
+<!-- ===== PATCH DAVID 2026-06-09: guardar WhatsApp local + presupuesto limpio sin abrir WhatsApp ===== -->
+<style id="explora-local-save-clean-discounts-patch">
+.explora-final-save-ok{
+  margin-top:12px;
+  padding:12px;
+  border-radius:14px;
+  background:rgba(34,197,94,.13);
+  border:1px solid rgba(34,197,94,.46);
+  color:#bbf7d0;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.35;
+}
+.explora-final-discount-clean{
+  display:block;
+  color:#8ef5b2;
+  font-size:12px;
+  font-weight:900;
+  margin-top:3px;
+}
+.explora-final-mode-clean{
+  color:#cfcfcf;
+  font-size:12px;
+}
+.explora-final-old{
+  display:block!important;
+  color:#999!important;
+  text-decoration:line-through!important;
+  font-size:12px!important;
+  font-weight:600!important;
+}
+</style>
+<script id="explora-local-save-clean-discounts-behavior-patch">
+(function(){
+  function onlyNumbers(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v||0).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c;});}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function calc(){try{return calculateBudget();}catch(e){return {subtotal:0,discount:0,total:0,activeCombos:[]};}}
+  function currentLodgingText(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?'Brasil / Foz do Iguaçu':'Argentina / Puerto Iguazú';}
+  function hasBrazilPark(trips){return trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function isBrazilComboItem(name){return name==='Parque das Aves'||name==='Aquafoz Acuario';}
+  function isBrazilComboTrip(t,trips){return !!(t && isBrazilComboItem(t.name) && hasBrazilPark(trips));}
+  function linePrices(t,trips){
+    var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+    var normal=0,effective=0;
+    if(isBrazilComboTrip(t,trips)){
+      normal=70000; effective=20000; type='combo';
+    }else{
+      try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}
+      try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}
+    }
+    return {type:type,normal:normal,effective:effective,discount:Math.max(0,normal-effective)};
+  }
+  function modeText(type){return type==='combo'?'Combo Brasil':(type==='round'?'Ida y vuelta':'Solo ida');}
+  function hasComboBrazil(trips){return hasBrazilPark(trips) && trips.some(function(t){return isBrazilComboItem(t.name);});}
+
+  window.buildExploraFinalBudget=function(){
+    var trips=getTrips();
+    var b=calc();
+    var subtotal=0, discount=0, total=0;
+    var html='<div class="explora-final-note">📍 Alojamiento: '+esc(currentLodgingText())+'</div>';
+    trips.forEach(function(t){
+      var p=linePrices(t,trips);
+      subtotal+=p.normal; discount+=p.discount; total+=p.effective;
+      html+='<div class="explora-final-line"><div><strong>'+esc(t.name)+'</strong><br><span class="explora-final-mode-clean">'+modeText(p.type)+'</span>'+(p.discount?'<span class="explora-final-discount-clean">-'+money(p.discount)+'</span>':'')+'</div><div class="explora-final-price">'+(p.discount?'<span class="explora-final-old">'+money(p.normal)+'</span>':'')+money(p.effective)+'</div></div>';
+    });
+    if(!trips.length){total=b.total||0;subtotal=b.subtotal||0;discount=b.discount||0;}
+    html+='<div class="explora-final-line"><strong>Subtotal</strong><div class="explora-final-price">'+money(subtotal||0)+'</div></div>';
+    if((discount||0)>0) html+='<div class="explora-final-line"><strong>Descuentos</strong><div class="explora-final-price">-'+money(discount||0)+'</div></div>';
+    html+='<div class="explora-final-total"><span>Total efectivo</span><span>'+money(total||0)+'</span></div>';
+    if(hasComboBrazil(trips)) html+='<div class="explora-final-note">⚠️ Combo válido si hacen Parque Nacional do Iguaçu el mismo día.</div>';
+    html+='<div class="explora-final-card-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money((total||0)*1.10)+'</strong></div>';
+    return html;
+  };
+
+  window.getExploraFinalBudgetText=function(phone){
+    var trips=getTrips(); var subtotal=0,discount=0,total=0;
+    var txt='🌎 EXPLORA IGUAZÚ - Presupuesto\n\n';
+    txt+='Alojamiento: '+currentLodgingText()+'\n\n';
+    trips.forEach(function(t){
+      var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective;
+      txt+='• '+t.name+' ('+modeText(p.type)+') - '+money(p.effective);
+      if(p.discount) txt+=' | antes '+money(p.normal)+' | -'+money(p.discount);
+      txt+='\n';
+    });
+    txt+='\nSubtotal: '+money(subtotal);
+    if(discount>0) txt+='\nDescuentos: -'+money(discount);
+    txt+='\nTotal efectivo: '+money(total);
+    txt+='\nTotal con tarjeta (+10%): '+money(total*1.10);
+    if(hasComboBrazil(trips)) txt+='\n\nCombo válido si hacen Parque Nacional do Iguaçu el mismo día.';
+    return txt;
+  };
+
+  window.buildExploraCleanCapture=function(){
+    var trips=getTrips(); var subtotal=0,discount=0,total=0; var rows='';
+    trips.forEach(function(t){
+      var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective;
+      rows+='<div class="explora-capture-line"><span>'+esc(t.name)+'<br><small>'+modeText(p.type)+'</small></span><span>'+(p.discount?'<small style="display:block;color:#999;text-decoration:line-through;font-weight:700">'+money(p.normal)+'</small>':'')+money(p.effective)+'</span></div>';
+      if(p.discount){rows+='<div class="explora-capture-line"><span class="explora-capture-discount">Descuento</span><span class="explora-capture-discount">-'+money(p.discount)+'</span></div>';}
+    });
+    var html='<div class="explora-capture-logo"><img src="icon-512.png" alt="EXPLORA"><div class="explora-capture-subtitle">Presupuesto personalizado</div></div>';
+    html+='<div class="explora-capture-lines">'+rows+'</div>';
+    if(discount>0){html+='<div class="explora-capture-line"><span class="explora-capture-discount">Total descuentos</span><span class="explora-capture-discount">-'+money(discount)+'</span></div>';}
+    html+='<div class="explora-capture-total"><span>TOTAL</span><span>'+money(total)+'</span></div>';
+    if(hasComboBrazil(trips)){html+='<div class="explora-capture-note">⚠️ Combo válido realizando Parque Nacional do Iguaçu el mismo día.</div>';}
+    html+='<div class="explora-capture-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money(total*1.10)+'</strong></div>';
+    html+='<div class="explora-capture-contact"><div class="explora-capture-question">¿Deseas reservar?</div><div class="explora-capture-name">David Gómez</div><div class="explora-capture-role">Coordinador EXPLORA</div><div class="explora-capture-whatsapp-label">🇦🇷 WhatsApp</div><div class="explora-capture-phone-box">+54 9 3757 461564</div></div>';
+    return html;
+  };
+
+  window.takeExploraPhotoChoice=function(){
+    clearTimeout(window.__exploraChoiceTimer);
+    var choice=document.getElementById('exploraFinalChoiceModal'); if(choice) choice.style.display='none';
+    var content=document.getElementById('exploraCaptureContent'); if(content) content.innerHTML=window.buildExploraCleanCapture();
+    var m=document.getElementById('exploraFinalBudgetModal'); if(m) m.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='flex';
+  };
+
+  window.sendExploraBudgetToPhone=function(){
+    var code=onlyNumbers((document.getElementById('finalCountryCode')||{}).value||'54');
+    var phone=onlyNumbers((document.getElementById('finalPhoneInput')||{}).value||'');
+    if(!phone){alert('Escribí el WhatsApp del pasajero.');return false;}
+    var full=code+phone;
+    var trips=getTrips(); var subtotal=0,discount=0,total=0;
+    var detailedTrips=trips.map(function(t){var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective; return {name:t.name,type:p.type,mode:modeText(p.type),normal:p.normal,effective:p.effective,discount:p.discount};});
+    var budget={
+      id:Date.now(),
+      date:new Date().toLocaleString('es-AR'),
+      name:'Pasajero',
+      phone:full,
+      countryCode:code,
+      passengerPhone:phone,
+      lodging:currentLodgingText(),
+      language:(document.getElementById('language')||{}).value||'es',
+      currency:(document.getElementById('currency')||{}).value||'ARS',
+      subtotal:subtotal,
+      discount:discount,
+      total:total,
+      cardTotal:Math.round(total*1.10),
+      totalText:'Total: '+money(total),
+      summaryText:window.getExploraFinalBudgetText(full),
+      trips:detailedTrips,
+      rawTrips:trips
+    };
+    try{
+      var saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];
+      saved.unshift(budget);
+      localStorage.setItem('exploraSavedBudgets',JSON.stringify(saved));
+    }catch(e){alert('No se pudo guardar el presupuesto: '+e.message);return false;}
+    hideExploraSendPhone();
+    var content=document.getElementById('exploraFinalBudgetContent'); if(content) content.innerHTML=window.buildExploraFinalBudget()+'<div class="explora-final-save-ok">✅ Presupuesto guardado en esta tablet.<br>Lo encontrarás en “Presupuestos guardados”. No se abrió WhatsApp automáticamente.</div>';
+    var modal=document.getElementById('exploraFinalBudgetModal'); if(modal) modal.style.display='flex';
+    var phoneInput=document.getElementById('finalPhoneInput'); if(phoneInput) phoneInput.value='';
+    return false;
+  };
+
+  var oldOpenSaved=window.openSavedBudgets;
+  window.openSavedBudgets=function(){
+    var modal=document.getElementById('savedModal');
+    var list=document.getElementById('savedList');
+    if(!modal || !list){ if(typeof oldOpenSaved==='function') return oldOpenSaved.apply(this,arguments); return false; }
+    var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];}catch(e){saved=[];}
+    if(!saved.length){
+      list.innerHTML='<div class="saved-item">Todavía no hay presupuestos guardados.</div>';
+    }else{
+      list.innerHTML=saved.map(function(b){
+        var tripsCount=(b.trips&&b.trips.length)?b.trips.length:0;
+        var lang=b.language?('🌐 '+esc(String(b.language).toUpperCase())+'<br>'):'';
+        var card=b.cardTotal?('💳 Tarjeta: '+money(b.cardTotal)+'<br>'):'';
+        return '<div class="saved-item"><strong>Presupuesto guardado</strong><br>📱 '+esc(b.phone||'')+'<br>📍 '+esc(b.lodging||'')+'<br>'+lang+'🕒 '+esc(b.date||'')+'<br>🎫 '+tripsCount+' paseo(s)<br>💰 '+esc(b.totalText||('Total: '+money(b.total||0)))+'<br>'+card+'<button onclick="copySavedBudget('+Number(b.id)+')">Copiar presupuesto</button></div>';
+      }).join('');
+    }
+    modal.style.display='flex';
+    return false;
+  };
+
+  window.copySavedBudget=function(id){
+    var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];}catch(e){saved=[];}
+    var b=saved.find(function(x){return Number(x.id)===Number(id);}); if(!b) return;
+    var txt=b.summaryText||'';
+    if(!txt){txt='EXPLORA IGUAZÚ\nWhatsApp: '+(b.phone||'')+'\n'+(b.totalText||'');}
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert('Presupuesto copiado.');});}
+    else{var area=document.createElement('textarea');area.value=txt;document.body.appendChild(area);area.select();document.execCommand('copy');document.body.removeChild(area);alert('Presupuesto copiado.');}
+  };
+})();
+</script>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260609-sin-telefono-final-completo';
+const CACHE_NAME = 'explora-presupuesto-v20260609-captura-contacto-david';
 const APP_SHELL = [
   './',
   './index.html',
