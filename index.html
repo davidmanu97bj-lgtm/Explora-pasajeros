@@ -4584,5 +4584,122 @@ body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bot
 })();
 </script>
 
+
+
+<!-- ===== EXPLORA FIX FINAL: botón Aceptar visible en modal de traslado ===== -->
+<style id="explora-transfer-accept-visible-fix">
+  #transferModal .transfer-confirm,
+  #transferModal .transfer-accept-btn{
+    display:block!important;
+    width:100%!important;
+    margin-top:18px!important;
+    height:62px!important;
+    border-radius:18px!important;
+    border:1px solid rgba(241,211,95,.72)!important;
+    background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22)!important;
+    color:#050505!important;
+    font-size:18px!important;
+    font-weight:900!important;
+    letter-spacing:.3px!important;
+    cursor:pointer!important;
+  }
+  #transferModal .transfer-confirm:active,
+  #transferModal .transfer-accept-btn:active{transform:scale(.98)!important;filter:brightness(.96)!important;}
+  #transferModal .transfer-option.active{
+    border-color:#22c55e!important;
+    background:rgba(22,163,74,.13)!important;
+    box-shadow:0 0 0 2px rgba(34,197,94,.18)!important;
+  }
+  #transferModal .transfer-helper-text{
+    margin:10px 0 4px!important;
+    color:#b9b9b9!important;
+    font-size:13px!important;
+    text-align:center!important;
+    line-height:1.35!important;
+  }
+</style>
+<script id="explora-transfer-accept-visible-behavior">
+(function(){
+  function modal(){return document.getElementById('transferModal');}
+  function ensureAcceptButton(){
+    var m=modal();
+    if(!m) return null;
+    var box=m.querySelector('.transfer-modal-box') || m.querySelector('.modal-box');
+    if(!box) return null;
+    var btn=box.querySelector('.transfer-confirm, .transfer-accept-btn');
+    if(!btn){
+      btn=document.createElement('button');
+      btn.type='button';
+      btn.className='transfer-confirm transfer-accept-btn';
+      btn.setAttribute('onclick','confirmTransferSelection()');
+      btn.textContent='Aceptar';
+      box.appendChild(btn);
+    }
+    btn.textContent='Aceptar';
+    btn.style.display='block';
+    btn.onclick=function(e){
+      if(e){e.preventDefault();e.stopPropagation();}
+      if(typeof window.confirmTransferSelection==='function') window.confirmTransferSelection();
+    };
+    var helper=box.querySelector('.transfer-helper-text');
+    if(!helper){
+      helper=document.createElement('div');
+      helper.className='transfer-helper-text';
+      helper.textContent='Elegí una opción y tocá Aceptar para agregar al presupuesto.';
+      box.insertBefore(helper, btn);
+    }
+    return btn;
+  }
+
+  window.chooseTransferOption=function(type){
+    window.pendingTransferType=type || 'one';
+    try{ pendingTransferType=window.pendingTransferType; }catch(e){}
+    var m=modal();
+    if(m){
+      m.querySelectorAll('.transfer-option').forEach(function(opt){
+        opt.classList.toggle('active', opt.getAttribute('data-type')===window.pendingTransferType);
+      });
+      ensureAcceptButton();
+    }
+  };
+
+  var previousOpen=window.openTransferModal;
+  window.openTransferModal=function(name){
+    if(typeof previousOpen==='function') previousOpen(name);
+    setTimeout(function(){
+      var m=modal();
+      if(!m || m.style.display==='none') return;
+      ensureAcceptButton();
+      var anyActive=m.querySelector('.transfer-option.active');
+      if(!anyActive){
+        var one=m.querySelector('.transfer-option[data-type="one"]');
+        if(one) one.classList.add('active');
+      }
+      window.pendingTransferType=(m.querySelector('.transfer-option.active')||{}).dataset || 'one';
+      if(typeof window.pendingTransferType==='object') window.pendingTransferType=(m.querySelector('.transfer-option.active')||{}).dataset.type || 'one';
+      try{ pendingTransferType=window.pendingTransferType || 'one'; }catch(e){}
+    },0);
+  };
+
+  window.confirmTransferSelection=function(){
+    var selectedType='one';
+    var m=modal();
+    if(m){
+      var active=m.querySelector('.transfer-option.active');
+      if(active && active.getAttribute('data-type')) selectedType=active.getAttribute('data-type');
+    }
+    try{ if(typeof pendingTransferType!=='undefined') selectedType=pendingTransferType || selectedType; }catch(e){}
+    var name=null;
+    try{ if(typeof pendingTransferName!=='undefined') name=pendingTransferName; }catch(e){}
+    if(!name && window.pendingTransferName) name=window.pendingTransferName;
+    if(!name) return;
+    if(typeof addTripWithType==='function') addTripWithType(name, selectedType || 'one');
+    if(typeof closeTransferModal==='function') closeTransferModal();
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){ensureAcceptButton();});
+})();
+</script>
+
 </body>
 </html>
