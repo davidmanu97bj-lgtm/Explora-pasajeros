@@ -2015,6 +2015,36 @@ body.not-started.keyboard-mode .start-card{
 @media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
 @media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
 
+
+/* ===== Modal de traslado: selección en un toque, sin confirmar ===== */
+.transfer-confirm{display:none!important;}
+.transfer-autosave-note{
+  margin-top:14px;
+  text-align:center;
+  color:#b9b9b9;
+  font-size:14px;
+  line-height:1.3;
+}
+.transfer-option{
+  cursor:pointer!important;
+  min-height:82px!important;
+}
+.transfer-option.active{
+  border-color:rgba(22,163,74,.88)!important;
+  box-shadow:0 0 0 2px rgba(22,163,74,.18), 0 10px 20px rgba(0,0,0,.22)!important;
+}
+.transfer-option.active .radio-dot::after{
+  content:'✓';
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+}
+
 </style>
 </head>
 <body class="not-started">
@@ -2289,15 +2319,15 @@ body.not-started.keyboard-mode .start-card{
     <span class="close-modal" onclick="closeTransferModal()">×</span>
     <h2 id="transferModalTitle">Seleccione el traslado</h2>
     <div id="transferAttractionName" class="transfer-attraction-name"></div>
-    <button type="button" class="transfer-option active" data-type="one" onclick="setCardTripType(pendingTransferName,'one')">
+    <button type="button" class="transfer-option active" data-type="one" onclick="chooseTransferOption('one')">
       <span class="radio-dot"></span>
       <span><strong>Solo ida</strong><small id="transferOnePrice">ARS $0</small></span>
     </button>
-    <button type="button" class="transfer-option" data-type="round" onclick="setCardTripType(pendingTransferName,'round')">
+    <button type="button" class="transfer-option" data-type="round" onclick="chooseTransferOption('round')">
       <span class="radio-dot"></span>
       <span><strong>Ida y vuelta</strong><small id="transferRoundPrice">ARS $0</small></span>
     </button>
-    <button type="button" class="final transfer-confirm" onclick="confirmTransferSelection()">CONFIRMAR</button>
+    <div class="transfer-autosave-note">Tocá una opción para agregarla automáticamente.</div>
   </div>
 </div>
 
@@ -2522,6 +2552,16 @@ function setCardTripType(name,type){
     pendingTransferType=type||"one";
     const modal=document.getElementById("transferModal");
     if(modal){modal.querySelectorAll('.transfer-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===pendingTransferType));}
+}
+function chooseTransferOption(type){
+    if(!pendingTransferName) return;
+    pendingTransferType=type||"one";
+    const modal=document.getElementById("transferModal");
+    if(modal){
+        modal.querySelectorAll('.transfer-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===pendingTransferType));
+    }
+    addTripWithType(pendingTransferName,pendingTransferType);
+    closeTransferModal();
 }
 function openTransferModal(name){
     const a=getAttraction(name);
@@ -3599,6 +3639,36 @@ body.not-started.keyboard-mode .start-card{
 @media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
 @media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
 
+
+/* ===== Modal de traslado: selección en un toque, sin confirmar ===== */
+.transfer-confirm{display:none!important;}
+.transfer-autosave-note{
+  margin-top:14px;
+  text-align:center;
+  color:#b9b9b9;
+  font-size:14px;
+  line-height:1.3;
+}
+.transfer-option{
+  cursor:pointer!important;
+  min-height:82px!important;
+}
+.transfer-option.active{
+  border-color:rgba(22,163,74,.88)!important;
+  box-shadow:0 0 0 2px rgba(22,163,74,.18), 0 10px 20px rgba(0,0,0,.22)!important;
+}
+.transfer-option.active .radio-dot::after{
+  content:'✓';
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+}
+
 </style>
 
 <div class="budget-success-modal" id="budgetSuccessModal" role="dialog" aria-modal="true">
@@ -4002,6 +4072,36 @@ body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bot
 @media (min-width:900px){.card img,.featured-card img{height:220px!important;}.card-content{padding:16px!important;}}
 @media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
 @media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
+
+
+/* ===== Modal de traslado: selección en un toque, sin confirmar ===== */
+.transfer-confirm{display:none!important;}
+.transfer-autosave-note{
+  margin-top:14px;
+  text-align:center;
+  color:#b9b9b9;
+  font-size:14px;
+  line-height:1.3;
+}
+.transfer-option{
+  cursor:pointer!important;
+  min-height:82px!important;
+}
+.transfer-option.active{
+  border-color:rgba(22,163,74,.88)!important;
+  box-shadow:0 0 0 2px rgba(22,163,74,.18), 0 10px 20px rgba(0,0,0,.22)!important;
+}
+.transfer-option.active .radio-dot::after{
+  content:'✓';
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  color:#fff;
+  font-size:18px;
+  font-weight:900;
+}
 
 </style>
 
