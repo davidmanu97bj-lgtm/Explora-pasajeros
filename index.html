@@ -2071,8 +2071,8 @@ body.not-started.keyboard-mode .start-card{
 
     <div class="start-row">
       <div class="start-field">
-        <label for="startName" id="startNameLabel">Nombre del pasajero</label>
-        <input type="text" id="startName" placeholder="Ej: Ariel">
+        <label for="startName" id="startNameLabel">Tu nombre</label>
+        <input type="text" id="startName" placeholder="Ariel" autocomplete="off">
       </div>
       <div class="start-field">
         <label id="startCurrencyLabel">Moneda</label>
@@ -6077,107 +6077,157 @@ body:not(.not-started) .container{padding-top:24px!important;}
 
 
 
+<!-- ===== PATCH DAVID 2026-06-09: fix nombre + traducciones modal + WhatsApp code ===== -->
+<style id="explora-final-david-name-i18n-whatsapp-fix">
+  /* Volver a pedir nombre en login; mantener WhatsApp del login oculto */
+  body.not-started #startNameLabel,
+  body.not-started #startName{
+    display:block!important;
+  }
+  body.not-started #startPhoneLabel,
+  body.not-started .start-phone-row,
+  body.not-started #startPhone{
+    display:none!important;
+  }
+  body.not-started .start-row{
+    grid-template-columns:1fr 1fr!important;
+  }
+  @media(max-width:520px){body.not-started .start-row{grid-template-columns:1fr!important;}}
 
-<!-- ===== PATCH FINAL DAVID 2026-06-09: i18n real EN/PT + nombre vacío + país WhatsApp ===== -->
-<script id="explora-david-final-i18n-country-name-fix">
+  /* Modal WhatsApp estable en ES/EN/PT */
+  #exploraFinalPhoneModal .explora-phone-row{
+    display:grid!important;
+    grid-template-columns:minmax(142px,42%) minmax(0,1fr)!important;
+    gap:10px!important;
+    align-items:stretch!important;
+  }
+  #exploraFinalPhoneModal #finalCountryCode,
+  #exploraFinalPhoneModal #finalPhoneInput{
+    width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+    height:auto!important;
+    min-height:52px!important;
+    line-height:1.15!important;
+    white-space:normal!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    padding:13px 12px!important;
+    font-size:15px!important;
+  }
+  @media(max-width:520px){
+    #exploraFinalPhoneModal .explora-phone-row{grid-template-columns:1fr!important;}
+  }
+</style>
+<script id="explora-final-david-name-i18n-whatsapp-fix-script">
 (function(){
-  function lang(){
-    var a=document.getElementById('language'), b=document.getElementById('startLanguage');
-    return (a&&a.value)||(b&&b.value)||localStorage.getItem('exploraLanguage')||'es';
-  }
-  var TX={
-    es:{select:'Seleccione el traslado',one:'Solo ida',round:'Ida y vuelta',combo:'Solo ida combinada',comboWord:'Promo Brasil',helper:'Elija una opción y toque Aceptar para continuar.',accept:'Aceptar',exit:'Salir',send:'Enviar a WhatsApp',capture:'Puede tomar una captura de pantalla.',modalTitle:'Enviar a WhatsApp',saveWa:'Guardar WhatsApp',back:'Volver',phonePh:'WhatsApp sin código',phoneAlert:'Escribí el WhatsApp del pasajero.',reserve:'¿Deseas reservar?',role:'Coordinador EXPLORA',cardNote:'Pagando en tarjeta el precio = 10% más caro.',cardTotal:'Total con tarjeta',comboNote:'Combo válido si hacen Parque Nacional do Iguaçu el mismo día.',total:'Total',discount:'Descuento aplicado',nameLabel:'Nombre del pasajero',namePh:'Ariel',langLabel:'Idioma',currLabel:'Moneda',start:'INICIAR PRESUPUESTO',saved:'📋 Ver presupuestos guardados',stay:'¿Dónde estás alojado?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brasil / Foz do Iguaçu'},
-    en:{select:'Select transfer',one:'One way',round:'Round trip',combo:'Combined one way',comboWord:'Brazil promo',helper:'Choose an option and tap Accept to continue.',accept:'Accept',exit:'Exit',send:'Send to WhatsApp',capture:'You can take a screenshot.',modalTitle:'Send to WhatsApp',saveWa:'Save WhatsApp',back:'Back',phonePh:'WhatsApp without country code',phoneAlert:'Enter the passenger WhatsApp number.',reserve:'Would you like to book?',role:'EXPLORA Coordinator',cardNote:'Paying by card is 10% more expensive.',cardTotal:'Card total',comboNote:'Combo valid if you visit Parque Nacional do Iguaçu on the same day.',total:'Total',discount:'Discount applied',nameLabel:'Passenger name',namePh:'Ariel',langLabel:'Language',currLabel:'Currency',start:'START QUOTE',saved:'📋 Saved quotes',stay:'Where are you staying?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brazil / Foz do Iguaçu'},
-    pt:{select:'Selecione o traslado',one:'Somente ida',round:'Ida e volta',combo:'Somente ida combinada',comboWord:'Promo Brasil',helper:'Escolha uma opção e toque em Aceitar para continuar.',accept:'Aceitar',exit:'Sair',send:'Enviar para WhatsApp',capture:'Você pode tirar uma captura de tela.',modalTitle:'Enviar para WhatsApp',saveWa:'Salvar WhatsApp',back:'Voltar',phonePh:'WhatsApp sem código do país',phoneAlert:'Digite o WhatsApp do passageiro.',reserve:'Deseja reservar?',role:'Coordenador EXPLORA',cardNote:'Pagando no cartão, o preço fica 10% mais caro.',cardTotal:'Total no cartão',comboNote:'Combo válido se fizerem Parque Nacional do Iguaçu no mesmo dia.',total:'Total',discount:'Desconto aplicado',nameLabel:'Nome do passageiro',namePh:'Ariel',langLabel:'Idioma',currLabel:'Moeda',start:'INICIAR ORÇAMENTO',saved:'📋 Orçamentos salvos',stay:'Onde você está hospedado?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brasil / Foz do Iguaçu'}
+  var TXT={
+    es:{nameLabel:'Tu nombre',namePh:'Ariel',missingName:'Complete tu nombre para iniciar',transferTitle:'Seleccione el traslado',park:'Parque Nacional Iguazú',one:'Solo ida',round:'Ida y vuelta',comboTitle:'Promo Brasil activa',comboOne:'Solo ida combinada',auto:'Elegí una opción y toca Agregar…',capture:'Puede tomar una captura de pantalla.',exit:'Salir',whatsapp:'Enviar a WhatsApp',modal:'Enviar a WhatsApp',save:'Guardar WhatsApp',back:'Volver',phonePh:'WhatsApp sin código',country:'Código de país',phoneMissing:'Escribí el WhatsApp del pasajero.'},
+    en:{nameLabel:'Your name',namePh:'Ariel',missingName:'Enter your name to start',transferTitle:'Select transfer',park:'Iguazu National Park',one:'One way',round:'Round trip',comboTitle:'Brazil promotion active',comboOne:'Combined one way',auto:'Choose an option and tap Add…',capture:'You can take a screenshot.',exit:'Exit',whatsapp:'Send to WhatsApp',modal:'Send to WhatsApp',save:'Save WhatsApp',back:'Back',phonePh:'WhatsApp without country code',country:'Country code',phoneMissing:'Enter the passenger WhatsApp.'},
+    pt:{nameLabel:'Seu nome',namePh:'Ariel',missingName:'Digite seu nome para iniciar',transferTitle:'Selecione o traslado',park:'Parque Nacional do Iguaçu',one:'Somente ida',round:'Ida e volta',comboTitle:'Promo Brasil ativa',comboOne:'Somente ida combinada',auto:'Escolha uma opção e toque em Adicionar…',capture:'Você pode tirar uma captura de tela.',exit:'Sair',whatsapp:'Enviar para WhatsApp',modal:'Enviar para WhatsApp',save:'Salvar WhatsApp',back:'Voltar',phonePh:'WhatsApp sem código do país',country:'Código do país',phoneMissing:'Digite o WhatsApp do passageiro.'}
   };
-  function t(k){return (TX[lang()]&&TX[lang()][k])||TX.es[k]||k;}
-  function nums(v){return String(v||'').replace(/[^0-9]/g,'');}
-  var countries=[['54','🇦🇷 Argentina +54'],['55','🇧🇷 Brasil +55'],['595','🇵🇾 Paraguay +595'],['598','🇺🇾 Uruguay +598'],['56','🇨🇱 Chile +56'],['591','🇧🇴 Bolivia +591'],['51','🇵🇪 Perú +51'],['57','🇨🇴 Colombia +57'],['593','🇪🇨 Ecuador +593'],['58','🇻🇪 Venezuela +58'],['52','🇲🇽 México +52'],['1','🇺🇸 Estados Unidos / Canadá +1'],['34','🇪🇸 España +34'],['351','🇵🇹 Portugal +351'],['33','🇫🇷 Francia +33'],['39','🇮🇹 Italia +39'],['49','🇩🇪 Alemania +49'],['44','🇬🇧 Reino Unido +44'],['31','🇳🇱 Países Bajos +31']];
-  function fillCountrySelect(id){
-    var s=document.getElementById(id); if(!s) return;
-    if(!s.options || s.options.length<3 || /No hay opciones/i.test(s.textContent||'')){
-      s.innerHTML=countries.map(function(c,i){return '<option value="'+c[0]+'" '+(i===0?'selected':'')+'>'+c[1]+'</option>';}).join('');
+  function getLang(){
+    var l=(document.getElementById('language')||document.getElementById('startLanguage')||{}).value || localStorage.getItem('exploraLanguage') || 'es';
+    return TXT[l]?l:'es';
+  }
+  function t(k){return TXT[getLang()][k]||TXT.es[k]||k;}
+  function setText(sel,txt){var el=document.querySelector(sel); if(el) el.textContent=txt;}
+  function ensurePhoneCodes(){
+    var sel=document.getElementById('finalCountryCode');
+    if(!sel) return;
+    var old=sel.value || '54';
+    sel.setAttribute('aria-label',t('country'));
+    sel.innerHTML='<option value="54">🇦🇷 +54 Argentina</option><option value="55">🇧🇷 +55 Brasil</option><option value="595">🇵🇾 +595 Paraguay</option><option value="598">🇺🇾 +598 Uruguay</option><option value="56">🇨🇱 +56 Chile</option><option value="591">🇧🇴 +591 Bolivia</option><option value="51">🇵🇪 +51 Perú</option><option value="1">🇺🇸 +1 USA</option><option value="34">🇪🇸 +34 España</option>';
+    if([].some.call(sel.options,function(o){return o.value===old;})) sel.value=old; else sel.value='54';
+  }
+  function translateTransferModal(){
+    var modal=document.getElementById('transferModal');
+    var title=document.getElementById('transferModalTitle');
+    if(title){
+      var isCombo=/Promo Brasil|Brazil promotion|Promo Brasil ativa/i.test(title.textContent||'') || (modal&&modal.querySelector('.transfer-option.combo-only'));
+      title.textContent=isCombo?t('comboTitle'):t('transferTitle');
     }
-    s.style.display=''; s.disabled=false;
-  }
-  function fixName(){
-    var n=document.getElementById('startName');
-    if(n){
-      if(/^\s*(Dsvid|David)\s*$/i.test(n.value||'')) n.value='';
-      n.placeholder=t('namePh');
-      n.setAttribute('autocomplete','off');
+    var attraction=document.getElementById('transferAttractionName');
+    if(attraction && /Parque Nacional Iguazú|Iguazu National Park|Parque Nacional do Iguaçu/i.test(attraction.textContent||'')){
+      attraction.textContent=t('park');
     }
-    var cn=document.getElementById('clientName'); if(cn){cn.placeholder=t('namePh'); if(/^\s*(Dsvid|David)\s*$/i.test(cn.value||'')) cn.value='';}
+    var one=modal&&modal.querySelector('.transfer-option[data-type="one"] strong');
+    var round=modal&&modal.querySelector('.transfer-option[data-type="round"] strong');
+    if(one){
+      var combo=modal&&modal.querySelector('.transfer-option[data-type="one"].combo-only');
+      one.textContent=combo?t('comboOne'):t('one');
+    }
+    if(round) round.textContent=t('round');
+    var note=modal&&modal.querySelector('.transfer-autosave-note');
+    if(note) note.textContent=t('auto');
+    var helper=modal&&modal.querySelector('.transfer-helper-text');
+    if(helper) helper.textContent=t('auto');
   }
-  function translateSelectOptions(){
-    document.querySelectorAll('select.type-selector option').forEach(function(o){
-      var v=(o.value||'').toLowerCase(), txt=(o.textContent||'').toLowerCase();
-      if(v==='one'||txt.indexOf('solo')>-1||txt.indexOf('one')>-1||txt.indexOf('somente')>-1||txt.indexOf('só')>-1) o.textContent=t('one');
-      if(v==='round'||txt.indexOf('vuelta')>-1||txt.indexOf('round')>-1||txt.indexOf('volta')>-1) o.textContent=t('round');
-    });
-    document.querySelectorAll('.trip-helper').forEach(function(x){x.textContent=t('helper');});
-    document.querySelectorAll('.trip-type-label').forEach(function(x){x.textContent=t('select');});
+  function translateCaptureAndPhone(){
+    document.querySelectorAll('.explora-capture-help').forEach(function(el){el.textContent=t('capture');});
+    document.querySelectorAll('#exploraCaptureModal .explora-capture-actions .exit').forEach(function(el){el.textContent=t('exit');});
+    document.querySelectorAll('#exploraCaptureModal .explora-capture-actions .whatsapp').forEach(function(el){el.textContent=t('whatsapp');});
+    setText('#exploraFinalPhoneModal h3',t('modal'));
+    var input=document.getElementById('finalPhoneInput'); if(input) input.placeholder=t('phonePh');
+    var saveBtn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(saveBtn) saveBtn.textContent=t('save');
+    var backBtn=document.querySelector('#exploraFinalPhoneModal button.secondary'); if(backBtn) backBtn.textContent=t('back');
+    ensurePhoneCodes();
   }
-  function translateModal(){
-    var mt=document.getElementById('transferModalTitle'); if(mt) mt.textContent=t('select');
-    var one=document.querySelector('#transferOneOption strong'); if(one) one.textContent=t('one');
-    var round=document.querySelector('#transferRoundOption strong'); if(round) round.textContent=t('round');
-    var helper=document.querySelector('#transferModal .transfer-helper, #transferModal .trip-helper'); if(helper) helper.textContent=t('helper');
-    document.querySelectorAll('#transferModal button').forEach(function(b){
-      var tx=(b.textContent||'').trim().toLowerCase();
-      if(tx==='aceptar'||tx==='accept'||tx==='aceitar') b.textContent=t('accept');
-      if(tx==='cerrar'||tx==='close'||tx==='fechar'||tx==='voltar') b.textContent=t('back');
-    });
+  function translateName(){
+    var lbl=document.getElementById('startNameLabel'); if(lbl) lbl.textContent=t('nameLabel');
+    var inp=document.getElementById('startName'); if(inp){inp.placeholder=t('namePh'); inp.setAttribute('autocomplete','off'); inp.removeAttribute('value'); if(/^(Dsvid|David)$/i.test(String(inp.value||'').trim())) inp.value='';}
   }
-  function translateFinal(){
-    document.querySelectorAll('.explora-capture-actions .exit').forEach(function(b){b.textContent=t('exit');});
-    document.querySelectorAll('.explora-capture-actions .whatsapp').forEach(function(b){b.textContent=t('send');});
-    document.querySelectorAll('.explora-capture-help,.explora-capture-save-tip').forEach(function(x){x.textContent=t('capture');});
-    document.querySelectorAll('.explora-capture-question').forEach(function(x){x.textContent=t('reserve');});
-    document.querySelectorAll('.explora-capture-role').forEach(function(x){x.textContent=t('role');});
-    var ph=document.getElementById('finalPhoneInput'); if(ph) ph.placeholder=t('phonePh');
-    var title=document.querySelector('#exploraFinalPhoneModal h3'); if(title) title.textContent=t('modalTitle');
-    var btn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(btn) btn.textContent=t('saveWa');
-    var back=document.querySelector('#exploraFinalPhoneModal button.secondary'); if(back) back.textContent=t('back');
-    document.querySelectorAll('.explora-capture-line small').forEach(function(x){
-      var s=x.textContent||'';
-      if(/ida y vuelta|round trip|ida e volta/i.test(s)) x.textContent=t('round');
-      else if(/solo ida|one way|somente ida|só ida/i.test(s)) x.textContent=t('one');
-    });
-  }
-  function translateLogin(){
-    var el;
-    el=document.getElementById('startLanguageLabel'); if(el) el.textContent=t('langLabel');
-    el=document.getElementById('startNameLabel'); if(el) el.textContent=t('nameLabel');
-    el=document.getElementById('startCurrencyLabel'); if(el) el.textContent=t('currLabel');
-    el=document.getElementById('startLodgingLabel'); if(el) el.textContent=t('stay');
-    el=document.getElementById('startBtn'); if(el) el.textContent=t('start');
-    el=document.getElementById('startSavedBtn'); if(el) el.textContent=t('saved');
-    var sl=document.getElementById('startLodging'); if(sl&&sl.options.length>=2){sl.options[0].textContent='🇦🇷 '+t('stayAr'); sl.options[1].textContent='🇧🇷 '+t('stayBr');}
-  }
-  function applyAll(){fillCountrySelect('finalCountryCode'); fillCountrySelect('startCountryCode'); fixName(); translateLogin(); translateSelectOptions(); translateModal(); translateFinal();}
-  window.exploraApplyFinalI18n=applyAll;
+  function applyAll(){translateName();translateTransferModal();translateCaptureAndPhone();}
 
-  var oldUpdate=window.updateTexts; window.updateTexts=function(){var r; try{r=oldUpdate&&oldUpdate.apply(this,arguments);}catch(e){} setTimeout(applyAll,0); return r;};
-  var oldRender=window.renderCards; if(oldRender){window.renderCards=function(){var r=oldRender.apply(this,arguments); setTimeout(applyAll,0); return r;};}
-  var oldOpenTransfer=window.openTransferModal; if(oldOpenTransfer){window.openTransferModal=function(){var r=oldOpenTransfer.apply(this,arguments); setTimeout(applyAll,0); return r;};}
-  var oldOpenModal=window.openModal; if(oldOpenModal){window.openModal=function(){var r=oldOpenModal.apply(this,arguments); setTimeout(applyAll,0); return r;};}
-  var oldShow=window.showExploraSendPhone; window.showExploraSendPhone=function(){var r=oldShow?oldShow.apply(this,arguments):false; fillCountrySelect('finalCountryCode'); setTimeout(applyAll,0); return r;};
-  window.sendExploraBudgetToPhone=function(){
-    var code=nums((document.getElementById('finalCountryCode')||{}).value||'54');
-    var phone=nums((document.getElementById('finalPhoneInput')||{}).value||'');
-    if(!phone){alert(t('phoneAlert')); return false;}
-    if(typeof window.saveExploraCurrentBudget==='function') window.saveExploraCurrentBudget(code+phone);
-    var i=document.getElementById('finalPhoneInput'); if(i) i.value='';
-    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
-    var ok=document.getElementById('exploraSaveSuccessModal'); if(ok) ok.style.display='flex';
-    applyAll(); return false;
+  var oldShow=window.showExploraSendPhone;
+  window.showExploraSendPhone=function(){
+    ensurePhoneCodes();
+    var r=oldShow?oldShow.apply(this,arguments):false;
+    setTimeout(translateCaptureAndPhone,0);
+    return r;
   };
-  var oldTake=window.takeExploraPhotoChoice; if(oldTake){window.takeExploraPhotoChoice=function(){var r=oldTake.apply(this,arguments); setTimeout(applyAll,0); return r;};}
-  document.addEventListener('change',function(e){if(e.target&&(/language|startLanguage/.test(e.target.id||''))) setTimeout(applyAll,0);});
-  document.addEventListener('DOMContentLoaded',function(){setTimeout(applyAll,60);setTimeout(applyAll,400);});
-  setInterval(applyAll,1200);
-  applyAll();
+
+  var oldOpen=window.openTransferModal;
+  if(oldOpen){
+    window.openTransferModal=function(){
+      var r=oldOpen.apply(this,arguments);
+      setTimeout(translateTransferModal,0);
+      return r;
+    };
+  }
+  var oldChoose=window.chooseTransferOption;
+  if(oldChoose){
+    window.chooseTransferOption=function(){
+      var r=oldChoose.apply(this,arguments);
+      setTimeout(translateTransferModal,0);
+      return r;
+    };
+  }
+
+  var oldTake=window.takeExploraPhotoChoice;
+  window.takeExploraPhotoChoice=function(){
+    var r=oldTake?oldTake.apply(this,arguments):false;
+    setTimeout(translateCaptureAndPhone,0);
+    return r;
+  };
+
+  var oldSend=window.sendExploraBudgetToPhone;
+  window.sendExploraBudgetToPhone=function(){
+    var phone=(document.getElementById('finalPhoneInput')||{}).value||'';
+    if(!String(phone).replace(/[^0-9]/g,'')){alert(t('phoneMissing'));return false;}
+    return oldSend?oldSend.apply(this,arguments):false;
+  };
+
+  var oldStart=window.startExplora;
+  window.startExplora=function(){
+    var inp=document.getElementById('startName');
+    if(inp && !String(inp.value||'').trim()){alert(t('missingName')); inp.focus(); return false;}
+    return oldStart?oldStart.apply(this,arguments):false;
+  };
+
+  document.addEventListener('change',function(e){if(e.target && (e.target.id==='language'||e.target.id==='startLanguage')) setTimeout(applyAll,0);});
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(applyAll,80);setTimeout(applyAll,400);});
+  setTimeout(applyAll,80);setTimeout(applyAll,400);
 })();
 </script>
 
