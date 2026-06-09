@@ -2144,7 +2144,7 @@ body.not-started.keyboard-mode .start-card{
   </div>
 </header>
 <div class="container" id="content"></div>
-<div class="summary compact-summary"><h2 id="summaryTitle">Presupuesto</h2><div id="savedAmount">💸 Ahorrado: ARS $0</div><div id="summaryDetails"></div><div class="total" id="total">Total: ARS $0</div><button class="final" onclick="openModal()" id="finishBtn">Guardar presupuesto</button><button class="clear-btn hidden-summary-action" onclick="openSavedBudgets()" id="savedBtn" style="background:#0f172a;">Ver guardados</button><button class="clear-btn hidden-summary-action" onclick="clearAllTrips()" id="clearBtn">Anular todos</button></div>
+<div class="summary compact-summary"><h2 id="summaryTitle">Presupuesto</h2><div id="savedAmount">💸 Ahorrado: ARS $0</div><div id="summaryDetails"></div><div class="total" id="total">Total: ARS $0</div><button class="final" onclick="openModal()" id="finishBtn">Guardar presupuesto</button><button class="clear-btn hidden-summary-action" onclick="openSavedBudgets()" id="savedBtn" style="background:#0f172a;">Ver guardados</button><button class="clear-btn hidden-summary-action" onclick="clearAllTrips()" id="clearBtn">Borrar todos</button></div>
 <div class="modal" id="modal"><div class="modal-box"><span class="close-modal" onclick="closeModal()">×</span><h2 id="modalTitle">Guardar presupuesto</h2><input type="text" id="clientName" placeholder="👤 Nombre del pasajero"><div class="phone-row">
 <select id="countryCode" aria-label="Código de país">
 
@@ -2252,7 +2252,7 @@ body.not-started.keyboard-mode .start-card{
 <div class="gallery-modal" id="galleryModal"><span class="close-gallery" onclick="closeGallery()">×</span><img id="galleryImg" src="" alt="Galería EXPLORA"><div class="gallery-controls"><button onclick="prevGallery()">‹ Anterior</button><button onclick="nextGallery()">Siguiente ›</button></div></div>
 <script>
 const whatsappNumber="5493757461564";
-const translations={es:{title:"🚐 Más de 7 años trasladando turistas en Iguazú",reserve:"Presupuesto",send:"Guardar presupuesto",finish:"Guardar presupuesto",confirm:"Guardar presupuesto",name:"👤 Nombre del pasajero",phone:"📱 WhatsApp (Ej: 5493757123456)",add:"Agregar",remove:"Anular",total:"Total",alert1:"Seleccione al menos un paseo",alert2:"Complete nombre y WhatsApp",trips:"paseos seleccionados",clear:"Anular todos",round:"Ida y vuelta",one:"Solo ida"},en:{title:"🚐 Tourist transfers in Argentina, Brazil and Paraguay",reserve:"Budget",send:"Save quote",finish:"Save quote",confirm:"Save quote",name:"👤 Passenger name",phone:"📱 WhatsApp (Ex: 5493757123456)",add:"Add",remove:"Remove",total:"Total",alert1:"Select at least one tour",alert2:"Complete name and WhatsApp",trips:"selected tours",clear:"Clear all",round:"Round trip",one:"One way"},pt:{title:"🚐 Traslados turísticos na Argentina, Brasil e Paraguai",reserve:"Orçamento",send:"Salvar orçamento",finish:"Salvar orçamento",confirm:"Salvar orçamento",name:"👤 Nome do passageiro",phone:"📱 WhatsApp (Ex: 5493757123456)",add:"Adicionar",remove:"Remover",total:"Total",alert1:"Selecione pelo menos um passeio",alert2:"Complete nome e WhatsApp",trips:"passeios seleccionados",clear:"Limpar todos",round:"Ida e volta",one:"Só ida"}};
+const translations={es:{title:"🚐 Más de 7 años trasladando turistas en Iguazú",reserve:"Presupuesto",send:"Guardar presupuesto",finish:"Guardar presupuesto",confirm:"Guardar presupuesto",name:"👤 Nombre del pasajero",phone:"📱 WhatsApp (Ej: 5493757123456)",add:"Agregar",remove:"Anular",total:"Total",alert1:"Seleccione al menos un paseo",alert2:"Complete nombre y WhatsApp",trips:"paseos seleccionados",clear:"Borrar todos",round:"Ida y vuelta",one:"Solo ida"},en:{title:"🚐 Tourist transfers in Argentina, Brazil and Paraguay",reserve:"Budget",send:"Save quote",finish:"Save quote",confirm:"Save quote",name:"👤 Passenger name",phone:"📱 WhatsApp (Ex: 5493757123456)",add:"Add",remove:"Remove",total:"Total",alert1:"Select at least one tour",alert2:"Complete name and WhatsApp",trips:"selected tours",clear:"Clear all",round:"Round trip",one:"One way"},pt:{title:"🚐 Traslados turísticos na Argentina, Brasil e Paraguai",reserve:"Orçamento",send:"Salvar orçamento",finish:"Salvar orçamento",confirm:"Salvar orçamento",name:"👤 Nome do passageiro",phone:"📱 WhatsApp (Ex: 5493757123456)",add:"Adicionar",remove:"Remover",total:"Total",alert1:"Selecione pelo menos um passeio",alert2:"Complete nome e WhatsApp",trips:"passeios seleccionados",clear:"Limpar todos",round:"Ida e volta",one:"Só ida"}};
 const attractions = [{"category": "Puerto Iguazú (Argentina)", "name": "Parque Nacional Iguazú", "oneWayPrice": 35000, "roundPrice": 50000, "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSNcYNKGfcRekDZsg-tfFimI5IaH4e2YrH1AyfxtG5LuhSw9EYPifT35Vc9&s=10"}, {"category": "Puerto Iguazú (Argentina)", "name": "Volver al aeropuerto", "oneWayPrice": 25000, "roundPrice": 25000, "image": "https://static.misionesonline.news/wp-content/uploads/2025/12/aeropuerto-Iguazu.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "Hito de las Tres Fronteras", "oneWayPrice": 12000, "roundPrice": 20000, "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHXzsKmr98hqur9vZC_DNK1oG10Vh5wngvcl4zqGFX445qYuG1mDaOw7t0&s=10"}, {"category": "Puerto Iguazú (Argentina)", "name": "Minas de Wanda", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiTS6uT3wnalZ4YxvSo_ofGAGhOcYZ7TmdNyB4NYo0pYQd0s9EiBJTkFXK12VSHcfC4WaBxtxjJKyeOZlOZLbJ4TEkX62NTtNZ7IoTuu45tzwjEhn_ZqY6vES5Kceiz7SPUNjUfxS5CPAxNhVxU8MZEGZfnGP4s31dXCrUd7-AysxMuIZG2jsl2EwZs1-59/s495/minas.png"}, {"category": "Puerto Iguazú (Argentina)", "name": "Shopping Duty Free Shop", "oneWayPrice": 12000, "roundPrice": 20000, "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2d/d0/6a/5b/caption.jpg?w=1200&h=-1&s=1"}, {"category": "Puerto Iguazú (Argentina)", "name": "Güirá Oga", "oneWayPrice": 10000, "roundPrice": 18000, "image": "https://magiaenelcamino.com.ar/wp-content/2017/11/IMG_6142.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "La Aripuca", "oneWayPrice": 10000, "roundPrice": 18000, "image": "https://i.ytimg.com/vi/QQnMkj8advc/maxresdefault.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "Icebar Iguazú", "oneWayPrice": 10000, "roundPrice": 18000, "image": "https://blog.loumarturismo.com.br/wp-content/uploads/2017/07/ingresso-icebar-loumar-turismo-3.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "Catamarán Cruceros Iguazú", "oneWayPrice": 10000, "roundPrice": 18000, "image": "https://www.iguazuviajes.com/media/k2/items/cache/3b3e749011568df066956f2034087c10_XL.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "Conoce la comunidad Guaraní", "oneWayPrice": 12000, "roundPrice": 20000, "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/21/75/28/45/comunidad-guarani-yriapu.jpg?w=1100&h=1100&s=1"}, {"category": "Puerto Iguazú (Argentina)", "name": "Salto Mbocaí o Salto del Turista", "oneWayPrice": 25000, "roundPrice": 40000, "image": "https://viajerosacataratas.com/wp-content/uploads/2021/02/Salto-del-Turista-1.jpg"}, {"category": "Puerto Iguazú (Argentina)", "name": "La Feirinha", "oneWayPrice": 10000, "roundPrice": 18000, "image": "https://viajantecomum.com/wp-content/uploads/2019/04/feirinha-de-puerto-iguazu-argentina-1.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Parque Nacional do Iguaçu", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://www.iguazuviajes.com/images/fotos_panoramicas_cataratas_lado_brasilero1.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Parque das Aves", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2f/fe/a8/d3/caption.jpg?w=1200&h=-1&s=1"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Aquafoz Acuario", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://aquafoz.com.br/wp-content/uploads/2025/05/family-watchig-fishes-at-a-aquarium.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Vuelos en Helicóptero Helisul", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/12/89/37/c6/come-to-fly.jpg?w=1200&h=-1&s=1"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Represa Hidroeléctrica de Itaipú", "oneWayPrice": 50000, "roundPrice": 80000, "image": "https://cloudfront-us-east-1.images.arcpublishing.com/infobae/L5MPTDI3NRBUBJDUUSQCXWLHJE.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Marco das Três Fronteiras", "oneWayPrice": 40000, "roundPrice": 60000, "image": "https://www.hoteldelreyfoz.com.br/wp-content/uploads/2025/10/marco-das-tres-fronteiras.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Templo Budista Chen Tien", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://www.hoteldelreyfoz.com/wp-content/uploads/2018/02/imgns-blog-MAR22-BUDISTA2.jpg"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Mezquita Omar Ibn Al-Khattab", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://www.vamostrilhar.com.br/wp-content/uploads/2025/01/Conheca-tudo-sobre-a-Mesquita-Omar-Ibn-Al-Khattab-Foz-do-Iguacu-PR-Vamos-Trilhar.webp"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Yup Star Foz", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://grnn4s2gmo7j.compat.objectstorage.sa-saopaulo-1.oraclecloud.com/dev-static.pub-easylive.com/wj7qnitzk6asq4ebvm7629u0j787.png"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Aqua Manía", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://dynamic-media-cdn.tripadvisor.com/media/photo-o/2c/31/dd/a5/parque-visao-total.jpg?w=900&h=500&s=1"}, {"category": "Foz do Iguaçu (Brasil)", "name": "Blue Park", "oneWayPrice": 45000, "roundPrice": 70000, "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSH6u5rq0vNOMQIuFDnUS-nqBkXs0PnQBht0DQdPbcWUzbqeeyh5bt15fk&s=10"}, {"category": "Ciudad del Este (Paraguay)", "name": "Compras en Ciudad del Este", "oneWayPrice": 50000, "roundPrice": 80000, "image": "https://i.ytimg.com/vi/FuOnuyFjW2c/maxresdefault.jpg"}, {"category": "Ciudad del Este (Paraguay)", "name": "Saltos del Monday", "oneWayPrice": 65000, "roundPrice": 100000, "image": "https://media.tacdn.com/media/attractions-splice-spp-674x446/12/03/09/c5.jpg"}, {"category": "Ciudad del Este (Paraguay)", "name": "Itaipú Binacional", "oneWayPrice": 65000, "roundPrice": 100000, "image": "https://www.argentinaforestal.com/wp-content/uploads/2026/05/Itaipu-Binacional-Py.jpg?x37322"}];
 const bestSellers=["Parque Nacional Iguazú","Parque Nacional do Iguaçu","Parque das Aves","Aquafoz Acuario","Minas de Wanda","Compras en Ciudad del Este","Hito de las Tres Fronteras","Volver al aeropuerto"];
 const featuredAttractions=["Parque Nacional Iguazú","Parque Nacional do Iguaçu"];
@@ -3659,5 +3659,295 @@ body.not-started.keyboard-mode .start-card{
   }
 })();
 </script>
+
+
+<!-- ===== EXPLORA FINAL PATCH: colores claros + borrar todos + login táctil ===== -->
+<style id="explora-final-color-clear-patch">
+:root{
+  --ex-ok:#15803d;
+  --ex-ok-2:#16a34a;
+  --ex-ok-soft:rgba(22,163,74,.16);
+  --ex-gold-final:#d7b437;
+  --ex-gold-deep:#b98e22;
+  --ex-red:#b91c1c;
+}
+
+/* Más vendido vuelve a ser dorado EXPLORA, no verde, para no confundirse con seleccionado */
+.badge.top-badge,
+.top-badge,
+.card .badge.top-badge{
+  background:linear-gradient(135deg,#e8c84f,#d7b437,#b98e22)!important;
+  color:#050505!important;
+  border:1px solid rgba(241,211,95,.55)!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.22)!important;
+  font-size:11px!important;
+  letter-spacing:.55px!important;
+  padding:7px 11px!important;
+  border-radius:999px!important;
+}
+.badge.top-badge::before{content:'⭐ ';}
+
+/* Verde reservado solo para seleccionado / confirmado */
+.trip-choice{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:6px!important;
+  padding:5px!important;
+  background:#0b0b0b!important;
+  border:1px solid rgba(255,255,255,.10)!important;
+  border-radius:18px!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025)!important;
+}
+.trip-choice-btn{
+  min-height:48px!important;
+  border-radius:14px!important;
+  border:1px solid rgba(255,255,255,.08)!important;
+  background:#171717!important;
+  color:#e5e7eb!important;
+  font-weight:900!important;
+  font-size:15px!important;
+  cursor:pointer!important;
+  box-shadow:none!important;
+}
+.trip-choice-btn.active{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#021408!important;
+  border-color:rgba(187,247,208,.50)!important;
+  box-shadow:0 4px 10px rgba(22,163,74,.16)!important;
+}
+.add-btn.selected-add{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#04130a!important;
+  border-color:rgba(187,247,208,.50)!important;
+  box-shadow:0 4px 12px rgba(22,163,74,.16)!important;
+}
+.remove-btn.selected-remove,
+.option.remove.selected-remove{
+  background:linear-gradient(135deg,#ef4444,#b91c1c)!important;
+  color:#fff!important;
+  border-color:rgba(254,202,202,.34)!important;
+}
+.remove-btn.disabled-remove{opacity:.62!important;}
+.card.is-selected{
+  border-color:rgba(22,163,74,.36)!important;
+  box-shadow:0 0 0 1px rgba(22,163,74,.12),0 3px 10px rgba(0,0,0,.22)!important;
+}
+.transfer-icon{color:#16a34a!important;}
+.airport-transfer-pill{
+  color:#bbf7d0!important;
+  border-color:rgba(22,163,74,.24)!important;
+  background:rgba(22,163,74,.10)!important;
+}
+
+/* Total fijo en verde elegante */
+.summary .total,
+.summary.compact-summary .total,
+#total{
+  color:#22c55e!important;
+  text-shadow:none!important;
+  font-weight:950!important;
+}
+
+/* Mostrar Borrar todos en el presupuesto fijo */
+#savedBtn{display:none!important;}
+#clearBtn,
+#clearBtn.hidden-summary-action,
+.summary .clear-btn#clearBtn{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  background:rgba(185,28,28,.16)!important;
+  color:#fecaca!important;
+  border:1px solid rgba(239,68,68,.42)!important;
+  font-weight:900!important;
+  border-radius:16px!important;
+  min-height:48px!important;
+  padding:12px 14px!important;
+  margin:0!important;
+}
+#clearBtn::before{content:'🗑️ ';}
+
+/* Resumen fijo: total + botones ordenados */
+.summary.compact-summary,
+.summary{
+  grid-template-columns:minmax(0,1fr) 230px 170px!important;
+  align-items:center!important;
+  gap:12px!important;
+  max-height:142px!important;
+}
+.summary #summaryDetails{display:block!important;overflow:hidden!important;}
+.summary .final,
+#finishBtn{
+  margin:0!important;
+  min-height:54px!important;
+  border-radius:17px!important;
+}
+@media(max-width:900px){
+  .summary.compact-summary,
+  .summary{
+    grid-template-columns:1fr!important;
+    max-height:none!important;
+    gap:8px!important;
+  }
+  .summary #summaryDetails{display:block!important;}
+  #clearBtn{min-height:44px!important;}
+}
+
+/* Login: mantener select nativos ocultos, usar botones táctiles */
+.start-native-hidden{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  opacity:0!important;
+  pointer-events:none!important;
+  left:-9999px!important;
+}
+.start-choice-group{
+  display:grid!important;
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:10px!important;
+}
+.start-choice{
+  min-height:58px!important;
+  border-radius:18px!important;
+  background:rgba(5,5,5,.72)!important;
+  color:#f4f4f4!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+  font-weight:900!important;
+  font-size:17px!important;
+  cursor:pointer!important;
+  -webkit-tap-highlight-color:transparent!important;
+}
+.start-choice.active{
+  background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22)!important;
+  color:#050505!important;
+  border-color:rgba(241,211,95,.65)!important;
+  box-shadow:0 6px 16px rgba(215,180,55,.12)!important;
+}
+.start-currency-group .start-choice.active{
+  background:linear-gradient(135deg,#22c55e,#16a34a,#15803d)!important;
+  color:#04130a!important;
+  border-color:rgba(187,247,208,.48)!important;
+}
+@media(max-width:520px){
+  .start-choice-group{gap:7px!important;}
+  .start-choice{min-height:44px!important;border-radius:14px!important;font-size:14px!important;}
+}
+
+/* Cuando aparece teclado Android: permitir scroll hasta el campo */
+body.not-started.keyboard-mode{overflow:auto!important;height:auto!important;}
+body.not-started.keyboard-mode .start-screen{
+  align-items:flex-start!important;
+  justify-content:center!important;
+  overflow:auto!important;
+  -webkit-overflow-scrolling:touch!important;
+  padding-top:18px!important;
+  padding-bottom:48vh!important;
+}
+body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bottom:42vh!important;}
+
+/* Mantener fluidez */
+.card,.featured-card{transition:none!important;will-change:auto!important;}
+.card img,.featured-card img{filter:none!important;transition:none!important;will-change:auto!important;}
+</style>
+
+<script id="explora-final-behavior-patch">
+(function(){
+  function qs(sel){return document.querySelector(sel);}
+  function qsa(sel){return Array.prototype.slice.call(document.querySelectorAll(sel));}
+
+  function setActive(groupSelector, attr, value){
+    qsa(groupSelector+' .start-choice').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute(attr)===value);
+    });
+  }
+
+  function applyLang(value){
+    var select=document.getElementById('startLanguage');
+    if(select) select.value=value;
+    var main=document.getElementById('language');
+    if(main){ main.value=value; main.dispatchEvent(new Event('change',{bubbles:true})); }
+    try{ localStorage.setItem('exploraLanguage',value); }catch(e){}
+    setActive('#startLanguageChoices','data-start-lang',value);
+    if(typeof updateStartTexts==='function') updateStartTexts(value);
+    if(typeof updateTexts==='function') updateTexts();
+  }
+  function applyCurrency(value){
+    var select=document.getElementById('startCurrency');
+    if(select) select.value=value;
+    var main=document.getElementById('currency');
+    if(main){ main.value=value; main.dispatchEvent(new Event('change',{bubbles:true})); }
+    try{ localStorage.setItem('exploraCurrency',value); }catch(e){}
+    setActive('#startCurrencyChoices','data-start-currency',value);
+    if(typeof renderCards==='function') renderCards();
+    if(typeof updateSummary==='function') updateSummary();
+  }
+
+  document.addEventListener('click',function(e){
+    var langBtn=e.target.closest && e.target.closest('[data-start-lang]');
+    if(langBtn){ e.preventDefault(); applyLang(langBtn.getAttribute('data-start-lang')); return; }
+    var curBtn=e.target.closest && e.target.closest('[data-start-currency]');
+    if(curBtn){ e.preventDefault(); applyCurrency(curBtn.getAttribute('data-start-currency')); return; }
+  },true);
+
+  function keyboardScroll(el){
+    document.body.classList.add('keyboard-mode');
+    setTimeout(function(){
+      try{ el.scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){
+        window.scrollTo(0, document.body.scrollHeight);
+      }
+    },260);
+  }
+  document.addEventListener('focusin',function(e){
+    if(e.target && (e.target.id==='startName' || e.target.id==='startPhone')) keyboardScroll(e.target);
+  });
+  document.addEventListener('focusout',function(e){
+    if(e.target && (e.target.id==='startName' || e.target.id==='startPhone')){
+      setTimeout(function(){ document.body.classList.remove('keyboard-mode'); },350);
+    }
+  });
+
+  // Botón Borrar todos visible y con texto correcto
+  function normalizeClearButton(){
+    var btn=document.getElementById('clearBtn');
+    if(btn){
+      btn.textContent='Borrar todos';
+      btn.classList.remove('hidden-summary-action');
+      if(!btn.dataset.exploraPatched){
+        btn.dataset.exploraPatched='1';
+        btn.addEventListener('click',function(ev){
+          ev.preventDefault();
+          if(!confirm('¿Borrar todos los servicios seleccionados?')) return;
+          if(typeof selected!=='undefined') selected=[];
+          try{localStorage.removeItem('exploraTripsV2');}catch(e){}
+          if(typeof renderCards==='function') renderCards();
+          if(typeof updateSummary==='function') updateSummary();
+        },true);
+      }
+    }
+  }
+
+  // Evitar que updateTexts vuelva a poner Anular todos
+  var oldUpdateTexts=window.updateTexts;
+  if(typeof oldUpdateTexts==='function'){
+    window.updateTexts=function(){
+      var r=oldUpdateTexts.apply(this,arguments);
+      normalizeClearButton();
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',function(){
+    var sl=document.getElementById('startLanguage');
+    var sc=document.getElementById('startCurrency');
+    applyLang((sl&&sl.value)||localStorage.getItem('exploraLanguage')||'es');
+    applyCurrency((sc&&sc.value)||localStorage.getItem('exploraCurrency')||'ARS');
+    normalizeClearButton();
+  });
+  setTimeout(normalizeClearButton,500);
+  setTimeout(normalizeClearButton,1500);
+})();
+</script>
+
 </body>
 </html>

@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260608-login-botones-fix';
+const CACHE_NAME = 'explora-presupuesto-v20260608-final-colores-borrar-todos';
 const APP_SHELL = [
   './',
   './index.html',
