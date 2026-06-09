@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260609-return-login-save-exit';
+const CACHE_NAME = 'explora-presupuesto-v20260609-i18n-capture-final';
 const APP_SHELL = [
   './',
   './index.html',

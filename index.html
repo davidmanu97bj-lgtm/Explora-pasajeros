@@ -5797,5 +5797,284 @@ body:not(.not-started) .container{padding-top:24px!important;}
 })();
 </script>
 
+<!-- ===== PATCH DAVID 2026-06-09: guardado completo con nombre + foto/WhatsApp ===== -->
+<style id="explora-name-required-full-saved-patch">
+  /* Login: volver a pedir nombre, pero seguir sin pedir WhatsApp al inicio */
+  body.not-started #startNameLabel,
+  body.not-started #startName{
+    display:block!important;
+  }
+  body.not-started #startPhoneLabel,
+  body.not-started .start-phone-row{
+    display:none!important;
+  }
+  body.not-started .start-row{
+    grid-template-columns:1fr!important;
+  }
+  .saved-trip-list{margin-top:8px;border-top:1px solid rgba(215,180,55,.18);padding-top:8px;}
+  .saved-trip-row{display:flex;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06);}
+  .saved-trip-row small{color:#aaa;display:block;margin-top:2px;}
+  .saved-old{display:block;color:#999;text-decoration:line-through;font-size:11px;}
+  .saved-discount{color:#8ef5b2;font-weight:800;font-size:12px;}
+</style>
+<script id="explora-name-required-full-saved-behavior-patch">
+(function(){
+  function onlyNumbers(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v||0).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c;});}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function currentLodgingText(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?'Brasil / Foz do Iguaçu':'Argentina / Puerto Iguazú';}
+  function isComboItem(name){return name==='Parque das Aves'||name==='Aquafoz Acuario';}
+  function hasPark(trips){return trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function modeText(type){return type==='combo'?'Combo Brasil':(type==='round'?'Ida y vuelta':'Solo ida');}
+  function passengerName(){
+    var n='';
+    try{var p=JSON.parse(localStorage.getItem('exploraStartProfile')||'{}'); n=p.name||'';}catch(e){}
+    var el=document.getElementById('startName');
+    if(el && el.value.trim()) n=el.value.trim();
+    return n||'Pasajero';
+  }
+  function tripDetails(){
+    var trips=getTrips();
+    return trips.map(function(t){
+      var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+      var normal=0,effective=0;
+      if(isComboItem(t.name) && hasPark(trips)){normal=70000; effective=20000; type='combo';}
+      else{
+        try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}
+        try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}
+      }
+      return {name:t.name,type:type,mode:modeText(type),normal:normal,effective:effective,discount:Math.max(0,normal-effective)};
+    });
+  }
+  function totals(details){
+    return details.reduce(function(a,t){a.subtotal+=t.normal;a.discount+=t.discount;a.total+=t.effective;return a;},{subtotal:0,discount:0,total:0});
+  }
+  function budgetText(b){
+    var txt='Presupuesto guardado\n';
+    txt+='Pasajero: '+(b.name||'Pasajero')+'\n';
+    if(b.phone) txt+='WhatsApp pasajero: +'+b.phone+'\n';
+    txt+='Idioma: '+(b.language||'es').toUpperCase()+'\n';
+    txt+='Moneda: '+(b.currency||'ARS')+'\n';
+    txt+='Alojamiento: '+(b.lodging||'')+'\n\n';
+    (b.tripDetails||[]).forEach(function(t){
+      txt+='• '+t.name+' ('+t.mode+') - '+money(t.effective);
+      if(t.discount) txt+=' | antes '+money(t.normal)+' | descuento -'+money(t.discount);
+      txt+='\n';
+    });
+    txt+='\nSubtotal sin descuentos: '+money(b.subtotal||0);
+    if((b.discount||0)>0) txt+='\nDescuentos visibles: -'+money(b.discount||0);
+    txt+='\nTotal efectivo: '+money(b.total||0);
+    txt+='\nTotal tarjeta (+10%): '+money(b.cardTotal||0);
+    if(b.comboNote) txt+='\n\nCombo válido si hacen Parque Nacional do Iguaçu el mismo día.';
+    return txt;
+  }
+  window.saveExploraCurrentBudget=function(phoneFull){
+    var details=tripDetails();
+    if(!details.length) return null;
+    var t=totals(details);
+    var id=window.__exploraCurrentBudgetId || Date.now();
+    window.__exploraCurrentBudgetId=id;
+    var b={
+      id:id,
+      date:new Date().toLocaleString('es-AR'),
+      name:passengerName(),
+      phone:phoneFull||'',
+      lodging:currentLodgingText(),
+      language:(document.getElementById('language')||{}).value||'es',
+      currency:(document.getElementById('currency')||{}).value||'ARS',
+      tripDetails:details,
+      trips:details,
+      subtotal:t.subtotal,
+      discount:t.discount,
+      total:t.total,
+      cardTotal:Math.round(t.total*1.10),
+      totalText:'Total efectivo: '+money(t.total),
+      comboNote:hasPark(getTrips()) && details.some(function(x){return x.type==='combo';})
+    };
+    b.summaryText=budgetText(b);
+    try{
+      var saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];
+      var idx=saved.findIndex(function(x){return Number(x.id)===Number(id);});
+      if(idx>=0){
+        if(!b.phone && saved[idx].phone) b.phone=saved[idx].phone;
+        b.summaryText=budgetText(b);
+        saved[idx]=b;
+      }else saved.unshift(b);
+      localStorage.setItem('exploraSavedBudgets',JSON.stringify(saved));
+    }catch(e){alert('No se pudo guardar el presupuesto: '+e.message);}
+    return b;
+  };
+
+  window.startExplora=function(){
+    var nameEl=document.getElementById('startName');
+    var langEl=document.getElementById('startLanguage');
+    var currEl=document.getElementById('startCurrency');
+    var lodgingEl=document.getElementById('startLodging');
+    var language=langEl?langEl.value:'es';
+    var currency=currEl?currEl.value:'ARS';
+    var lodging=lodgingEl?lodgingEl.value:'argentina';
+    var name=nameEl?nameEl.value.trim():'';
+    var msg=language==='en'?'Complete the passenger name to start':language==='pt'?'Complete o nome para iniciar':'Complete el nombre para iniciar';
+    if(!name){alert(msg); if(nameEl) nameEl.focus(); return false;}
+    var profile={name:name,phone:'',countryCode:'54',language:language,currency:currency,fullPhone:''};
+    try{localStorage.setItem('exploraStartProfile',JSON.stringify(profile));localStorage.setItem('exploraLanguage',language);localStorage.setItem('exploraCurrency',currency);localStorage.setItem('exploraLodging',lodging);}catch(e){}
+    var appLang=document.getElementById('language'), appCurrency=document.getElementById('currency'), appLodging=document.getElementById('lodging');
+    if(appLang) appLang.value=language; if(appCurrency) appCurrency.value=currency; if(appLodging) appLodging.value=lodging;
+    window.__exploraCurrentBudgetId=null;
+    document.body.classList.remove('not-started');
+    try{if(typeof renderCards==='function') renderCards();}catch(e){}
+    try{if(typeof updateSummary==='function') updateSummary();}catch(e){}
+    return false;
+  };
+
+  var oldOpen=window.openModal;
+  window.openModal=function(){
+    window.__exploraCurrentBudgetId=null;
+    var result=typeof oldOpen==='function'?oldOpen.apply(this,arguments):false;
+    setTimeout(function(){window.saveExploraCurrentBudget('');},80);
+    return result;
+  };
+
+  var oldSend=window.sendExploraBudgetToPhone;
+  window.sendExploraBudgetToPhone=function(){
+    var code=onlyNumbers((document.getElementById('finalCountryCode')||{}).value||'54');
+    var phone=onlyNumbers((document.getElementById('finalPhoneInput')||{}).value||'');
+    if(!phone){alert('Escribí el WhatsApp del pasajero.');return false;}
+    var full=code+phone;
+    window.saveExploraCurrentBudget(full);
+    var input=document.getElementById('finalPhoneInput'); if(input) input.value='';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+    var ok=document.getElementById('exploraSaveSuccessModal'); if(ok) ok.style.display='flex';
+    return false;
+  };
+
+  var oldLogin=window.goExploraLogin;
+  window.goExploraLogin=function(){
+    try{window.saveExploraCurrentBudget('');}catch(e){}
+    if(typeof oldLogin==='function') return oldLogin.apply(this,arguments);
+    document.body.classList.add('not-started');
+    return false;
+  };
+
+  window.openSavedBudgets=function(){
+    var modal=document.getElementById('savedModal');
+    var list=document.getElementById('savedList');
+    if(!modal || !list) return false;
+    var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];}catch(e){saved=[];}
+    if(!saved.length){list.innerHTML='<div class="saved-item">Todavía no hay presupuestos guardados.</div>';}
+    else{
+      list.innerHTML=saved.map(function(b){
+        var details=b.tripDetails||b.trips||[];
+        var rows=details.map(function(t){
+          var name=t.name||''; var mode=t.mode||modeText(t.type||'one'); var effective=t.effective||0; var normal=t.normal||effective; var discount=Math.max(0,(t.discount||0));
+          return '<div class="saved-trip-row"><span>'+esc(name)+'<small>'+esc(mode)+'</small>'+(discount?'<small class="saved-discount">Descuento: -'+money(discount)+'</small>':'')+'</span><strong>'+(discount?'<span class="saved-old">'+money(normal)+'</span>':'')+money(effective)+'</strong></div>';
+        }).join('');
+        return '<div class="saved-item"><strong>'+esc(b.name||'Pasajero')+'</strong><br>'+
+          (b.phone?'📱 +'+esc(b.phone)+'<br>':'📱 Sin WhatsApp cargado<br>')+
+          '📍 '+esc(b.lodging||'')+'<br>🌐 '+esc(String(b.language||'es').toUpperCase())+' · 💱 '+esc(b.currency||'ARS')+'<br>🕒 '+esc(b.date||'')+
+          '<div class="saved-trip-list">'+rows+'</div>'+
+          '<br>Subtotal: '+money(b.subtotal||0)+(b.discount?'<br>Descuentos: -'+money(b.discount):'')+'<br><strong>Total efectivo: '+money(b.total||0)+'</strong><br>💳 Tarjeta: '+money(b.cardTotal||Math.round((b.total||0)*1.10))+
+          (b.comboNote?'<br>⚠️ Combo válido si hacen Parque Nacional do Iguaçu el mismo día.':'')+
+          '<br><button onclick="copySavedBudget('+Number(b.id)+')">Copiar presupuesto</button></div>';
+      }).join('');
+    }
+    modal.style.display='flex';
+    return false;
+  };
+  window.copySavedBudget=function(id){
+    var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];}catch(e){saved=[];}
+    var b=saved.find(function(x){return Number(x.id)===Number(id);}); if(!b) return false;
+    var txt=b.summaryText||budgetText(b);
+    if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert('Presupuesto copiado.');});}
+    else{var area=document.createElement('textarea');area.value=txt;document.body.appendChild(area);area.select();document.execCommand('copy');document.body.removeChild(area);alert('Presupuesto copiado.');}
+    return false;
+  };
+})();
+</script>
+
+<!-- ===== PATCH DAVID 2026-06-09: traducción total + captura sin aviso duplicado ===== -->
+<script id="explora-i18n-capture-final-patch">
+(function(){
+  var I18N={
+    es:{
+      best:'🏆 MÁS VENDIDOS', other:'🌎 OTROS ATRACTIVOS', top:'⭐ MÁS VENDIDO', addTransfer:'Agregar traslado', cancel:'Anular', selectedAdded:'agregada', from:'Desde', one:'Solo ida', round:'Ida y vuelta', combo:'Combo Brasil', transferTitle:'Seleccione el traslado', confirm:'Confirmar', close:'Cerrar', back:'Volver', save:'Guardar', saveBudget:'Guardar presupuesto', clear:'Borrar todos', total:'Total', discountApplied:'Descuento aplicado', discount:'Descuento', discounts:'Descuentos', savings:'ahorro', promoApplied:'Promoción aplicada', promoArgentina:'Promo Argentina', promoBrasil:'Promo Brasil', comboParaguay:'Combo Paraguay', comboTriple:'Combo Triple Frontera', cardNote:'Pagando en tarjeta el precio = 10% más caro.', cardTotal:'Total con tarjeta', comboNote:'Combo válido realizando Parque Nacional do Iguaçu el mismo día.', captureHelp:'Puede tomar una captura de pantalla.', exit:'Salir', sendWhatsApp:'Enviar a WhatsApp', modalSend:'Enviar a WhatsApp', saveWhatsApp:'Guardar WhatsApp', phoneMissing:'Escribí el WhatsApp del pasajero.', successTitle:'Guardado exitosamente', successText:'El presupuesto quedó guardado correctamente en Presupuestos guardados.', accept:'Aceptar', savedTitle:'Presupuestos guardados', emptySaved:'Todavía no hay presupuestos guardados.', copy:'Copiar presupuesto', copied:'Presupuesto copiado.', noWhatsApp:'Sin WhatsApp cargado', passenger:'Pasajero', passengerName:'Pasajero', language:'Idioma', currency:'Moneda', lodging:'Alojamiento', cashTotal:'Total efectivo', cardPay:'Tarjeta', subtotal:'Subtotal', visibleDiscounts:'Descuentos visibles', savedBudget:'Presupuesto guardado', lodgingAr:'Argentina / Puerto Iguazú', lodgingBr:'Brasil / Foz do Iguaçu', countryArgentina:'Argentina', countryBrasil:'Brasil', countryParaguay:'Paraguay', destination:'Destino', minFromBrazil:'Tarifa desde Brasil', comboSmall:'Combo con Parque Nacional', selectedTours:'paseo(s)', noSavedConfirm:'¿Borrar todos los presupuestos guardados?', startMissingName:'Complete el nombre para iniciar', startBtn:'INICIAR PRESUPUESTO', savedBtn:'📋 Ver presupuestos guardados', langLabel:'Idioma', nameLabel:'Nombre del pasajero', namePh:'Ej: Ariel', currLabel:'Moneda', stayLabel:'¿Dónde estás alojado?', stayAr:'Argentina / Puerto Iguazú', stayBr:'Brasil / Foz do Iguaçu'},
+    en:{
+      best:'🏆 BEST SELLERS', other:'🌎 OTHER ATTRACTIONS', top:'⭐ BEST SELLER', addTransfer:'Add transfer', cancel:'Cancel', selectedAdded:'added', from:'From', one:'One way', round:'Round trip', combo:'Brazil Combo', transferTitle:'Choose the transfer', confirm:'Confirm', close:'Close', back:'Back', save:'Save', saveBudget:'Save quote', clear:'Clear all', total:'Total', discountApplied:'Discount applied', discount:'Discount', discounts:'Discounts', savings:'savings', promoApplied:'Promotion applied', promoArgentina:'Argentina Promo', promoBrasil:'Brazil Promo', comboParaguay:'Paraguay Combo', comboTriple:'Triple Frontier Combo', cardNote:'Card payment price = 10% higher.', cardTotal:'Card total', comboNote:'Combo valid when visiting Parque Nacional do Iguaçu on the same day.', captureHelp:'You can take a screenshot.', exit:'Exit', sendWhatsApp:'Send to WhatsApp', modalSend:'Send to WhatsApp', saveWhatsApp:'Save WhatsApp', phoneMissing:'Enter the passenger WhatsApp.', successTitle:'Saved successfully', successText:'The quote was saved correctly in Saved quotes.', accept:'OK', savedTitle:'Saved quotes', emptySaved:'There are no saved quotes yet.', copy:'Copy quote', copied:'Quote copied.', noWhatsApp:'No WhatsApp entered', passenger:'Passenger', passengerName:'Passenger', language:'Language', currency:'Currency', lodging:'Accommodation', cashTotal:'Cash total', cardPay:'Card', subtotal:'Subtotal', visibleDiscounts:'Visible discounts', savedBudget:'Saved quote', lodgingAr:'Argentina / Puerto Iguazú', lodgingBr:'Brazil / Foz do Iguaçu', countryArgentina:'Argentina', countryBrasil:'Brazil', countryParaguay:'Paraguay', destination:'Destination', minFromBrazil:'Rate from Brazil', comboSmall:'Combo with National Park', selectedTours:'tour(s)', noSavedConfirm:'Delete all saved quotes?', startMissingName:'Complete the passenger name to start', startBtn:'START QUOTE', savedBtn:'📋 Saved quotes', langLabel:'Language', nameLabel:'Passenger name', namePh:'Ex: Ariel', currLabel:'Currency', stayLabel:'Where are you staying?', stayAr:'Argentina / Puerto Iguazú', stayBr:'Brazil / Foz do Iguaçu'},
+    pt:{
+      best:'🏆 MAIS VENDIDOS', other:'🌎 OUTROS ATRATIVOS', top:'⭐ MAIS VENDIDO', addTransfer:'Adicionar traslado', cancel:'Remover', selectedAdded:'adicionado', from:'A partir de', one:'Só ida', round:'Ida e volta', combo:'Combo Brasil', transferTitle:'Escolha o traslado', confirm:'Confirmar', close:'Fechar', back:'Voltar', save:'Salvar', saveBudget:'Salvar orçamento', clear:'Limpar tudo', total:'Total', discountApplied:'Desconto aplicado', discount:'Desconto', discounts:'Descontos', savings:'economia', promoApplied:'Promoção aplicada', promoArgentina:'Promo Argentina', promoBrasil:'Promo Brasil', comboParaguay:'Combo Paraguai', comboTriple:'Combo Tríplice Fronteira', cardNote:'Pagando no cartão o preço fica 10% mais caro.', cardTotal:'Total no cartão', comboNote:'Combo válido fazendo Parque Nacional do Iguaçu no mesmo dia.', captureHelp:'Você pode tirar uma captura de tela.', exit:'Sair', sendWhatsApp:'Enviar para WhatsApp', modalSend:'Enviar para WhatsApp', saveWhatsApp:'Salvar WhatsApp', phoneMissing:'Digite o WhatsApp do passageiro.', successTitle:'Salvo com sucesso', successText:'O orçamento foi salvo corretamente em Orçamentos salvos.', accept:'Aceitar', savedTitle:'Orçamentos salvos', emptySaved:'Ainda não há orçamentos salvos.', copy:'Copiar orçamento', copied:'Orçamento copiado.', noWhatsApp:'Sem WhatsApp carregado', passenger:'Passageiro', passengerName:'Passageiro', language:'Idioma', currency:'Moeda', lodging:'Hospedagem', cashTotal:'Total em dinheiro', cardPay:'Cartão', subtotal:'Subtotal', visibleDiscounts:'Descontos visíveis', savedBudget:'Orçamento salvo', lodgingAr:'Argentina / Puerto Iguazú', lodgingBr:'Brasil / Foz do Iguaçu', countryArgentina:'Argentina', countryBrasil:'Brasil', countryParaguay:'Paraguai', destination:'Destino', minFromBrazil:'Tarifa saindo do Brasil', comboSmall:'Combo com Parque Nacional', selectedTours:'passeio(s)', noSavedConfirm:'Apagar todos os orçamentos salvos?', startMissingName:'Complete o nome para iniciar', startBtn:'INICIAR ORÇAMENTO', savedBtn:'📋 Orçamentos salvos', langLabel:'Idioma', nameLabel:'Nome do passageiro', namePh:'Ex: Ariel', currLabel:'Moeda', stayLabel:'Onde você está hospedado?', stayAr:'Argentina / Puerto Iguazú', stayBr:'Brasil / Foz do Iguaçu'}
+  };
+  function lang(){var el=document.getElementById('language')||document.getElementById('startLanguage');return (el&&el.value)||localStorage.getItem('exploraLanguage')||'es';}
+  function T(k){return (I18N[lang()]&&I18N[lang()][k])||I18N.es[k]||k;}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v||0).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]||c;});}
+  function nums(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function getTrips(){try{if(Array.isArray(window.selected))return window.selected;var a=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]');return Array.isArray(a)?a:[];}catch(e){return [];}}
+  function hasPark(trips){return trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function isComboItem(name){return name==='Parque das Aves'||name==='Aquafoz Acuario';}
+  function modeTextLocal(type){return type==='combo'?T('combo'):(type==='round'?T('round'):T('one'));}
+  window.exploraModeTextLocalized=modeTextLocal;
+  window.flagTitle=function(cat){cat=String(cat||''); if(cat.indexOf('Argentina')>-1)return '<span class="country-arg">🇦🇷 '+T('countryArgentina').toUpperCase()+'</span>'; if(cat.indexOf('Brasil')>-1)return '<span class="country-bra">🇧🇷 '+T('countryBrasil').toUpperCase()+'</span>'; if(cat.indexOf('Paraguay')>-1)return '<span class="country-par">🇵🇾 '+T('countryParaguay').toUpperCase()+'</span>'; return cat;};
+  window.countryData=function(cat){cat=String(cat||''); if(cat.indexOf('Argentina')>-1)return {flag:'🇦🇷',name:T('countryArgentina'),short:'AR'}; if(cat.indexOf('Brasil')>-1)return {flag:'🇧🇷',name:T('countryBrasil'),short:'BR'}; if(cat.indexOf('Paraguay')>-1)return {flag:'🇵🇾',name:T('countryParaguay'),short:'PY'}; return {flag:'🌎',name:T('destination'),short:''};};
+  function currentLodgingTextLocal(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?T('lodgingBr'):T('lodgingAr');}
+  window.currentExploraLodgingTextLocalized=currentLodgingTextLocal;
+  function details(){var trips=getTrips();return trips.map(function(t){var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one'),normal=0,effective=0;if(isComboItem(t.name)&&hasPark(trips)){normal=70000;effective=20000;type='combo';}else{try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}}return {name:t.name,type:type,mode:modeTextLocal(type),normal:normal,effective:effective,discount:Math.max(0,normal-effective)};});}
+  function totals(ds){return ds.reduce(function(a,t){a.subtotal+=t.normal;a.discount+=t.discount;a.total+=t.effective;return a;},{subtotal:0,discount:0,total:0});}
+  function passengerName(){try{var p=JSON.parse(localStorage.getItem('exploraStartProfile')||'{}'); if(p.name)return p.name;}catch(e){} var n=(document.getElementById('startName')||{}).value; return String(n||'').trim()||T('passengerName');}
+  function budgetText(b){var txt=T('savedBudget')+'\n'; txt+=T('passenger')+': '+(b.name||T('passengerName'))+'\n'; if(b.phone)txt+='WhatsApp: +'+b.phone+'\n'; txt+=T('language')+': '+String(b.language||lang()).toUpperCase()+'\n'; txt+=T('currency')+': '+(b.currency||'ARS')+'\n'; txt+=T('lodging')+': '+(b.lodging||currentLodgingTextLocal())+'\n\n'; (b.tripDetails||b.trips||[]).forEach(function(t){txt+='• '+t.name+' ('+(t.mode||modeTextLocal(t.type))+') - '+money(t.effective||0); if(t.discount)txt+=' | '+T('discount')+' -'+money(t.discount)+' | '+T('from').toLowerCase()+' '+money(t.normal); txt+='\n';}); txt+='\n'+T('subtotal')+': '+money(b.subtotal||0); if(b.discount)txt+='\n'+T('visibleDiscounts')+': -'+money(b.discount); txt+='\n'+T('cashTotal')+': '+money(b.total||0); txt+='\n'+T('cardTotal')+' (+10%): '+money(b.cardTotal||Math.round((b.total||0)*1.10)); if(b.comboNote)txt+='\n\n'+T('comboNote'); return txt;}
+  function translateStatic(){
+    var el;
+    if(el=document.getElementById('startLanguageLabel'))el.textContent=T('langLabel');
+    if(el=document.getElementById('startNameLabel'))el.textContent=T('nameLabel');
+    if(el=document.getElementById('startName'))el.placeholder=T('namePh');
+    if(el=document.getElementById('startCurrencyLabel'))el.textContent=T('currLabel');
+    if(el=document.getElementById('startLodgingLabel'))el.textContent=T('stayLabel');
+    document.querySelectorAll('[data-start-lodging="argentina"]').forEach(function(x){x.textContent=T('stayAr');});
+    document.querySelectorAll('[data-start-lodging="brasil"]').forEach(function(x){x.textContent=T('stayBr');});
+    if(el=document.getElementById('startBtn'))el.textContent=T('startBtn');
+    if(el=document.getElementById('startSavedBtn'))el.textContent=T('savedBtn');
+    if(el=document.getElementById('summaryTitle'))el.textContent=T('savedBudget');
+    if(el=document.getElementById('finishBtn'))el.textContent=T('saveBudget');
+    if(el=document.getElementById('clearBtn'))el.textContent=T('clear');
+    var title=document.querySelector('#exploraSaveSuccessModal h3'); if(title)title.textContent=T('successTitle');
+    var p=document.querySelector('#exploraSaveSuccessModal p'); if(p)p.textContent=T('successText');
+    var b=document.querySelector('#exploraSaveSuccessModal button'); if(b)b.textContent=T('accept');
+    var st=document.querySelector('#savedModal h2,#savedModal h3'); if(st)st.textContent=T('savedTitle');
+    document.querySelectorAll('.explora-capture-help').forEach(function(x){x.textContent=T('captureHelp');});
+    document.querySelectorAll('.explora-capture-save-tip').forEach(function(x){x.remove();});
+    translateRendered();
+  }
+  function translateRendered(){
+    document.querySelectorAll('.section-title').forEach(function(h){var s=h.textContent||''; if(s.indexOf('MÁS VENDIDOS')>-1||s.indexOf('BEST SELLERS')>-1||s.indexOf('MAIS VENDIDOS')>-1)h.textContent=T('best'); else if(s.indexOf('OTROS')>-1||s.indexOf('OTHER')>-1||s.indexOf('OUTROS')>-1)h.textContent=T('other');});
+    document.querySelectorAll('.top-badge,.badge').forEach(function(x){if((x.textContent||'').indexOf('VEND')>-1 || (x.textContent||'').indexOf('SELL')>-1)x.textContent=T('top');});
+    document.querySelectorAll('.add-transfer-btn').forEach(function(x){x.textContent=T('addTransfer');});
+    document.querySelectorAll('.remove-btn,.selected-remove').forEach(function(x){x.textContent=T('cancel');});
+    document.querySelectorAll('.selected-transfer-state span:last-child').forEach(function(x){x.textContent=(x.textContent||'').replace(/agregada|added|adicionado/g,T('selectedAdded'));});
+    document.querySelectorAll('.trip-type-label').forEach(function(x){x.textContent=T('transferTitle');});
+    var mt=document.getElementById('transferModalTitle'); if(mt)mt.textContent=T('transferTitle');
+    var cbtn=document.querySelector('#transferModal .explora-final-btn:not(.secondary),#transferModal button.confirm'); if(cbtn)cbtn.textContent=T('confirm');
+    document.querySelectorAll('.compact-discount').forEach(function(x){x.textContent=x.textContent.replace('ahorro',T('savings')).replace('Promo Argentina',T('promoArgentina')).replace('Promo Brasil',T('promoBrasil')).replace('Combo Paraguay',T('comboParaguay')).replace('Combo Triple Frontera',T('comboTriple')).replace('Promoción aplicada',T('promoApplied'));});
+    var total=document.getElementById('total'); if(total && total.textContent.indexOf(':')>-1){total.textContent=T('total')+': '+total.textContent.split(':').slice(1).join(':').trim();}
+  }
+  var oldUpdate=window.updateTexts; window.updateTexts=function(){try{if(oldUpdate)oldUpdate.apply(this,arguments);}catch(e){} translateStatic();};
+  var oldRender=window.renderCards; if(oldRender){window.renderCards=function(){var r=oldRender.apply(this,arguments); setTimeout(translateStatic,0); return r;};}
+  var oldSummary=window.updateSummary; if(oldSummary){window.updateSummary=function(){var r=oldSummary.apply(this,arguments); setTimeout(function(){var t=document.getElementById('total'); if(t&&t.textContent.indexOf(':')>-1)t.textContent=T('total')+': '+t.textContent.split(':').slice(1).join(':').trim(); document.querySelectorAll('.compact-discount').forEach(function(x){x.textContent=x.textContent.replace('ahorro',T('savings')).replace('Promo Argentina',T('promoArgentina')).replace('Promo Brasil',T('promoBrasil')).replace('Combo Paraguay',T('comboParaguay')).replace('Combo Triple Frontera',T('comboTriple')).replace('Promoción aplicada',T('promoApplied'));});},0); return r;};}
+  var oldApplyStart=window.applyStartLanguage; window.applyStartLanguage=function(){try{if(oldApplyStart)oldApplyStart.apply(this,arguments);}catch(e){} translateStatic();};
+  window.buildExploraCleanCapture=function(){var ds=details(), t=totals(ds), rows=''; ds.forEach(function(x){rows+='<div class="explora-capture-line"><span>'+esc(x.name)+'<br><small>'+esc(x.mode)+'</small></span><span>'+(x.discount?'<small style="display:block;color:#999;text-decoration:line-through;font-weight:700">'+money(x.normal)+'</small>':'')+money(x.effective)+'</span></div>';}); var html='<div class="explora-capture-lines">'+rows+'</div>'; if(t.discount>0)html+='<div class="explora-capture-line"><span class="explora-capture-discount">'+T('discountApplied')+'</span><span class="explora-capture-discount">-'+money(t.discount)+'</span></div>'; html+='<div class="explora-capture-total"><span>'+T('total').toUpperCase()+'</span><span>'+money(t.total)+'</span></div>'; if(hasPark(getTrips())&&ds.some(function(x){return x.type==='combo';}))html+='<div class="explora-capture-note">⚠️ '+T('comboNote')+'</div>'; html+='<div class="explora-capture-note">💳 '+T('cardNote')+' '+T('cardTotal')+': <strong>'+money(t.total*1.10)+'</strong></div>'; return html;};
+  window.takeExploraPhotoChoice=function(){try{window.saveExploraCurrentBudget&&window.saveExploraCurrentBudget('');}catch(e){} clearTimeout(window.__exploraChoiceTimer); var choice=document.getElementById('exploraFinalChoiceModal'); if(choice)choice.style.display='none'; var content=document.getElementById('exploraCaptureContent'); if(content)content.innerHTML=window.buildExploraCleanCapture(); var m=document.getElementById('exploraFinalBudgetModal'); if(m)m.style.display='none'; var p=document.getElementById('exploraFinalPhoneModal'); if(p)p.style.display='none'; var box=document.querySelector('#exploraCaptureModal .explora-capture-actions'); if(box){box.innerHTML='<button type="button" class="exit" onclick="goExploraLogin()">'+T('exit')+'</button><button type="button" class="whatsapp" onclick="showExploraSendPhone()">'+T('sendWhatsApp')+'</button>';} var help=document.querySelector('#exploraCaptureModal .explora-capture-help'); if(help)help.textContent=T('captureHelp'); var cap=document.getElementById('exploraCaptureModal'); if(cap)cap.style.display='flex'; try{if(typeof fitExploraCaptureCard==='function')setTimeout(fitExploraCaptureCard,60);}catch(e){} return false;};
+  window.showExploraSendPhone=function(){var modal=document.getElementById('exploraFinalPhoneModal'); if(modal)modal.style.display='flex'; var title=document.querySelector('#exploraFinalPhoneModal h3'); if(title)title.textContent=T('modalSend'); var btn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(btn)btn.textContent=T('saveWhatsApp'); var close=document.querySelector('#exploraFinalPhoneModal button.secondary'); if(close)close.textContent=T('back'); setTimeout(function(){var i=document.getElementById('finalPhoneInput'); if(i)i.focus();},80); return false;};
+  window.saveExploraCurrentBudget=function(phoneFull){var ds=details(); if(!ds.length)return null; var t=totals(ds); var id=window.__exploraCurrentBudgetId||Date.now(); window.__exploraCurrentBudgetId=id; var b={id:id,date:new Date().toLocaleString(lang()==='en'?'en-US':(lang()==='pt'?'pt-BR':'es-AR')),name:passengerName(),phone:phoneFull||'',lodging:currentLodgingTextLocal(),language:lang(),currency:(document.getElementById('currency')||{}).value||'ARS',tripDetails:ds,trips:ds,subtotal:t.subtotal,discount:t.discount,total:t.total,cardTotal:Math.round(t.total*1.10),totalText:T('cashTotal')+': '+money(t.total),comboNote:hasPark(getTrips())&&ds.some(function(x){return x.type==='combo';})}; b.summaryText=budgetText(b); try{var saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved))saved=[]; var idx=saved.findIndex(function(x){return Number(x.id)===Number(id);}); if(idx>=0){if(!b.phone&&saved[idx].phone)b.phone=saved[idx].phone; b.summaryText=budgetText(b); saved[idx]=b;}else saved.unshift(b); localStorage.setItem('exploraSavedBudgets',JSON.stringify(saved));}catch(e){alert('No se pudo guardar el presupuesto: '+e.message);} return b;};
+  window.sendExploraBudgetToPhone=function(){var code=nums((document.getElementById('finalCountryCode')||{}).value||'54'), phone=nums((document.getElementById('finalPhoneInput')||{}).value||''); if(!phone){alert(T('phoneMissing'));return false;} window.saveExploraCurrentBudget(code+phone); var input=document.getElementById('finalPhoneInput'); if(input)input.value=''; var p=document.getElementById('exploraFinalPhoneModal'); if(p)p.style.display='none'; var ok=document.getElementById('exploraSaveSuccessModal'); if(ok)ok.style.display='flex'; translateStatic(); return false;};
+  window.openSavedBudgets=function(){var modal=document.getElementById('savedModal'), list=document.getElementById('savedList'); if(!modal||!list)return false; var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved))saved=[];}catch(e){} if(!saved.length){list.innerHTML='<div class="saved-item">'+T('emptySaved')+'</div>';}else{list.innerHTML=saved.map(function(b){var ds=b.tripDetails||b.trips||[]; var rows=ds.map(function(x){var effective=x.effective||0,normal=x.normal||effective,discount=Math.max(0,x.discount||0);return '<div class="saved-trip-row"><span>'+esc(x.name||'')+'<small>'+esc(x.mode||modeTextLocal(x.type||'one'))+'</small>'+(discount?'<small class="saved-discount">'+T('discount')+': -'+money(discount)+'</small>':'')+'</span><strong>'+(discount?'<span class="saved-old">'+money(normal)+'</span>':'')+money(effective)+'</strong></div>';}).join(''); return '<div class="saved-item"><strong>'+esc(b.name||T('passengerName'))+'</strong><br>'+(b.phone?'📱 +'+esc(b.phone)+'<br>':'📱 '+T('noWhatsApp')+'<br>')+'📍 '+esc(b.lodging||'')+'<br>🌐 '+esc(String(b.language||lang()).toUpperCase())+' · 💱 '+esc(b.currency||'ARS')+'<br>🕒 '+esc(b.date||'')+'<div class="saved-trip-list">'+rows+'</div><br>'+T('subtotal')+': '+money(b.subtotal||0)+(b.discount?'<br>'+T('discounts')+': -'+money(b.discount):'')+'<br><strong>'+T('cashTotal')+': '+money(b.total||0)+'</strong><br>💳 '+T('cardPay')+': '+money(b.cardTotal||Math.round((b.total||0)*1.10))+(b.comboNote?'<br>⚠️ '+T('comboNote'):'')+'<br><button onclick="copySavedBudget('+Number(b.id)+')">'+T('copy')+'</button></div>';}).join('');} modal.style.display='flex'; translateStatic(); return false;};
+  window.copySavedBudget=function(id){var saved=[]; try{saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved))saved=[];}catch(e){} var b=saved.find(function(x){return Number(x.id)===Number(id);}); if(!b)return false; var txt=b.summaryText||budgetText(b); if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert(T('copied'));});}else{var a=document.createElement('textarea');a.value=txt;document.body.appendChild(a);a.select();document.execCommand('copy');document.body.removeChild(a);alert(T('copied'));} return false;};
+  window.clearSavedBudgets=function(){if(confirm(T('noSavedConfirm'))){localStorage.removeItem('exploraSavedBudgets');openSavedBudgets();}};
+  var oldStart=window.startExplora; window.startExplora=function(){var nameEl=document.getElementById('startName'); if(nameEl&&!String(nameEl.value||'').trim()){alert(T('startMissingName'));nameEl.focus();return false;} return oldStart?oldStart.apply(this,arguments):false;};
+  document.addEventListener('change',function(e){if(e.target&&e.target.id==='language'){try{localStorage.setItem('exploraLanguage',e.target.value);}catch(x){} setTimeout(function(){translateStatic();try{if(window.renderCards)window.renderCards();}catch(er){}},0);}});
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(translateStatic,100);});
+  setTimeout(translateStatic,300);
+})();
+</script>
+
+
 </body>
 </html>
