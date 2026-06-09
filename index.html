@@ -5670,5 +5670,87 @@ body:not(.not-started) .container{padding-top:24px!important;}
 })();
 </script>
 
+
+<!-- ===== PATCH DAVID 2026-06-09: tarjeta final sin logo + modal WhatsApp corregido ===== -->
+<style id="explora-no-logo-whatsapp-modal-fix">
+  /* Más espacio en la tarjeta final: sin logo ni texto superior */
+  #exploraCaptureContent .explora-capture-logo{display:none!important;}
+  #exploraCaptureModal .explora-capture-card{padding-top:16px!important;}
+  #exploraCaptureModal .explora-capture-lines{margin-top:0!important;}
+  #exploraCaptureModal .explora-capture-card.explora-fit-small .explora-capture-logo{display:none!important;}
+
+  /* El modal de WhatsApp debe quedar por encima de la tarjeta de captura */
+  #exploraFinalPhoneModal{
+    z-index:1000025!important;
+    background:rgba(0,0,0,.72)!important;
+    backdrop-filter:none!important;
+    -webkit-backdrop-filter:none!important;
+  }
+  #exploraFinalPhoneModal .explora-choice-box{
+    border:1px solid rgba(215,180,55,.58)!important;
+    box-shadow:0 22px 70px rgba(0,0,0,.72)!important;
+  }
+</style>
+<script id="explora-no-logo-whatsapp-modal-fix-behavior">
+(function(){
+  function onlyNumbers(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v||0).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c;});}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function currentLodgingText(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?'Brasil / Foz do Iguaçu':'Argentina / Puerto Iguazú';}
+  function hasBrazilPark(trips){return trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function isBrazilComboItem(name){return name==='Parque das Aves'||name==='Aquafoz Acuario';}
+  function linePrices(t,trips){
+    var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+    var normal=0,effective=0;
+    if(isBrazilComboItem(t.name) && hasBrazilPark(trips)){normal=70000; effective=20000; type='combo';}
+    else{
+      try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}
+      try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}
+    }
+    return {type:type,normal:normal,effective:effective,discount:Math.max(0,normal-effective)};
+  }
+  function modeText(type){return type==='combo'?'Combo Brasil':(type==='round'?'Ida y vuelta':'Solo ida');}
+  function hasComboBrazil(trips){return hasBrazilPark(trips) && trips.some(function(t){return isBrazilComboItem(t.name);});}
+
+  window.buildExploraCleanCapture=function(){
+    var trips=getTrips(); var subtotal=0,discount=0,total=0; var rows='';
+    trips.forEach(function(t){
+      var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective;
+      rows+='<div class="explora-capture-line"><span>'+esc(t.name)+'<br><small>'+modeText(p.type)+'</small></span><span>'+(p.discount?'<small style="display:block;color:#999;text-decoration:line-through;font-weight:700">'+money(p.normal)+'</small>':'')+money(p.effective)+'</span></div>';
+    });
+    var html='<div class="explora-capture-lines">'+rows+'</div>';
+    if(discount>0){html+='<div class="explora-capture-line"><span class="explora-capture-discount">Descuento aplicado</span><span class="explora-capture-discount">-'+money(discount)+'</span></div>';}
+    html+='<div class="explora-capture-total"><span>TOTAL</span><span>'+money(total)+'</span></div>';
+    if(hasComboBrazil(trips)){html+='<div class="explora-capture-note">⚠️ Combo válido realizando Parque Nacional do Iguaçu el mismo día.</div>';}
+    html+='<div class="explora-capture-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money(total*1.10)+'</strong></div>';
+    html+='<div class="explora-capture-contact"><div class="explora-capture-question">¿Deseas reservar?</div><div class="explora-capture-name">David Gómez</div><div class="explora-capture-role">Coordinador EXPLORA</div><div class="explora-capture-whatsapp-label">🇦🇷 WhatsApp</div><div class="explora-capture-phone-box">+54 9 3757 461564</div></div>';
+    html+='<div class="explora-capture-save-tip">📸 Puede tomar una captura de pantalla.</div>';
+    return html;
+  };
+
+  window.showExploraSendPhone=function(){
+    var modal=document.getElementById('exploraFinalPhoneModal');
+    if(!modal){alert('No se encontró el modal de WhatsApp.');return false;}
+    var title=document.querySelector('#exploraFinalPhoneModal h3'); if(title) title.textContent='Enviar a WhatsApp';
+    var btn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(btn) btn.textContent='Guardar WhatsApp';
+    var sel=document.getElementById('finalCountryCode');
+    if(sel && !sel.options.length){
+      sel.innerHTML='<option value="54">🇦🇷 +54 Argentina</option><option value="55">🇧🇷 +55 Brasil</option><option value="595">🇵🇾 +595 Paraguay</option><option value="598">🇺🇾 +598 Uruguay</option><option value="56">🇨🇱 +56 Chile</option><option value="591">🇧🇴 +591 Bolivia</option><option value="51">🇵🇪 +51 Perú</option><option value="1">🇺🇸 +1 USA</option><option value="34">🇪🇸 +34 España</option>';
+    }
+    modal.style.display='flex';
+    setTimeout(function(){var i=document.getElementById('finalPhoneInput'); if(i) i.focus();},80);
+    return false;
+  };
+  window.hideExploraSendPhone=function(){var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';};
+
+  window.addEventListener('load',function(){
+    var content=document.getElementById('exploraCaptureContent');
+    var cap=document.getElementById('exploraCaptureModal');
+    if(content && cap && cap.style.display==='flex'){content.innerHTML=window.buildExploraCleanCapture();}
+  });
+})();
+</script>
+
 </body>
 </html>
