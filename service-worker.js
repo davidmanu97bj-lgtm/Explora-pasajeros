@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260608-final-colores-borrar-todos';
+const CACHE_NAME = 'explora-presupuesto-v20260608-modal-transfer-final';
 const APP_SHELL = [
   './',
   './index.html',

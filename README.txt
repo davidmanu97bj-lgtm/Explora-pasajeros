@@ -1,14 +1,15 @@
-EXPLORA PWA - versión final colores + borrar todos
+EXPLORA PWA - versión final con modal de traslado
 
 Cambios incluidos:
-- Más vendido en dorado EXPLORA, no verde.
-- Verde reservado para Solo ida / Ida y vuelta seleccionado y Agregado.
-- Anular selección en rojo.
-- Total del presupuesto fijo en verde.
-- Botón visible 🗑️ Borrar todos en el presupuesto fijo.
-- Idioma y Moneda como botones táctiles, sin desplegable molesto.
-- Scroll automático al tocar Nombre / WhatsApp para evitar que el teclado tape el campo.
-- Service Worker con nueva versión de caché para forzar actualización.
+- Se elimina Solo ida / Ida y vuelta permanente de las tarjetas.
+- Cada tarjeta muestra Desde + precio y botón + Agregar traslado.
+- Al tocar Agregar traslado se abre un modal para elegir Solo ida o Ida y vuelta.
+- Después de confirmar, la tarjeta muestra ✓ traslado agregado y botón Anular.
+- Más vendido queda dorado EXPLORA.
+- Verde reservado para agregado/selección confirmada y total.
+- Botón Borrar todos visible en el presupuesto fijo.
+- Promociones se mantienen solo cuando corresponde en ida y vuelta.
+- Service Worker actualizado para forzar nueva caché.
 
 Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - index.html

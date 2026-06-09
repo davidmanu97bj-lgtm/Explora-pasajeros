@@ -1980,6 +1980,41 @@ body.not-started.keyboard-mode .start-card{
   .start-choice-group{gap:8px!important;}
 }
 
+
+
+/* ===== EXPLORA UX FINAL: agregar traslado por modal, menos confusión visual ===== */
+.trip-type-label,.trip-choice,.airport-transfer-pill{display:none!important;}
+.card-content{display:flex!important;flex-direction:column!important;gap:10px!important;}
+.card h3{min-height:auto!important;margin-bottom:2px!important;}
+.compact-from-price{font-size:25px!important;margin:4px 0 8px!important;color:#d7b437!important;}
+.compact-from-price strong{font-size:31px!important;color:#d7b437!important;}
+.compact-from-price small{display:none!important;}
+.add-transfer-btn{width:100%!important;min-height:54px!important;border-radius:16px!important;background:#101010!important;color:#d7b437!important;border:1px solid rgba(215,180,55,.72)!important;box-shadow:none!important;font-weight:900!important;letter-spacing:.2px!important;}
+.add-transfer-btn:active{background:#191919!important;transform:scale(.985)!important;}
+.selected-transfer-state{display:flex!important;align-items:center!important;gap:9px!important;color:#22c55e!important;font-size:18px!important;font-weight:900!important;margin-top:2px!important;}
+.check-dot{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:25px!important;height:25px!important;border-radius:50%!important;background:#15803d!important;color:white!important;font-weight:900!important;}
+.selected-price{font-size:27px!important;margin:0 0 8px!important;color:#d7b437!important;}
+.full-width{width:100%!important;flex:none!important;}
+.remove-btn.selected-remove{min-height:54px!important;border-radius:16px!important;background:linear-gradient(135deg,#b91c1c,#7f1111)!important;color:#fff!important;border:1px solid rgba(248,113,113,.55)!important;font-weight:900!important;}
+.top-badge{background:linear-gradient(135deg,#e6c24f,#c99e28)!important;color:#070707!important;border:1px solid rgba(255,255,255,.18)!important;}
+.transfer-modal{z-index:1000005!important;background:rgba(0,0,0,.72)!important;}
+.transfer-modal-box{max-width:520px!important;width:min(520px,90vw)!important;background:linear-gradient(180deg,#151515,#070707)!important;border:1px solid rgba(215,180,55,.35)!important;border-radius:26px!important;padding:30px!important;color:#f7f7f7!important;}
+.transfer-modal-box h2{color:#d7b437!important;text-align:center!important;margin-bottom:8px!important;font-size:26px!important;}
+.transfer-attraction-name{text-align:center!important;color:#d8d8d8!important;font-weight:800!important;margin:0 0 18px!important;font-size:17px!important;}
+.transfer-option{width:100%!important;display:flex!important;align-items:center!important;gap:16px!important;padding:18px 20px!important;margin:12px 0!important;border-radius:18px!important;background:#111!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important;text-align:left!important;cursor:pointer!important;}
+.transfer-option strong{display:block!important;font-size:20px!important;margin-bottom:4px!important;}
+.transfer-option small{display:block!important;color:#d7b437!important;font-size:19px!important;font-weight:900!important;}
+.transfer-option.active{border-color:#22c55e!important;box-shadow:0 0 0 2px rgba(34,197,94,.18)!important;background:rgba(22,163,74,.12)!important;}
+.radio-dot{width:26px!important;height:26px!important;border-radius:50%!important;border:3px solid #e5e7eb!important;flex:0 0 auto!important;}
+.transfer-option.active .radio-dot{border-color:#22c55e!important;background:radial-gradient(circle,#22c55e 0 42%,transparent 46%)!important;}
+.transfer-confirm{margin-top:20px!important;height:62px!important;border-radius:17px!important;font-size:18px!important;}
+#clearBtn{display:block!important;visibility:visible!important;opacity:1!important;background:#240b0b!important;color:#ffb4b4!important;border:1px solid rgba(248,113,113,.45)!important;}
+.summary.compact-summary{max-height:170px!important;grid-template-columns:1fr!important;gap:8px!important;}
+.summary .total{color:#22c55e!important;text-shadow:0 0 10px rgba(34,197,94,.18)!important;}
+@media (min-width:900px){.card img,.featured-card img{height:220px!important;}.card-content{padding:16px!important;}}
+@media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
+@media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
+
 </style>
 </head>
 <body class="not-started">
@@ -2249,6 +2284,23 @@ body.not-started.keyboard-mode .start-card{
   </div>
 </div>
 
+<div class="modal transfer-modal" id="transferModal">
+  <div class="modal-box transfer-modal-box">
+    <span class="close-modal" onclick="closeTransferModal()">×</span>
+    <h2 id="transferModalTitle">Seleccione el traslado</h2>
+    <div id="transferAttractionName" class="transfer-attraction-name"></div>
+    <button type="button" class="transfer-option active" data-type="one" onclick="setCardTripType(pendingTransferName,'one')">
+      <span class="radio-dot"></span>
+      <span><strong>Solo ida</strong><small id="transferOnePrice">ARS $0</small></span>
+    </button>
+    <button type="button" class="transfer-option" data-type="round" onclick="setCardTripType(pendingTransferName,'round')">
+      <span class="radio-dot"></span>
+      <span><strong>Ida y vuelta</strong><small id="transferRoundPrice">ARS $0</small></span>
+    </button>
+    <button type="button" class="final transfer-confirm" onclick="confirmTransferSelection()">CONFIRMAR</button>
+  </div>
+</div>
+
 <div class="gallery-modal" id="galleryModal"><span class="close-gallery" onclick="closeGallery()">×</span><img id="galleryImg" src="" alt="Galería EXPLORA"><div class="gallery-controls"><button onclick="prevGallery()">‹ Anterior</button><button onclick="nextGallery()">Siguiente ›</button></div></div>
 <script>
 const whatsappNumber="5493757461564";
@@ -2401,34 +2453,35 @@ function renderCards(){
     ];
 
     const usados=new Set();
-    const masVendidos=masVendidosOrden
-        .map(name=>attractions.find(a=>a.name===name))
-        .filter(Boolean);
+    const masVendidos=masVendidosOrden.map(name=>attractions.find(a=>a.name===name)).filter(Boolean);
     masVendidos.forEach(a=>usados.add(a.name));
-
     const otrosAtractivos=attractions.filter(a=>!usados.has(a.name));
 
     function renderCard(a){
         const existing=selected.find(s=>s.name===a.name);
-        const type=a.name==="Volver al aeropuerto" ? "one" : (existing?existing.type:"one");
-        const normal=priceByType(a,type);
-        const price=displayedCardPrice(a,type);
-        const promo=type==="round" && hasBrazilParkRound() && isBrazilPromoItem(a.name);
-        const argPromo=isArgentinaPromoItem(a.name,type);
+        const selectedType=existing ? (existing.type||"one") : "one";
+        const onePrice=displayedCardPrice(a,"one");
+        const selectedNormal=priceByType(a,selectedType);
+        const selectedPrice=existing ? effectiveLinePrice(existing) : displayedCardPrice(a,selectedType);
         const idx=attractions.findIndex(x=>x.name===a.name);
-        const fozArgentinaMin=(getLodging()==="brasil" && a.category && a.category.includes("Argentina") && !["Parque Nacional Iguazú","Volver al aeropuerto"].includes(a.name) && !getSelectedNames().includes("Parque Nacional Iguazú"));
-        const priceHtml=promo
-            ? `<span style="text-decoration:line-through;color:#9ca3af;font-size:17px">${formatPrice(normal)}</span><br>${formatPrice(price)}<small>Promo con Parque Nacional do Iguaçu</small>`
-            : argPromo
-                ? `<span style="text-decoration:line-through;color:#9ca3af;font-size:17px">${formatPrice(normal)}</span><br>${formatPrice(price)}`
-                : `${formatPrice(price)}<small>${fozArgentinaMin?'Tarifa desde Brasil':(type==='round'?translations[lang].round:translations[lang].one)}</small>`;
         const country=countryData(a.category);
         const cardClass=`card ${featuredAttractions.includes(a.name)?'featured-card':''} ${existing?'is-selected':''} ${a.name==='Volver al aeropuerto'?'airport-card':''}`;
-        const transferBlock=a.name==='Volver al aeropuerto'
-        ? '<div class="trip-type-label transfer-title"><span class="transfer-icon">✈</span> Traslado</div><div class="airport-transfer-pill">Aeropuerto • solo ida</div>'
-        : '<div class="trip-type-label transfer-title"><span class="transfer-icon">⇄</span> Tipo de traslado</div><div class="trip-choice" role="group" aria-label="Tipo de traslado"><button type="button" class="trip-choice-btn '+(type==='one'?'active':'')+'" data-type="one" onclick="setCardTripType(\''+a.name+'\',\'one\')">Solo ida</button><button type="button" class="trip-choice-btn '+(type==='round'?'active':'')+'" data-type="round" onclick="setCardTripType(\''+a.name+'\',\'round\')">Ida y vuelta</button></div>';
+        const promo=existing && selectedType==="round" && hasBrazilParkRound() && isBrazilPromoItem(a.name);
+        const argPromo=existing && isArgentinaPromoItem(a.name,selectedType);
         const promoTags=(promo?'<span class="mini-tag">Promo Brasil</span>':argPromo?'<span class="mini-tag">Promo Argentina</span>':'');
-        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge top-badge">MÁS VENDIDO</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="640" height="420" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3>${promoTags?`<div class="card-actions-mini">${promoTags}</div>`:''}${transferBlock}<div class="price" id="price-${idx}">${priceHtml}</div><div class="buttons"><button class="option add-btn ${existing?'selected-add':''}" onclick="addTrip('${a.name}')">${existing?'✓ Agregado':'+ Agregar'}</button><button class="option remove remove-btn ${existing?'selected-remove':'disabled-remove'}" onclick="removeTrip('${a.name}')">${existing?'Anular selección':translations[lang].remove}</button></div></div></div>`;
+        const fromText=(lang==="en"?"From":lang==="pt"?"Desde":"Desde");
+        const addText=(lang==="en"?"+ Add transfer":lang==="pt"?"+ Adicionar traslado":"+ Agregar traslado");
+        const cancelText=(lang==="en"?"Cancel":lang==="pt"?"Anular":"Anular");
+        const selectedLabel=selectedType==="round"?translations[lang].round:translations[lang].one;
+        const selectedPriceHtml = existing
+            ? (promo ? `<span style="text-decoration:line-through;color:#9ca3af;font-size:16px">${formatPrice(selectedNormal)}</span><br>${formatPrice(selectedPrice)}`
+                    : argPromo ? `<span style="text-decoration:line-through;color:#9ca3af;font-size:16px">${formatPrice(selectedNormal)}</span><br>${formatPrice(selectedPrice)}`
+                    : `${formatPrice(selectedPrice)}`)
+            : `${fromText} <strong>${formatPrice(onePrice)}</strong>`;
+        const actionHtml = existing
+            ? `<div class="selected-transfer-state"><span class="check-dot">✓</span><span>${selectedLabel} agregada</span></div><div class="price selected-price" id="price-${idx}">${selectedPriceHtml}</div><button class="option remove remove-btn selected-remove full-width" onclick="removeTrip('${a.name}')">${cancelText}</button>`
+            : `<div class="price compact-from-price" id="price-${idx}">${selectedPriceHtml}</div><button class="option add-transfer-btn full-width" onclick="openTransferModal('${a.name}')">${addText}</button>`;
+        return `<div class="${cardClass}" data-name="${a.name}">${bestSellers.includes(a.name)?'<div class="badge top-badge">⭐ MÁS VENDIDO</div>':''}<img src="${a.image}" loading="lazy" decoding="async" referrerpolicy="no-referrer" width="640" height="420" onclick="openGallery(${idx})" alt="${a.name}"><div class="card-content"><div class="country-pill">${country.flag} ${country.name}</div><h3>${a.name}</h3>${promoTags?`<div class="card-actions-mini">${promoTags}</div>`:''}${actionHtml}</div></div>`;
     }
 
     htmlParts.push(`<h2 class="section-title best-title">🏆 MÁS VENDIDOS</h2><div class="cards">`);
@@ -2460,23 +2513,54 @@ function updateVisualPrice(name,type){
         }
     }
 }
+let pendingTransferName=null;
+let pendingTransferType="one";
 function currentCardTripType(name){
-    const card=[...document.querySelectorAll('.card')].find(c=>c.querySelector('h3')&&c.querySelector('h3').innerText===name);
-    const active=card?card.querySelector('.trip-choice-btn.active'):null;
-    return active ? active.dataset.type : "one";
+    return pendingTransferType || "one";
 }
 function setCardTripType(name,type){
-    const card=[...document.querySelectorAll('.card')].find(c=>c.querySelector('h3')&&c.querySelector('h3').innerText===name);
-    if(card){
-        card.querySelectorAll('.trip-choice-btn').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===type));
+    pendingTransferType=type||"one";
+    const modal=document.getElementById("transferModal");
+    if(modal){modal.querySelectorAll('.transfer-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.type===pendingTransferType));}
+}
+function openTransferModal(name){
+    const a=getAttraction(name);
+    if(!a) return;
+    if(name==="Volver al aeropuerto"){
+        addTripWithType(name,"one");
+        return;
     }
-    updateVisualPrice(name,type);
-    updateTripType(name,type);
+    pendingTransferName=name;
+    pendingTransferType="one";
+    const modal=document.getElementById("transferModal");
+    if(!modal) return;
+    const title=document.getElementById("transferModalTitle");
+    const one=document.getElementById("transferOnePrice");
+    const round=document.getElementById("transferRoundPrice");
+    const nameEl=document.getElementById("transferAttractionName");
+    if(title) title.innerText="Seleccione el traslado";
+    if(nameEl) nameEl.innerText=name;
+    if(one) one.innerText=formatPrice(displayedCardPrice(a,"one"));
+    if(round) round.innerText=formatPrice(displayedCardPrice(a,"round"));
+    modal.querySelectorAll('.transfer-option').forEach(btn=>btn.classList.toggle('active',btn.dataset.type==="one"));
+    modal.style.display="flex";
+}
+function closeTransferModal(){
+    const modal=document.getElementById("transferModal");
+    if(modal) modal.style.display="none";
+}
+function confirmTransferSelection(){
+    if(!pendingTransferName) return;
+    addTripWithType(pendingTransferName,pendingTransferType||"one");
+    closeTransferModal();
 }
 function addTrip(name){
-    const type=name==="Volver al aeropuerto" ? "one" : currentCardTripType(name);
+    openTransferModal(name);
+}
+function addTripWithType(name,type){
+    const finalType=name==="Volver al aeropuerto" ? "one" : (type||"one");
     selected=selected.filter(i=>i.name!==name);
-    selected.push({name,type});
+    selected.push({name,type:finalType});
     localStorage.setItem("exploraTripsV2",JSON.stringify(selected));
     renderCards();
     updateSummary();
@@ -2520,7 +2604,7 @@ function updateSummary(){
     document.getElementById("total").innerText=`${translations[lang].total}: ${formatPrice(b.total)}`;
 }
 function updateTexts(){const lang=getLanguage();document.getElementById("subtitle").innerText=translations[lang].title;document.getElementById("summaryTitle").innerText=translations[lang].reserve;document.getElementById("finishBtn").innerText=translations[lang].send;document.getElementById("clearBtn").innerText=translations[lang].clear;document.getElementById("modalTitle").innerText=translations[lang].finish;document.getElementById("confirmBtn").innerText=translations[lang].confirm;document.getElementById("clientName").placeholder=translations[lang].name;document.getElementById("clientPhone").placeholder=(lang==="en"?"WhatsApp without country code":lang==="pt"?"WhatsApp sem código do país":"WhatsApp sin código");updateSummary();}
-function openModal(){document.getElementById("modal").style.display="flex";}function closeModal(){document.getElementById("modal").style.display="none";}window.onclick=function(e){if(e.target===document.getElementById("modal"))closeModal();if(e.target===document.getElementById("savedModal"))closeSavedBudgets();if(e.target===document.getElementById("galleryModal"))closeGallery();};
+function openModal(){document.getElementById("modal").style.display="flex";}function closeModal(){document.getElementById("modal").style.display="none";}window.onclick=function(e){if(e.target===document.getElementById("modal"))closeModal();if(e.target===document.getElementById("savedModal"))closeSavedBudgets();if(e.target===document.getElementById("transferModal"))closeTransferModal();if(e.target===document.getElementById("galleryModal"))closeGallery();};
 function openGallery(i){galleryIndex=i;document.getElementById("galleryImg").src=attractions[galleryIndex].image;document.getElementById("galleryModal").style.display="flex";}function closeGallery(){document.getElementById("galleryModal").style.display="none";}function nextGallery(){galleryIndex=(galleryIndex+1)%attractions.length;document.getElementById("galleryImg").src=attractions[galleryIndex].image;}function prevGallery(){galleryIndex=(galleryIndex-1+attractions.length)%attractions.length;document.getElementById("galleryImg").src=attractions[galleryIndex].image;}
 // WhatsApp desactivado: la app guarda presupuestos localmente en esta tablet.
 function formatSavedBudgetText(b){
@@ -3480,6 +3564,41 @@ body.not-started.keyboard-mode .start-card{
   .start-choice-group{gap:8px!important;}
 }
 
+
+
+/* ===== EXPLORA UX FINAL: agregar traslado por modal, menos confusión visual ===== */
+.trip-type-label,.trip-choice,.airport-transfer-pill{display:none!important;}
+.card-content{display:flex!important;flex-direction:column!important;gap:10px!important;}
+.card h3{min-height:auto!important;margin-bottom:2px!important;}
+.compact-from-price{font-size:25px!important;margin:4px 0 8px!important;color:#d7b437!important;}
+.compact-from-price strong{font-size:31px!important;color:#d7b437!important;}
+.compact-from-price small{display:none!important;}
+.add-transfer-btn{width:100%!important;min-height:54px!important;border-radius:16px!important;background:#101010!important;color:#d7b437!important;border:1px solid rgba(215,180,55,.72)!important;box-shadow:none!important;font-weight:900!important;letter-spacing:.2px!important;}
+.add-transfer-btn:active{background:#191919!important;transform:scale(.985)!important;}
+.selected-transfer-state{display:flex!important;align-items:center!important;gap:9px!important;color:#22c55e!important;font-size:18px!important;font-weight:900!important;margin-top:2px!important;}
+.check-dot{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:25px!important;height:25px!important;border-radius:50%!important;background:#15803d!important;color:white!important;font-weight:900!important;}
+.selected-price{font-size:27px!important;margin:0 0 8px!important;color:#d7b437!important;}
+.full-width{width:100%!important;flex:none!important;}
+.remove-btn.selected-remove{min-height:54px!important;border-radius:16px!important;background:linear-gradient(135deg,#b91c1c,#7f1111)!important;color:#fff!important;border:1px solid rgba(248,113,113,.55)!important;font-weight:900!important;}
+.top-badge{background:linear-gradient(135deg,#e6c24f,#c99e28)!important;color:#070707!important;border:1px solid rgba(255,255,255,.18)!important;}
+.transfer-modal{z-index:1000005!important;background:rgba(0,0,0,.72)!important;}
+.transfer-modal-box{max-width:520px!important;width:min(520px,90vw)!important;background:linear-gradient(180deg,#151515,#070707)!important;border:1px solid rgba(215,180,55,.35)!important;border-radius:26px!important;padding:30px!important;color:#f7f7f7!important;}
+.transfer-modal-box h2{color:#d7b437!important;text-align:center!important;margin-bottom:8px!important;font-size:26px!important;}
+.transfer-attraction-name{text-align:center!important;color:#d8d8d8!important;font-weight:800!important;margin:0 0 18px!important;font-size:17px!important;}
+.transfer-option{width:100%!important;display:flex!important;align-items:center!important;gap:16px!important;padding:18px 20px!important;margin:12px 0!important;border-radius:18px!important;background:#111!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important;text-align:left!important;cursor:pointer!important;}
+.transfer-option strong{display:block!important;font-size:20px!important;margin-bottom:4px!important;}
+.transfer-option small{display:block!important;color:#d7b437!important;font-size:19px!important;font-weight:900!important;}
+.transfer-option.active{border-color:#22c55e!important;box-shadow:0 0 0 2px rgba(34,197,94,.18)!important;background:rgba(22,163,74,.12)!important;}
+.radio-dot{width:26px!important;height:26px!important;border-radius:50%!important;border:3px solid #e5e7eb!important;flex:0 0 auto!important;}
+.transfer-option.active .radio-dot{border-color:#22c55e!important;background:radial-gradient(circle,#22c55e 0 42%,transparent 46%)!important;}
+.transfer-confirm{margin-top:20px!important;height:62px!important;border-radius:17px!important;font-size:18px!important;}
+#clearBtn{display:block!important;visibility:visible!important;opacity:1!important;background:#240b0b!important;color:#ffb4b4!important;border:1px solid rgba(248,113,113,.45)!important;}
+.summary.compact-summary{max-height:170px!important;grid-template-columns:1fr!important;gap:8px!important;}
+.summary .total{color:#22c55e!important;text-shadow:0 0 10px rgba(34,197,94,.18)!important;}
+@media (min-width:900px){.card img,.featured-card img{height:220px!important;}.card-content{padding:16px!important;}}
+@media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
+@media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
+
 </style>
 
 <div class="budget-success-modal" id="budgetSuccessModal" role="dialog" aria-modal="true">
@@ -3849,6 +3968,41 @@ body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bot
 /* Mantener fluidez */
 .card,.featured-card{transition:none!important;will-change:auto!important;}
 .card img,.featured-card img{filter:none!important;transition:none!important;will-change:auto!important;}
+
+
+/* ===== EXPLORA UX FINAL: agregar traslado por modal, menos confusión visual ===== */
+.trip-type-label,.trip-choice,.airport-transfer-pill{display:none!important;}
+.card-content{display:flex!important;flex-direction:column!important;gap:10px!important;}
+.card h3{min-height:auto!important;margin-bottom:2px!important;}
+.compact-from-price{font-size:25px!important;margin:4px 0 8px!important;color:#d7b437!important;}
+.compact-from-price strong{font-size:31px!important;color:#d7b437!important;}
+.compact-from-price small{display:none!important;}
+.add-transfer-btn{width:100%!important;min-height:54px!important;border-radius:16px!important;background:#101010!important;color:#d7b437!important;border:1px solid rgba(215,180,55,.72)!important;box-shadow:none!important;font-weight:900!important;letter-spacing:.2px!important;}
+.add-transfer-btn:active{background:#191919!important;transform:scale(.985)!important;}
+.selected-transfer-state{display:flex!important;align-items:center!important;gap:9px!important;color:#22c55e!important;font-size:18px!important;font-weight:900!important;margin-top:2px!important;}
+.check-dot{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:25px!important;height:25px!important;border-radius:50%!important;background:#15803d!important;color:white!important;font-weight:900!important;}
+.selected-price{font-size:27px!important;margin:0 0 8px!important;color:#d7b437!important;}
+.full-width{width:100%!important;flex:none!important;}
+.remove-btn.selected-remove{min-height:54px!important;border-radius:16px!important;background:linear-gradient(135deg,#b91c1c,#7f1111)!important;color:#fff!important;border:1px solid rgba(248,113,113,.55)!important;font-weight:900!important;}
+.top-badge{background:linear-gradient(135deg,#e6c24f,#c99e28)!important;color:#070707!important;border:1px solid rgba(255,255,255,.18)!important;}
+.transfer-modal{z-index:1000005!important;background:rgba(0,0,0,.72)!important;}
+.transfer-modal-box{max-width:520px!important;width:min(520px,90vw)!important;background:linear-gradient(180deg,#151515,#070707)!important;border:1px solid rgba(215,180,55,.35)!important;border-radius:26px!important;padding:30px!important;color:#f7f7f7!important;}
+.transfer-modal-box h2{color:#d7b437!important;text-align:center!important;margin-bottom:8px!important;font-size:26px!important;}
+.transfer-attraction-name{text-align:center!important;color:#d8d8d8!important;font-weight:800!important;margin:0 0 18px!important;font-size:17px!important;}
+.transfer-option{width:100%!important;display:flex!important;align-items:center!important;gap:16px!important;padding:18px 20px!important;margin:12px 0!important;border-radius:18px!important;background:#111!important;color:#fff!important;border:1px solid rgba(255,255,255,.16)!important;text-align:left!important;cursor:pointer!important;}
+.transfer-option strong{display:block!important;font-size:20px!important;margin-bottom:4px!important;}
+.transfer-option small{display:block!important;color:#d7b437!important;font-size:19px!important;font-weight:900!important;}
+.transfer-option.active{border-color:#22c55e!important;box-shadow:0 0 0 2px rgba(34,197,94,.18)!important;background:rgba(22,163,74,.12)!important;}
+.radio-dot{width:26px!important;height:26px!important;border-radius:50%!important;border:3px solid #e5e7eb!important;flex:0 0 auto!important;}
+.transfer-option.active .radio-dot{border-color:#22c55e!important;background:radial-gradient(circle,#22c55e 0 42%,transparent 46%)!important;}
+.transfer-confirm{margin-top:20px!important;height:62px!important;border-radius:17px!important;font-size:18px!important;}
+#clearBtn{display:block!important;visibility:visible!important;opacity:1!important;background:#240b0b!important;color:#ffb4b4!important;border:1px solid rgba(248,113,113,.45)!important;}
+.summary.compact-summary{max-height:170px!important;grid-template-columns:1fr!important;gap:8px!important;}
+.summary .total{color:#22c55e!important;text-shadow:0 0 10px rgba(34,197,94,.18)!important;}
+@media (min-width:900px){.card img,.featured-card img{height:220px!important;}.card-content{padding:16px!important;}}
+@media (min-width:1120px){.card img,.featured-card img{height:210px!important;}}
+@media (max-width:899px){.card img,.featured-card img{height:180px!important;}}
+
 </style>
 
 <script id="explora-final-behavior-patch">
