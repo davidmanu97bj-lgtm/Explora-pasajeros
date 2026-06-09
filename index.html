@@ -6076,5 +6076,110 @@ body:not(.not-started) .container{padding-top:24px!important;}
 </script>
 
 
+
+
+<!-- ===== PATCH FINAL DAVID 2026-06-09: i18n real EN/PT + nombre vacío + país WhatsApp ===== -->
+<script id="explora-david-final-i18n-country-name-fix">
+(function(){
+  function lang(){
+    var a=document.getElementById('language'), b=document.getElementById('startLanguage');
+    return (a&&a.value)||(b&&b.value)||localStorage.getItem('exploraLanguage')||'es';
+  }
+  var TX={
+    es:{select:'Seleccione el traslado',one:'Solo ida',round:'Ida y vuelta',combo:'Solo ida combinada',comboWord:'Promo Brasil',helper:'Elija una opción y toque Aceptar para continuar.',accept:'Aceptar',exit:'Salir',send:'Enviar a WhatsApp',capture:'Puede tomar una captura de pantalla.',modalTitle:'Enviar a WhatsApp',saveWa:'Guardar WhatsApp',back:'Volver',phonePh:'WhatsApp sin código',phoneAlert:'Escribí el WhatsApp del pasajero.',reserve:'¿Deseas reservar?',role:'Coordinador EXPLORA',cardNote:'Pagando en tarjeta el precio = 10% más caro.',cardTotal:'Total con tarjeta',comboNote:'Combo válido si hacen Parque Nacional do Iguaçu el mismo día.',total:'Total',discount:'Descuento aplicado',nameLabel:'Nombre del pasajero',namePh:'Ariel',langLabel:'Idioma',currLabel:'Moneda',start:'INICIAR PRESUPUESTO',saved:'📋 Ver presupuestos guardados',stay:'¿Dónde estás alojado?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brasil / Foz do Iguaçu'},
+    en:{select:'Select transfer',one:'One way',round:'Round trip',combo:'Combined one way',comboWord:'Brazil promo',helper:'Choose an option and tap Accept to continue.',accept:'Accept',exit:'Exit',send:'Send to WhatsApp',capture:'You can take a screenshot.',modalTitle:'Send to WhatsApp',saveWa:'Save WhatsApp',back:'Back',phonePh:'WhatsApp without country code',phoneAlert:'Enter the passenger WhatsApp number.',reserve:'Would you like to book?',role:'EXPLORA Coordinator',cardNote:'Paying by card is 10% more expensive.',cardTotal:'Card total',comboNote:'Combo valid if you visit Parque Nacional do Iguaçu on the same day.',total:'Total',discount:'Discount applied',nameLabel:'Passenger name',namePh:'Ariel',langLabel:'Language',currLabel:'Currency',start:'START QUOTE',saved:'📋 Saved quotes',stay:'Where are you staying?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brazil / Foz do Iguaçu'},
+    pt:{select:'Selecione o traslado',one:'Somente ida',round:'Ida e volta',combo:'Somente ida combinada',comboWord:'Promo Brasil',helper:'Escolha uma opção e toque em Aceitar para continuar.',accept:'Aceitar',exit:'Sair',send:'Enviar para WhatsApp',capture:'Você pode tirar uma captura de tela.',modalTitle:'Enviar para WhatsApp',saveWa:'Salvar WhatsApp',back:'Voltar',phonePh:'WhatsApp sem código do país',phoneAlert:'Digite o WhatsApp do passageiro.',reserve:'Deseja reservar?',role:'Coordenador EXPLORA',cardNote:'Pagando no cartão, o preço fica 10% mais caro.',cardTotal:'Total no cartão',comboNote:'Combo válido se fizerem Parque Nacional do Iguaçu no mesmo dia.',total:'Total',discount:'Desconto aplicado',nameLabel:'Nome do passageiro',namePh:'Ariel',langLabel:'Idioma',currLabel:'Moeda',start:'INICIAR ORÇAMENTO',saved:'📋 Orçamentos salvos',stay:'Onde você está hospedado?',stayAr:'Argentina / Puerto Iguazú',stayBr:'Brasil / Foz do Iguaçu'}
+  };
+  function t(k){return (TX[lang()]&&TX[lang()][k])||TX.es[k]||k;}
+  function nums(v){return String(v||'').replace(/[^0-9]/g,'');}
+  var countries=[['54','🇦🇷 Argentina +54'],['55','🇧🇷 Brasil +55'],['595','🇵🇾 Paraguay +595'],['598','🇺🇾 Uruguay +598'],['56','🇨🇱 Chile +56'],['591','🇧🇴 Bolivia +591'],['51','🇵🇪 Perú +51'],['57','🇨🇴 Colombia +57'],['593','🇪🇨 Ecuador +593'],['58','🇻🇪 Venezuela +58'],['52','🇲🇽 México +52'],['1','🇺🇸 Estados Unidos / Canadá +1'],['34','🇪🇸 España +34'],['351','🇵🇹 Portugal +351'],['33','🇫🇷 Francia +33'],['39','🇮🇹 Italia +39'],['49','🇩🇪 Alemania +49'],['44','🇬🇧 Reino Unido +44'],['31','🇳🇱 Países Bajos +31']];
+  function fillCountrySelect(id){
+    var s=document.getElementById(id); if(!s) return;
+    if(!s.options || s.options.length<3 || /No hay opciones/i.test(s.textContent||'')){
+      s.innerHTML=countries.map(function(c,i){return '<option value="'+c[0]+'" '+(i===0?'selected':'')+'>'+c[1]+'</option>';}).join('');
+    }
+    s.style.display=''; s.disabled=false;
+  }
+  function fixName(){
+    var n=document.getElementById('startName');
+    if(n){
+      if(/^\s*(Dsvid|David)\s*$/i.test(n.value||'')) n.value='';
+      n.placeholder=t('namePh');
+      n.setAttribute('autocomplete','off');
+    }
+    var cn=document.getElementById('clientName'); if(cn){cn.placeholder=t('namePh'); if(/^\s*(Dsvid|David)\s*$/i.test(cn.value||'')) cn.value='';}
+  }
+  function translateSelectOptions(){
+    document.querySelectorAll('select.type-selector option').forEach(function(o){
+      var v=(o.value||'').toLowerCase(), txt=(o.textContent||'').toLowerCase();
+      if(v==='one'||txt.indexOf('solo')>-1||txt.indexOf('one')>-1||txt.indexOf('somente')>-1||txt.indexOf('só')>-1) o.textContent=t('one');
+      if(v==='round'||txt.indexOf('vuelta')>-1||txt.indexOf('round')>-1||txt.indexOf('volta')>-1) o.textContent=t('round');
+    });
+    document.querySelectorAll('.trip-helper').forEach(function(x){x.textContent=t('helper');});
+    document.querySelectorAll('.trip-type-label').forEach(function(x){x.textContent=t('select');});
+  }
+  function translateModal(){
+    var mt=document.getElementById('transferModalTitle'); if(mt) mt.textContent=t('select');
+    var one=document.querySelector('#transferOneOption strong'); if(one) one.textContent=t('one');
+    var round=document.querySelector('#transferRoundOption strong'); if(round) round.textContent=t('round');
+    var helper=document.querySelector('#transferModal .transfer-helper, #transferModal .trip-helper'); if(helper) helper.textContent=t('helper');
+    document.querySelectorAll('#transferModal button').forEach(function(b){
+      var tx=(b.textContent||'').trim().toLowerCase();
+      if(tx==='aceptar'||tx==='accept'||tx==='aceitar') b.textContent=t('accept');
+      if(tx==='cerrar'||tx==='close'||tx==='fechar'||tx==='voltar') b.textContent=t('back');
+    });
+  }
+  function translateFinal(){
+    document.querySelectorAll('.explora-capture-actions .exit').forEach(function(b){b.textContent=t('exit');});
+    document.querySelectorAll('.explora-capture-actions .whatsapp').forEach(function(b){b.textContent=t('send');});
+    document.querySelectorAll('.explora-capture-help,.explora-capture-save-tip').forEach(function(x){x.textContent=t('capture');});
+    document.querySelectorAll('.explora-capture-question').forEach(function(x){x.textContent=t('reserve');});
+    document.querySelectorAll('.explora-capture-role').forEach(function(x){x.textContent=t('role');});
+    var ph=document.getElementById('finalPhoneInput'); if(ph) ph.placeholder=t('phonePh');
+    var title=document.querySelector('#exploraFinalPhoneModal h3'); if(title) title.textContent=t('modalTitle');
+    var btn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(btn) btn.textContent=t('saveWa');
+    var back=document.querySelector('#exploraFinalPhoneModal button.secondary'); if(back) back.textContent=t('back');
+    document.querySelectorAll('.explora-capture-line small').forEach(function(x){
+      var s=x.textContent||'';
+      if(/ida y vuelta|round trip|ida e volta/i.test(s)) x.textContent=t('round');
+      else if(/solo ida|one way|somente ida|só ida/i.test(s)) x.textContent=t('one');
+    });
+  }
+  function translateLogin(){
+    var el;
+    el=document.getElementById('startLanguageLabel'); if(el) el.textContent=t('langLabel');
+    el=document.getElementById('startNameLabel'); if(el) el.textContent=t('nameLabel');
+    el=document.getElementById('startCurrencyLabel'); if(el) el.textContent=t('currLabel');
+    el=document.getElementById('startLodgingLabel'); if(el) el.textContent=t('stay');
+    el=document.getElementById('startBtn'); if(el) el.textContent=t('start');
+    el=document.getElementById('startSavedBtn'); if(el) el.textContent=t('saved');
+    var sl=document.getElementById('startLodging'); if(sl&&sl.options.length>=2){sl.options[0].textContent='🇦🇷 '+t('stayAr'); sl.options[1].textContent='🇧🇷 '+t('stayBr');}
+  }
+  function applyAll(){fillCountrySelect('finalCountryCode'); fillCountrySelect('startCountryCode'); fixName(); translateLogin(); translateSelectOptions(); translateModal(); translateFinal();}
+  window.exploraApplyFinalI18n=applyAll;
+
+  var oldUpdate=window.updateTexts; window.updateTexts=function(){var r; try{r=oldUpdate&&oldUpdate.apply(this,arguments);}catch(e){} setTimeout(applyAll,0); return r;};
+  var oldRender=window.renderCards; if(oldRender){window.renderCards=function(){var r=oldRender.apply(this,arguments); setTimeout(applyAll,0); return r;};}
+  var oldOpenTransfer=window.openTransferModal; if(oldOpenTransfer){window.openTransferModal=function(){var r=oldOpenTransfer.apply(this,arguments); setTimeout(applyAll,0); return r;};}
+  var oldOpenModal=window.openModal; if(oldOpenModal){window.openModal=function(){var r=oldOpenModal.apply(this,arguments); setTimeout(applyAll,0); return r;};}
+  var oldShow=window.showExploraSendPhone; window.showExploraSendPhone=function(){var r=oldShow?oldShow.apply(this,arguments):false; fillCountrySelect('finalCountryCode'); setTimeout(applyAll,0); return r;};
+  window.sendExploraBudgetToPhone=function(){
+    var code=nums((document.getElementById('finalCountryCode')||{}).value||'54');
+    var phone=nums((document.getElementById('finalPhoneInput')||{}).value||'');
+    if(!phone){alert(t('phoneAlert')); return false;}
+    if(typeof window.saveExploraCurrentBudget==='function') window.saveExploraCurrentBudget(code+phone);
+    var i=document.getElementById('finalPhoneInput'); if(i) i.value='';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+    var ok=document.getElementById('exploraSaveSuccessModal'); if(ok) ok.style.display='flex';
+    applyAll(); return false;
+  };
+  var oldTake=window.takeExploraPhotoChoice; if(oldTake){window.takeExploraPhotoChoice=function(){var r=oldTake.apply(this,arguments); setTimeout(applyAll,0); return r;};}
+  document.addEventListener('change',function(e){if(e.target&&(/language|startLanguage/.test(e.target.id||''))) setTimeout(applyAll,0);});
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(applyAll,60);setTimeout(applyAll,400);});
+  setInterval(applyAll,1200);
+  applyAll();
+})();
+</script>
+
 </body>
 </html>
