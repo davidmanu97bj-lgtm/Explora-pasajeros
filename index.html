@@ -5386,5 +5386,289 @@ body:not(.not-started) .container{padding-top:24px!important;}
 })();
 </script>
 
+
+
+<!-- ===== PATCH DAVID 2026-06-09: tarjeta final guardar + WhatsApp local con confirmacion elegante ===== -->
+<style id="explora-final-card-save-flow-patch">
+  .explora-capture-actions{grid-template-columns:1fr 1fr!important;margin-top:14px!important;}
+  .explora-capture-actions .exit{background:#111!important;color:#f1d35f!important;border:1px solid rgba(215,180,55,.42)!important;}
+  .explora-capture-actions .whatsapp{background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22)!important;color:#050505!important;}
+  .explora-capture-save-tip{
+    margin-top:14px;
+    padding:12px 12px;
+    border-radius:16px;
+    background:rgba(215,180,55,.09);
+    border:1px solid rgba(215,180,55,.30);
+    color:#f1d35f;
+    text-align:center;
+    font-size:14px;
+    line-height:1.35;
+    font-weight:900;
+  }
+  .explora-save-success-modal{
+    position:fixed;
+    inset:0;
+    display:none;
+    align-items:center;
+    justify-content:center;
+    background:rgba(0,0,0,.62);
+    z-index:1000025;
+    padding:18px;
+  }
+  .explora-save-success-box{
+    width:min(380px,92vw);
+    background:linear-gradient(180deg,#151515,#070707);
+    border:1px solid rgba(215,180,55,.46);
+    border-radius:24px;
+    box-shadow:0 22px 70px rgba(0,0,0,.70);
+    color:#f4f4f4;
+    text-align:center;
+    padding:24px 20px 20px;
+  }
+  .explora-save-success-icon{font-size:42px;margin-bottom:8px;}
+  .explora-save-success-box h3{color:#f1d35f;font-size:24px;margin:0 0 8px;font-weight:1000;}
+  .explora-save-success-box p{color:#ddd;font-size:15px;line-height:1.35;margin:0 0 16px;}
+  .explora-save-success-box button{
+    width:100%;
+    border:0;
+    border-radius:16px;
+    padding:14px 12px;
+    background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22);
+    color:#050505;
+    font-weight:1000;
+    font-size:16px;
+    cursor:pointer;
+  }
+  @media(max-width:420px){.explora-capture-actions{grid-template-columns:1fr!important;}}
+</style>
+
+<div class="explora-save-success-modal" id="exploraSaveSuccessModal" role="dialog" aria-modal="true">
+  <div class="explora-save-success-box">
+    <div class="explora-save-success-icon">✅</div>
+    <h3>Guardado exitosamente</h3>
+    <p>El presupuesto quedó guardado correctamente en Presupuestos guardados.</p>
+    <button type="button" onclick="closeExploraSaveSuccess()">Aceptar</button>
+  </div>
+</div>
+
+<script id="explora-final-card-save-flow-behavior-patch">
+(function(){
+  function onlyNumbers(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v||0).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>\"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;'}[c]||c;});}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function currentLodgingText(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?'Brasil / Foz do Iguaçu':'Argentina / Puerto Iguazú';}
+  function hasBrazilPark(trips){return trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+  function isBrazilComboItem(name){return name==='Parque das Aves'||name==='Aquafoz Acuario';}
+  function isBrazilComboTrip(t,trips){return !!(t && isBrazilComboItem(t.name) && hasBrazilPark(trips));}
+  function linePrices(t,trips){
+    var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+    var normal=0,effective=0;
+    if(isBrazilComboTrip(t,trips)){normal=70000; effective=20000; type='combo';}
+    else{
+      try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}
+      try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}
+    }
+    return {type:type,normal:normal,effective:effective,discount:Math.max(0,normal-effective)};
+  }
+  function modeText(type){return type==='combo'?'Combo Brasil':(type==='round'?'Ida y vuelta':'Solo ida');}
+  function hasComboBrazil(trips){return hasBrazilPark(trips) && trips.some(function(t){return isBrazilComboItem(t.name);});}
+
+  function ensureCaptureActions(){
+    var box=document.querySelector('#exploraCaptureModal .explora-capture-actions');
+    if(box){
+      box.innerHTML='<button type="button" class="exit" onclick="closeExploraCaptureCard()">Salir</button><button type="button" class="whatsapp" onclick="showExploraSendPhone()">📲 Enviar a WhatsApp</button>';
+    }
+    var help=document.querySelector('#exploraCaptureModal .explora-capture-help');
+    if(help){help.textContent='📸 Puede tomar una captura de pantalla para guardar esta información.';}
+  }
+
+  window.buildExploraCleanCapture=function(){
+    var trips=getTrips(); var subtotal=0,discount=0,total=0; var rows='';
+    trips.forEach(function(t){
+      var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective;
+      rows+='<div class="explora-capture-line"><span>'+esc(t.name)+'<br><small>'+modeText(p.type)+'</small></span><span>'+(p.discount?'<small style="display:block;color:#999;text-decoration:line-through;font-weight:700">'+money(p.normal)+'</small>':'')+money(p.effective)+'</span></div>';
+    });
+    var html='<div class="explora-capture-logo"><img src="icon-512.png" alt="EXPLORA"><div class="explora-capture-subtitle">Presupuesto personalizado</div></div>';
+    html+='<div class="explora-capture-lines">'+rows+'</div>';
+    if(discount>0){html+='<div class="explora-capture-line"><span class="explora-capture-discount">Descuento aplicado</span><span class="explora-capture-discount">-'+money(discount)+'</span></div>';}
+    html+='<div class="explora-capture-total"><span>TOTAL</span><span>'+money(total)+'</span></div>';
+    if(hasComboBrazil(trips)){html+='<div class="explora-capture-note">⚠️ Combo válido realizando Parque Nacional do Iguaçu el mismo día.</div>';}
+    html+='<div class="explora-capture-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money(total*1.10)+'</strong></div>';
+    html+='<div class="explora-capture-contact"><div class="explora-capture-question">¿Deseas reservar?</div><div class="explora-capture-name">David Gómez</div><div class="explora-capture-role">Coordinador EXPLORA</div><div class="explora-capture-whatsapp-label">🇦🇷 WhatsApp</div><div class="explora-capture-phone-box">+54 9 3757 461564</div></div>';
+    html+='<div class="explora-capture-save-tip">📸 Puede tomar una captura de pantalla para guardar esta información.</div>';
+    return html;
+  };
+
+  window.takeExploraPhotoChoice=function(){
+    clearTimeout(window.__exploraChoiceTimer);
+    var choice=document.getElementById('exploraFinalChoiceModal'); if(choice) choice.style.display='none';
+    var content=document.getElementById('exploraCaptureContent'); if(content) content.innerHTML=window.buildExploraCleanCapture();
+    var m=document.getElementById('exploraFinalBudgetModal'); if(m) m.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+    ensureCaptureActions();
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='flex';
+    setTimeout(function(){try{document.getElementById('exploraCaptureCard').scrollIntoView({block:'center'});}catch(e){}},50);
+  };
+
+  window.closeExploraCaptureCard=function(){
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+  };
+
+  var oldShowPhone=window.showExploraSendPhone;
+  window.showExploraSendPhone=function(){
+    try{if(typeof oldShowPhone==='function') oldShowPhone.apply(this,arguments);}catch(e){}
+    var modal=document.getElementById('exploraFinalPhoneModal'); if(modal) modal.style.display='flex';
+    var title=document.querySelector('#exploraFinalPhoneModal h3'); if(title) title.textContent='Enviar a WhatsApp';
+    var btn=document.querySelector('#exploraFinalPhoneModal button.explora-final-btn:not(.secondary)'); if(btn) btn.textContent='Guardar WhatsApp';
+    setTimeout(function(){var i=document.getElementById('finalPhoneInput'); if(i) i.focus();},80);
+    return false;
+  };
+
+  window.closeExploraSaveSuccess=function(){
+    var m=document.getElementById('exploraSaveSuccessModal'); if(m) m.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+  };
+
+  window.sendExploraBudgetToPhone=function(){
+    var code=onlyNumbers((document.getElementById('finalCountryCode')||{}).value||'54');
+    var phone=onlyNumbers((document.getElementById('finalPhoneInput')||{}).value||'');
+    if(!phone){alert('Escribí el WhatsApp del pasajero.');return false;}
+    var full=code+phone;
+    var trips=getTrips(); var subtotal=0,discount=0,total=0;
+    var detailedTrips=trips.map(function(t){var p=linePrices(t,trips); subtotal+=p.normal; discount+=p.discount; total+=p.effective; return {name:t.name,type:p.type,mode:modeText(p.type),normal:p.normal,effective:p.effective,discount:p.discount};});
+    var txt='🌎 EXPLORA IGUAZÚ - Presupuesto\n\n';
+    txt+='WhatsApp pasajero: +'+full+'\n';
+    txt+='Alojamiento: '+currentLodgingText()+'\n\n';
+    detailedTrips.forEach(function(t){txt+='• '+t.name+' ('+t.mode+') - '+money(t.effective); if(t.discount) txt+=' | antes '+money(t.normal)+' | -'+money(t.discount); txt+='\n';});
+    txt+='\nSubtotal: '+money(subtotal); if(discount>0) txt+='\nDescuentos: -'+money(discount); txt+='\nTotal efectivo: '+money(total); txt+='\nTotal con tarjeta (+10%): '+money(total*1.10); if(hasComboBrazil(trips)) txt+='\n\nCombo válido si hacen Parque Nacional do Iguaçu el mismo día.';
+    var budget={
+      id:Date.now(),date:new Date().toLocaleString('es-AR'),name:'Pasajero',phone:full,countryCode:code,passengerPhone:phone,
+      lodging:currentLodgingText(),language:(document.getElementById('language')||{}).value||'es',currency:(document.getElementById('currency')||{}).value||'ARS',
+      subtotal:subtotal,discount:discount,total:total,cardTotal:Math.round(total*1.10),totalText:'Total: '+money(total),summaryText:txt,trips:detailedTrips,rawTrips:trips
+    };
+    try{
+      var saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];
+      saved.unshift(budget);
+      localStorage.setItem('exploraSavedBudgets',JSON.stringify(saved));
+    }catch(e){alert('No se pudo guardar el presupuesto: '+e.message);return false;}
+    var phoneInput=document.getElementById('finalPhoneInput'); if(phoneInput) phoneInput.value='';
+    var phoneModal=document.getElementById('exploraFinalPhoneModal'); if(phoneModal) phoneModal.style.display='none';
+    var ok=document.getElementById('exploraSaveSuccessModal'); if(ok) ok.style.display='flex';
+    return false;
+  };
+
+  function ensureFinalButtonText(){
+    var box=document.querySelector('#exploraFinalBudgetModal .explora-final-actions');
+    if(box){
+      box.innerHTML='<button type="button" class="explora-final-btn secondary" onclick="closeExploraFinalBudget()">Volver</button><button type="button" class="explora-final-btn" onclick="takeExploraPhotoChoice()">💾 Guardar</button>';
+      box.style.gridTemplateColumns='1fr 1fr';
+    }
+  }
+  var oldOpen=window.openModal;
+  window.openModal=function(){
+    var result=typeof oldOpen==='function'?oldOpen.apply(this,arguments):false;
+    setTimeout(ensureFinalButtonText,10);
+    return result;
+  };
+  document.addEventListener('DOMContentLoaded',function(){ensureCaptureActions();ensureFinalButtonText();});
+  setTimeout(function(){ensureCaptureActions();ensureFinalButtonText();},100);
+})();
+</script>
+
+
+
+<!-- ===== PATCH FINAL DAVID 2026-06-09: tarjeta elegante como pantalla final + ajuste automático captura ===== -->
+<style id="explora-final-direct-capture-card-patch">
+  /* La pantalla final ahora ES la tarjeta elegante */
+  #exploraFinalBudgetModal,
+  #exploraFinalChoiceModal{display:none!important;}
+  .explora-capture-modal{background:#050505!important;align-items:center!important;justify-content:center!important;}
+  .explora-capture-card{
+    width:min(520px,96vw)!important;
+    max-height:calc(100dvh - 118px)!important;
+    overflow:hidden!important;
+    transform-origin:center top!important;
+  }
+  .explora-capture-actions{
+    grid-template-columns:1fr 1fr!important;
+    width:min(520px,96vw)!important;
+  }
+  .explora-capture-actions .exit::before{content:"";}
+  .explora-capture-help{font-weight:900!important;color:#f1d35f!important;}
+  .explora-capture-line.compact-row{padding-top:6px!important;padding-bottom:6px!important;font-size:12px!important;}
+  .explora-capture-card.explora-fit-small{padding:14px 13px!important;border-radius:24px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-logo{padding-bottom:8px!important;margin-bottom:8px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-logo img{width:130px!important;max-height:70px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-subtitle{font-size:10px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-line{padding:5px 0!important;font-size:11px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-total{font-size:18px!important;padding:9px!important;margin-top:8px!important;border-radius:14px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-note{font-size:10px!important;padding:7px!important;margin-top:6px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-contact{margin-top:8px!important;padding-top:8px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-question{font-size:13px!important;margin-bottom:5px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-name{font-size:15px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-role{font-size:10px!important;margin-bottom:6px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-whatsapp-label{font-size:10px!important;margin-bottom:4px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-phone-box{font-size:17px!important;padding:8px 11px!important;border-radius:13px!important;}
+  .explora-capture-card.explora-fit-small .explora-capture-save-tip{font-size:10px!important;padding:7px!important;margin-top:8px!important;border-radius:12px!important;}
+  @media(max-width:420px){.explora-capture-card{max-height:calc(100dvh - 132px)!important}.explora-capture-actions{grid-template-columns:1fr 1fr!important}.explora-capture-actions button{font-size:13px!important;padding:12px 8px!important;}}
+</style>
+<script id="explora-final-direct-capture-card-behavior-patch">
+(function(){
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function ensureCaptureActionsFinal(){
+    var box=document.querySelector('#exploraCaptureModal .explora-capture-actions');
+    if(box){box.innerHTML='<button type="button" class="exit" onclick="closeExploraCaptureCard()">Salir</button><button type="button" class="whatsapp" onclick="showExploraSendPhone()">Enviar a WhatsApp</button>';}
+    var help=document.querySelector('#exploraCaptureModal .explora-capture-help');
+    if(help){help.textContent='Puede tomar una captura de pantalla.';}
+  }
+  function fitCaptureCard(){
+    var card=document.getElementById('exploraCaptureCard');
+    if(!card) return;
+    card.classList.remove('explora-fit-small');
+    card.style.transform='';
+    var limit=Math.max(420,(window.innerHeight||document.documentElement.clientHeight||760)-118);
+    if(card.scrollHeight>limit){card.classList.add('explora-fit-small');}
+    setTimeout(function(){
+      var h=card.scrollHeight;
+      var lim=Math.max(390,(window.innerHeight||document.documentElement.clientHeight||760)-118);
+      if(h>lim){
+        var scale=Math.max(.72,Math.min(1,lim/h));
+        card.style.transform='scale('+scale+')';
+      }
+    },30);
+  }
+  window.openModal=function(){
+    var trips=getTrips();
+    var lang=(document.getElementById('language')||{}).value||'es';
+    if(!trips.length){alert(lang==='en'?'Select at least one tour':lang==='pt'?'Selecione pelo menos um passeio':'Seleccione al menos un paseo');return false;}
+    var finalModal=document.getElementById('exploraFinalBudgetModal'); if(finalModal) finalModal.style.display='none';
+    var choice=document.getElementById('exploraFinalChoiceModal'); if(choice) choice.style.display='none';
+    var phone=document.getElementById('exploraFinalPhoneModal'); if(phone) phone.style.display='none';
+    var content=document.getElementById('exploraCaptureContent');
+    if(content && typeof window.buildExploraCleanCapture==='function') content.innerHTML=window.buildExploraCleanCapture();
+    ensureCaptureActionsFinal();
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='flex';
+    setTimeout(fitCaptureCard,60);
+    return false;
+  };
+  var oldTake=window.takeExploraPhotoChoice;
+  window.takeExploraPhotoChoice=function(){
+    if(typeof oldTake==='function') oldTake.apply(this,arguments);
+    ensureCaptureActionsFinal();
+    setTimeout(fitCaptureCard,60);
+    return false;
+  };
+  window.closeExploraCaptureCard=function(){
+    var capture=document.getElementById('exploraCaptureModal'); if(capture) capture.style.display='none';
+    var phone=document.getElementById('exploraFinalPhoneModal'); if(phone) phone.style.display='none';
+  };
+  window.addEventListener('resize',function(){var cap=document.getElementById('exploraCaptureModal'); if(cap&&cap.style.display==='flex') fitCaptureCard();});
+  document.addEventListener('DOMContentLoaded',function(){ensureCaptureActionsFinal();});
+  setTimeout(ensureCaptureActionsFinal,150);
+})();
+</script>
+
 </body>
 </html>
