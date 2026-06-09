@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-presupuesto-v20260609-direct-final-card-fit';
+const CACHE_NAME = 'explora-presupuesto-v20260609-return-login-save-exit';
 const APP_SHELL = [
   './',
   './index.html',

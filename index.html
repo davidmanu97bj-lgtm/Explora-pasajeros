@@ -5752,5 +5752,50 @@ body:not(.not-started) .container{padding-top:24px!important;}
 })();
 </script>
 
+
+
+<!-- ===== PATCH DAVID 2026-06-09: volver al login al salir o aceptar guardado ===== -->
+<script id="explora-return-login-after-save-exit-patch">
+(function(){
+  function goExploraLogin(){
+    try{
+      var ids=['exploraCaptureModal','exploraFinalPhoneModal','exploraSaveSuccessModal','exploraFinalBudgetModal','exploraFinalChoiceModal','savedModal'];
+      ids.forEach(function(id){var el=document.getElementById(id); if(el) el.style.display='none';});
+      if(typeof clearAllTrips==='function') clearAllTrips();
+      document.body.classList.add('not-started');
+      window.scrollTo(0,0);
+      setTimeout(function(){
+        try{if(typeof applyStartLanguage==='function') applyStartLanguage();}catch(e){}
+      },50);
+    }catch(e){
+      document.body.classList.add('not-started');
+    }
+    return false;
+  }
+
+  window.goExploraLogin=goExploraLogin;
+
+  // Al aceptar el modal de guardado exitoso, vuelve al login.
+  window.closeExploraSaveSuccess=function(){
+    return goExploraLogin();
+  };
+
+  // El botón Salir de la tarjeta final vuelve al login.
+  window.closeExploraCaptureCard=function(){
+    return goExploraLogin();
+  };
+
+  function ensureExitButton(){
+    var box=document.querySelector('#exploraCaptureModal .explora-capture-actions');
+    if(box){
+      box.innerHTML='<button type="button" class="exit" onclick="goExploraLogin()">Salir</button><button type="button" class="whatsapp" onclick="showExploraSendPhone()">Enviar a WhatsApp</button>';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded',ensureExitButton);
+  setTimeout(ensureExitButton,150);
+})();
+</script>
+
 </body>
 </html>

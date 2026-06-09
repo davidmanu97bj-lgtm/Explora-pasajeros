@@ -19,3 +19,7 @@ Subir/reemplazar TODOS estos archivos en GitHub Pages:
 - icon-512.png
 
 - Patch final: el botón Guardar presupuesto abre directamente la tarjeta elegante final; incluye Salir / Enviar a WhatsApp y ajuste automático para una sola captura.
+
+Actualización:
+- Al guardar el WhatsApp y aceptar “Guardado exitosamente”, vuelve al login.
+- El botón Salir de la tarjeta final vuelve al login.
