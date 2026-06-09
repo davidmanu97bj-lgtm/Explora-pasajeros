@@ -4701,5 +4701,227 @@ body.not-started.keyboard-mode .start-card{overflow:visible!important;margin-bot
 })();
 </script>
 
+
+<!-- ===== PATCH DAVID 2026-06-09: inicio sin WhatsApp + presupuesto final completo ===== -->
+<style id="explora-passenger-no-phone-final-budget-patch">
+/* Inicio: solo idioma, moneda y alojamiento */
+#startNameLabel,#startName,#startPhoneLabel,.start-phone-row{display:none!important;}
+body.not-started .start-row{grid-template-columns:1fr!important;}
+.explora-start-lodging-field{display:block!important;}
+/* Quitar alojamiento de la segunda pantalla */
+.travel-header{display:none!important;}
+body:not(.not-started) .container{padding-top:24px!important;}
+
+.explora-final-budget-modal,
+.explora-final-choice-modal,
+.explora-final-phone-modal{
+  position:fixed;inset:0;display:none;align-items:center;justify-content:center;z-index:1000008;
+  background:rgba(0,0,0,.38);padding:18px;
+}
+.explora-final-budget-modal{background:rgba(0,0,0,.28);align-items:flex-start;overflow:auto;-webkit-overflow-scrolling:touch;}
+.explora-final-box{
+  width:min(720px,96vw);max-height:92vh;overflow:auto;background:rgba(10,10,10,.94);color:#f7f7f7;
+  border:1px solid rgba(215,180,55,.48);border-radius:24px;padding:22px;box-shadow:0 22px 70px rgba(0,0,0,.62);
+}
+.explora-final-budget-modal .explora-final-box{margin-top:16px;}
+.explora-final-box h2{color:#f1d35f;margin:0 0 12px;font-size:24px;line-height:1.15;}
+.explora-final-line{display:flex;justify-content:space-between;gap:14px;border-bottom:1px solid rgba(255,255,255,.08);padding:10px 0;font-size:15px;}
+.explora-final-line strong{color:#fff;}
+.explora-final-price{text-align:right;color:#f1d35f;font-weight:900;white-space:nowrap;}
+.explora-final-old{display:block;color:#999;text-decoration:line-through;font-size:12px;font-weight:500;}
+.explora-final-discount{display:block;color:#8ef5b2;font-size:12px;font-weight:800;margin-top:2px;}
+.explora-final-total{margin-top:14px;padding-top:14px;border-top:1px solid rgba(215,180,55,.38);font-size:24px;font-weight:900;color:#f1d35f;display:flex;justify-content:space-between;gap:16px;}
+.explora-final-note{margin-top:12px;background:rgba(215,180,55,.09);border:1px solid rgba(215,180,55,.28);color:#f1d35f;border-radius:14px;padding:11px;font-size:14px;line-height:1.35;}
+.explora-final-card-note{margin-top:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:11px;font-size:14px;color:#f4f4f4;}
+.explora-final-actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+.explora-final-btn{border:0;border-radius:16px;padding:15px 12px;font-size:15px;font-weight:900;cursor:pointer;background:linear-gradient(135deg,#f1d35f,#d7b437,#b98e22);color:#050505;}
+.explora-final-btn.secondary{background:#111;color:#f1d35f;border:1px solid rgba(215,180,55,.42);}
+.explora-final-choice-modal{background:rgba(0,0,0,.18);backdrop-filter:none!important;}
+.explora-choice-box{width:min(430px,94vw);background:rgba(10,10,10,.78);border:1px solid rgba(215,180,55,.48);border-radius:22px;padding:20px;box-shadow:0 16px 55px rgba(0,0,0,.55);color:#fff;text-align:center;}
+.explora-choice-box h3{color:#f1d35f;font-size:20px;margin:0 0 14px;line-height:1.25;}
+.explora-choice-actions{display:grid;gap:10px;}
+.explora-phone-row{display:grid;grid-template-columns:44% 1fr;gap:8px;margin:12px 0;}
+.explora-phone-row select,.explora-phone-row input{width:100%;background:#070707!important;color:#f7f7f7!important;border:1px solid rgba(215,180,55,.34)!important;border-radius:14px!important;padding:13px!important;font-size:15px!important;}
+@media(max-width:520px){.explora-final-actions{grid-template-columns:1fr}.explora-phone-row{grid-template-columns:1fr}.explora-final-line{font-size:14px}.explora-final-total{font-size:21px}}
+</style>
+
+<div class="explora-final-budget-modal" id="exploraFinalBudgetModal" role="dialog" aria-modal="true">
+  <div class="explora-final-box">
+    <h2>Presupuesto completo EXPLORA</h2>
+    <div id="exploraFinalBudgetContent"></div>
+    <div class="explora-final-actions">
+      <button type="button" class="explora-final-btn secondary" onclick="closeExploraFinalBudget()">Volver al presupuesto</button>
+      <button type="button" class="explora-final-btn" onclick="showExploraSendPhone()">Enviar al celular</button>
+    </div>
+  </div>
+</div>
+
+<div class="explora-final-choice-modal" id="exploraFinalChoiceModal" role="dialog" aria-modal="true">
+  <div class="explora-choice-box">
+    <h3>¿Quieres sacarle una foto con tu móvil?<br>¿Quieres recibir esta información en tu celular?</h3>
+    <div class="explora-choice-actions">
+      <button type="button" class="explora-final-btn secondary" onclick="takeExploraPhotoChoice()">📸 Tomar foto</button>
+      <button type="button" class="explora-final-btn" onclick="showExploraSendPhone()">📲 Mandar al celular</button>
+    </div>
+  </div>
+</div>
+
+<div class="explora-final-phone-modal" id="exploraFinalPhoneModal" role="dialog" aria-modal="true">
+  <div class="explora-choice-box">
+    <h3>Enviar presupuesto por WhatsApp</h3>
+    <div class="explora-phone-row">
+      <select id="finalCountryCode" aria-label="Código de país"></select>
+      <input type="tel" id="finalPhoneInput" placeholder="WhatsApp sin código">
+    </div>
+    <button type="button" class="explora-final-btn" onclick="sendExploraBudgetToPhone()">Enviar información</button>
+    <button type="button" class="explora-final-btn secondary" style="margin-top:10px" onclick="hideExploraSendPhone()">Volver</button>
+  </div>
+</div>
+
+<script id="explora-passenger-no-phone-final-budget-behavior-patch">
+(function(){
+  function onlyNumbers(v){return String(v||'').replace(/[^0-9]/g,'');}
+  function money(v){try{return typeof formatPrice==='function'?formatPrice(v):('ARS $'+Math.round(v).toLocaleString('es-AR'));}catch(e){return 'ARS $'+Math.round(v||0).toLocaleString('es-AR');}}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function getTrips(){try{if(Array.isArray(window.selected)) return window.selected; var t=JSON.parse(localStorage.getItem('exploraTripsV2')||'[]'); return Array.isArray(t)?t:[];}catch(e){return [];}}
+  function currentLodgingText(){var el=document.getElementById('lodging');return el&&el.value==='brasil'?'Brasil / Foz do Iguaçu':'Argentina / Puerto Iguazú';}
+  function hasComboBrazil(trips){return trips.some(function(t){return (t.name==='Parque das Aves'||t.name==='Aquafoz Acuario') && (t.type||'one');}) && trips.some(function(t){return t.name==='Parque Nacional do Iguaçu';});}
+
+  function ensureStartLodging(){
+    var startBtn=document.getElementById('startBtn');
+    if(!startBtn || document.getElementById('startLodging')) return;
+    var wrap=document.createElement('div');
+    wrap.className='start-field explora-start-lodging-field';
+    wrap.innerHTML='<label id="startLodgingLabel">Dónde estás alojado</label><select id="startLodging"><option value="argentina">🇦🇷 Argentina / Puerto Iguazú</option><option value="brasil">🇧🇷 Brasil / Foz do Iguaçu</option></select>';
+    startBtn.parentNode.insertBefore(wrap,startBtn);
+    var stored='argentina';try{stored=localStorage.getItem('exploraLodging')||'argentina';}catch(e){}
+    var startLodging=document.getElementById('startLodging');
+    var appLodging=document.getElementById('lodging');
+    if(startLodging) startLodging.value=stored;
+    if(appLodging) appLodging.value=stored;
+    if(startLodging) startLodging.addEventListener('change',function(){
+      if(appLodging) appLodging.value=startLodging.value;
+      try{localStorage.setItem('exploraLodging',startLodging.value);}catch(e){}
+      try{if(typeof saveLodging==='function') saveLodging();}catch(e){}
+    });
+  }
+
+  var oldApply=window.applyStartLanguage;
+  window.applyStartLanguage=function(){
+    if(typeof oldApply==='function') oldApply.apply(this,arguments);
+    var lang=(document.getElementById('startLanguage')||{}).value||'es';
+    var l=document.getElementById('startLodgingLabel');
+    if(l) l.textContent=lang==='en'?'Where are you staying':lang==='pt'?'Onde você está hospedado':'Dónde estás alojado';
+  };
+
+  window.startExplora=function(){
+    var langEl=document.getElementById('startLanguage');
+    var currEl=document.getElementById('startCurrency');
+    var lodgingEl=document.getElementById('startLodging');
+    var language=langEl?langEl.value:'es';
+    var currency=currEl?currEl.value:'ARS';
+    var lodging=lodgingEl?lodgingEl.value:'argentina';
+    var profile={name:'Pasajero',phone:'',countryCode:'54',language:language,currency:currency,fullPhone:''};
+    try{localStorage.setItem('exploraStartProfile',JSON.stringify(profile));localStorage.setItem('exploraLanguage',language);localStorage.setItem('exploraCurrency',currency);localStorage.setItem('exploraLodging',lodging);}catch(e){}
+    var appLang=document.getElementById('language'), appCurrency=document.getElementById('currency'), appLodging=document.getElementById('lodging');
+    if(appLang) appLang.value=language;
+    if(appCurrency) appCurrency.value=currency;
+    if(appLodging) appLodging.value=lodging;
+    document.body.classList.remove('not-started');
+    try{if(typeof renderCards==='function') renderCards();}catch(e){}
+    try{if(typeof updateSummary==='function') updateSummary();}catch(e){}
+    return false;
+  };
+
+  window.buildExploraFinalBudget=function(){
+    var trips=getTrips();
+    var b={subtotal:0,discount:0,total:0,activeCombos:[]};
+    try{b=calculateBudget();}catch(e){}
+    var lines=[];
+    trips.forEach(function(t){
+      var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');
+      var mode=type==='round'?'Ida y vuelta':'Solo ida';
+      var normal=0,effective=0;
+      try{normal=typeof normalLinePrice==='function'?normalLinePrice({name:t.name,type:type}):0;}catch(e){}
+      try{effective=typeof effectiveLinePrice==='function'?effectiveLinePrice({name:t.name,type:type}):normal;}catch(e){effective=normal;}
+      var discount=Math.max(0,normal-effective);
+      lines.push('<div class="explora-final-line"><div><strong>'+esc(t.name)+'</strong><br><span>'+mode+'</span>'+(discount?'<span class="explora-final-discount">Descuento visible: -'+money(discount)+'</span>':'')+'</div><div class="explora-final-price">'+(discount?'<span class="explora-final-old">'+money(normal)+'</span>':'')+money(effective)+'</div></div>');
+    });
+    var discountLines='';
+    if(b.activeCombos&&b.activeCombos.length){
+      discountLines=b.activeCombos.map(function(c){return '<div class="explora-final-line"><div>🎁 '+esc(c.name)+'</div><div class="explora-final-price">-'+money(c.discount||0)+'</div></div>';}).join('');
+    }
+    var html='<div class="explora-final-note">📍 Alojamiento: '+esc(currentLodgingText())+'</div>'+lines.join('');
+    html+='<div class="explora-final-line"><strong>Subtotal sin descuentos</strong><div class="explora-final-price">'+money(b.subtotal||0)+'</div></div>';
+    if(discountLines) html+=discountLines;
+    if((b.discount||0)>0) html+='<div class="explora-final-line"><strong>Total descuentos visibles</strong><div class="explora-final-price">-'+money(b.discount||0)+'</div></div>';
+    html+='<div class="explora-final-total"><span>Total efectivo</span><span>'+money(b.total||0)+'</span></div>';
+    if(hasComboBrazil(trips)) html+='<div class="explora-final-note">⚠️ Combo valido si hacen parque nacional do Iguaçu el mismo día.</div>';
+    html+='<div class="explora-final-card-note">💳 Pagando en tarjeta el precio = 10% más caro. Total con tarjeta: <strong>'+money((b.total||0)*1.10)+'</strong></div>';
+    return html;
+  };
+
+  window.openModal=function(){
+    var trips=getTrips();
+    var lang=(document.getElementById('language')||{}).value||'es';
+    if(!trips.length){alert(lang==='en'?'Select at least one tour':lang==='pt'?'Selecione pelo menos um passeio':'Seleccione al menos un paseo');return false;}
+    var content=document.getElementById('exploraFinalBudgetContent');
+    if(content) content.innerHTML=buildExploraFinalBudget();
+    var modal=document.getElementById('exploraFinalBudgetModal');
+    if(modal) modal.style.display='flex';
+    clearTimeout(window.__exploraChoiceTimer);
+    window.__exploraChoiceTimer=setTimeout(function(){var c=document.getElementById('exploraFinalChoiceModal'); if(c && modal && modal.style.display==='flex') c.style.display='flex';},1000);
+    return false;
+  };
+  window.closeExploraFinalBudget=function(){
+    clearTimeout(window.__exploraChoiceTimer);
+    var m=document.getElementById('exploraFinalBudgetModal'); if(m) m.style.display='none';
+    var c=document.getElementById('exploraFinalChoiceModal'); if(c) c.style.display='none';
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';
+  };
+  window.takeExploraPhotoChoice=function(){var c=document.getElementById('exploraFinalChoiceModal'); if(c) c.style.display='none';};
+  window.showExploraSendPhone=function(){
+    var c=document.getElementById('exploraFinalChoiceModal'); if(c) c.style.display='none';
+    var sel=document.getElementById('finalCountryCode');
+    if(sel && !sel.options.length){
+      var src=document.getElementById('countryCode')||document.getElementById('startCountryCode');
+      sel.innerHTML=src?src.innerHTML:'<option value="54">🇦🇷 Argentina +54</option><option value="55">🇧🇷 Brasil +55</option><option value="595">🇵🇾 Paraguay +595</option>';
+      sel.value='54';
+    }
+    var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='flex';
+    setTimeout(function(){var i=document.getElementById('finalPhoneInput'); if(i) i.focus();},80);
+  };
+  window.hideExploraSendPhone=function(){var p=document.getElementById('exploraFinalPhoneModal'); if(p) p.style.display='none';};
+  window.getExploraFinalBudgetText=function(phone){
+    var trips=getTrips(); var b={subtotal:0,discount:0,total:0,activeCombos:[]}; try{b=calculateBudget();}catch(e){}
+    var txt='🌎 EXPLORA IGUAZÚ - Presupuesto\n\n';
+    txt+='Alojamiento: '+currentLodgingText()+'\n\n';
+    trips.forEach(function(t){var type=t.name==='Volver al aeropuerto'?'one':(t.type||'one');var normal=0,effective=0;try{normal=normalLinePrice({name:t.name,type:type});effective=effectiveLinePrice({name:t.name,type:type});}catch(e){}txt+='• '+t.name+' ('+(type==='round'?'Ida y vuelta':'Solo ida')+') - '+money(effective); if(normal>effective) txt+=' | descuento: -'+money(normal-effective); txt+='\n';});
+    txt+='\nSubtotal: '+money(b.subtotal||0); if((b.discount||0)>0) txt+='\nDescuentos: -'+money(b.discount||0); txt+='\nTotal efectivo: '+money(b.total||0); txt+='\nPagando en tarjeta el precio = 10% más caro: '+money((b.total||0)*1.10); if(hasComboBrazil(trips)) txt+='\n\nCombo valido si hacen parque nacional do Iguaçu el mismo día.'; return txt;
+  };
+  window.sendExploraBudgetToPhone=function(){
+    var code=onlyNumbers((document.getElementById('finalCountryCode')||{}).value||'54');
+    var phone=onlyNumbers((document.getElementById('finalPhoneInput')||{}).value||'');
+    if(!phone){alert('Escribí el WhatsApp del pasajero.');return false;}
+    var full=code+phone;
+    try{
+      var saved=JSON.parse(localStorage.getItem('exploraSavedBudgets')||'[]'); if(!Array.isArray(saved)) saved=[];
+      var b=calculateBudget();
+      saved.unshift({id:Date.now(),date:new Date().toLocaleString('es-AR'),name:'Pasajero',phone:full,lodging:currentLodgingText(),currency:(document.getElementById('currency')||{}).value||'ARS',totalText:'Total: '+money(b.total||0),summaryText:(document.getElementById('exploraFinalBudgetContent')||{}).innerText||'',trips:getTrips()});
+      localStorage.setItem('exploraSavedBudgets',JSON.stringify(saved));
+    }catch(e){}
+    window.open('https://wa.me/'+full+'?text='+encodeURIComponent(getExploraFinalBudgetText(full)),'_blank');
+    hideExploraSendPhone();
+    return false;
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    ensureStartLodging();
+    try{if(typeof window.loadStartProfile==='function') window.loadStartProfile();}catch(e){}
+    try{if(typeof window.applyStartLanguage==='function') window.applyStartLanguage();}catch(e){}
+  });
+})();
+</script>
+
 </body>
 </html>

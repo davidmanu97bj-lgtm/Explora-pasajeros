@@ -1,10 +1,15 @@
-EXPLORA PWA - fix modal traslado con botón Aceptar
+EXPLORA PWA - inicio sin teléfono + presupuesto final completo
 
 Cambios incluidos:
-- El modal “Seleccione el traslado” vuelve a mostrar un botón Aceptar visible.
-- Tocar Solo ida / Ida y vuelta solo marca la opción, no agrega automáticamente.
-- Al tocar Aceptar se agrega el traslado seleccionado al presupuesto.
-- Se mantiene la promo Brasil combinada ARS $20.000 cuando corresponde.
+- Pantalla inicial solo con Idioma, Moneda y Dónde estás alojado.
+- Se quitó el WhatsApp obligatorio del pasajero al iniciar.
+- Se quitó Dónde estás alojado de la segunda pantalla.
+- El botón final abre un presupuesto completo con servicios, descuentos visibles, subtotal y total.
+- Aviso de combo: “Combo valido si hacen parque nacional do Iguaçu el mismo día”.
+- Aviso tarjeta: precio 10% más caro y total con tarjeta.
+- A los 1 segundo aparece un modal transparente para elegir foto o envío al celular.
+- Si elige foto, vuelve al presupuesto completo para sacar captura.
+- Si elige mandar al celular, recién ahí pide código de país + WhatsApp.
 - Service Worker con nueva versión de caché para forzar actualización.
 
 Subir/reemplazar TODOS estos archivos en GitHub Pages:
