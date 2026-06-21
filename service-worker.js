@@ -1,10 +1,12 @@
-const CACHE_NAME = 'explora-pwa-v3-restaurants';
+const CACHE_NAME = 'explora-pwa-v4-restaurants-autoplay';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icons/icon-192.png',
-  './icons/icon-512.png'
+  './icons/icon-512.png',
+  './videos/rafain.mp4',
+  './videos/ponto_certo.mp4'
 ];
 
 self.addEventListener('install', event => {

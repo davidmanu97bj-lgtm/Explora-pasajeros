@@ -1,1 +1,6 @@
-Subí estos archivos reemplazando index.html y service-worker.js. Dentro de la carpeta videos, subí rafain.mp4 y ponto_certo.mp4. Todos pesan menos de 25 MB.
+Reemplazar en GitHub solamente:
+- index.html
+- service-worker.js
+
+No hace falta volver a subir los dos videos; siguen siendo los mismos.
+Después de subir, abrir la app con internet y recargar una vez para actualizar el caché.
