@@ -1,6 +1,12 @@
-Reemplazar en GitHub solamente:
+REEMPLAZAR SOLO:
 - index.html
 - service-worker.js
+- videos/restaurants_dual.mp4
 
-No hace falta volver a subir los dos videos; siguen siendo los mismos.
-Después de subir, abrir la app con internet y recargar una vez para actualizar el caché.
+ELIMINAR O DEJAR SIN USO:
+- videos/rafain.mp4
+- videos/ponto_certo.mp4
+- posters/rafain.jpg
+- posters/ponto_certo.jpg
+
+Esta versión usa un solo video combinado para mostrar ambos restaurantes al mismo tiempo. Evita que la Blackview intente reproducir dos videos 1080p simultáneos.
