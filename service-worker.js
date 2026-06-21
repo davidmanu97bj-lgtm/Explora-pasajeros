@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-pwa-v10-webp-computelist-fix';
+const CACHE_NAME = 'explora-pwa-v11-webp-runtime-fix';
 const APP_SHELL = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png',

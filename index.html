@@ -185,6 +185,55 @@ function closeRestaurantOffer(){
   if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true')}
   try{if(currentVideo){currentVideo.muted=!soundOn;currentVideo.volume=soundOn?1:0;currentVideo.play().catch(()=>{})}}catch(e){}
 }
+
+function stopVideo(){
+  slideToken++;
+  clearTimeout(introTimer);
+  document.querySelectorAll('video').forEach(v=>{
+    try{
+      v.pause();
+      v.muted=true;
+      v.volume=0;
+      v.currentTime=0;
+      v.removeAttribute('src');
+      v.src='';
+      v.load();
+      v.remove();
+    }catch(e){}
+  });
+  currentVideo=null;
+}
+function maybeOfferRestaurant(a){
+  if(!a||restaurantOfferHandled||restaurantOfferOpen)return;
+  if(a.pais==='Brasil'||a.pais==='Paraguay')setTimeout(openRestaurantOffer,180);
+}
+function chooseRestaurant(choice){
+  restaurantOfferHandled=true;
+  if(choice!=='none'){
+    const name=restaurantName(choice);
+    cart.bonus_restaurant={id:'bonus_restaurant',nombre:name,bandera:'🎁',kind:tt('restKind'),price:0,duracion:tt('restDuration'),bonus:true};
+  }
+  closeRestaurantOffer();
+  updateActions();
+}
+function resetPassengerSession(){
+  try{stopVideo()}catch(e){}
+  cart={};
+  restaurantOfferHandled=false;
+  restaurantOfferOpen=false;
+  audioDecisionDone=false;
+  soundOn=false;
+  activeFilter='Todos';
+  active=0;
+  document.querySelectorAll('.sheet.open,.admin.open,.wa.open,.restaurantOffer.open').forEach(x=>x.classList.remove('open'));
+  try{updateTrip()}catch(e){}
+  showOnboarding();
+}
+function exitApplication(){
+  resetPassengerSession();
+  setTimeout(()=>{try{window.close()}catch(e){}},80);
+}
+
 function renderCurrent(){
   stopVideo();
   const box=$('current');
