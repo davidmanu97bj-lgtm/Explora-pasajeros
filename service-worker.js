@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-pwa-v9-webp-restaurants';
+const CACHE_NAME = 'explora-pwa-v10-webp-computelist-fix';
 const APP_SHELL = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png',
