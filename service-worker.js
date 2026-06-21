@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-pwa-v2';
+const CACHE_NAME = 'explora-pwa-v3-restaurants';
 const APP_SHELL = [
   './',
   './index.html',
