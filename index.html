@@ -64,7 +64,7 @@ html,body{background:#000!important;}
 .restaurantOfferText{margin:0 auto 12px;max-width:430px;color:rgba(255,255,255,.78);font-size:13px;line-height:1.35;text-align:center;font-weight:750}
 .restaurantStack{position:relative;display:grid;grid-template-rows:1fr 1fr;gap:10px;height:min(560px,65dvh);overflow:hidden;border-radius:22px;background:#000}
 .restaurantCard{position:relative;z-index:2;overflow:hidden;border-radius:22px;border:1px solid rgba(255,255,255,.16);background:transparent;min-height:0;box-shadow:0 16px 34px rgba(0,0,0,.48)}
-.restaurantDualVideo{position:absolute;z-index:1;inset:0;width:100%;height:100%;object-fit:cover;background:#000;display:block}.restaurantCard video{display:none!important}
+.restaurantDualVideo{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;left:-9999px;top:-9999px}.restaurantCard video{display:none!important}.restaurantCanvas{position:absolute;z-index:1;inset:0;width:100%;height:100%;display:block;background:#000;object-fit:cover}
 .restaurantCard:after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.05),rgba(0,0,0,.12) 40%,rgba(0,0,0,.82));pointer-events:none}
 .restaurantCardInfo{position:absolute;z-index:2;left:12px;right:12px;bottom:12px;display:flex;align-items:end;justify-content:space-between;gap:10px}
 .restaurantCardTitle{font-size:18px;font-weight:1000;text-shadow:0 4px 18px rgba(0,0,0,.9)}
@@ -134,7 +134,7 @@ const LS_PRICES='explora_reels_prices_v2';
 const LS_BUDGETS='explora_reels_budgets_v2';
 let priceOverrides=JSON.parse(localStorage.getItem(LS_PRICES)||'{}');
 let savedBudgets=JSON.parse(localStorage.getItem(LS_BUDGETS)||'[]');
-let cart={};let activeFilter='Todos';let list=[];let active=0;let soundOn=false;let audioDecisionDone=false;let startY=0;let busy=false;let introTimer=null;let currentVideo=null;let slideToken=0;let restaurantOfferHandled=false;let restaurantOfferOpen=false;
+let cart={};let activeFilter='Todos';let list=[];let active=0;let soundOn=false;let audioDecisionDone=false;let startY=0;let busy=false;let introTimer=null;let currentVideo=null;let slideToken=0;let restaurantOfferHandled=false;let restaurantOfferOpen=false;let restaurantCanvasRAF=0;
 const $=id=>document.getElementById(id);const money=n=>MONEY.format(Number(n||0)).replace(',00','');
 let swipeAudioCtx=null;
 function playSwipeSound(){
@@ -167,6 +167,28 @@ function oneWayPrice(a){if(a.oneWayOnly)return Number((priceOverrides[a.id]||{})
 
 function restaurantName(id){return id==='rafain'?'Rafain Churrascaria Show':'Ponto Certo Churrascaria'}
 function updateRestaurantOfferTexts(){const m=$('restaurantOffer');if(!m)return;const set=(id,txt)=>{const el=$(id);if(el)el.textContent=txt};set('restaurantOfferBadge',tt('restBenefit'));set('restaurantOfferTitle',tt('restTitle'));set('restaurantOfferText',tt('restText'));m.querySelectorAll('[data-rest-free]').forEach(x=>x.textContent=tt('restFree'));m.querySelectorAll('.restaurantPick').forEach(x=>x.textContent=tt('restChoose'));const no=m.querySelector('[data-restaurant="none"]');if(no)no.textContent=tt('restNone')}
+function drawRestaurantCanvases(){
+  const v=$('restaurantDualVideo'),top=$('restaurantCanvasTop'),bottom=$('restaurantCanvasBottom');
+  if(!restaurantOfferOpen||!v||!top||!bottom)return;
+  const draw=(canvas,sy,sh)=>{
+    const rect=canvas.getBoundingClientRect();
+    const dpr=Math.min(window.devicePixelRatio||1,2);
+    const w=Math.max(2,Math.round(rect.width*dpr)),h=Math.max(2,Math.round(rect.height*dpr));
+    if(canvas.width!==w||canvas.height!==h){canvas.width=w;canvas.height=h}
+    const ctx=canvas.getContext('2d',{alpha:false});
+    if(!ctx)return;
+    ctx.fillStyle='#000';ctx.fillRect(0,0,w,h);
+    try{
+      if(v.readyState>=2&&v.videoWidth&&v.videoHeight){
+        const sourceW=v.videoWidth,sourceH=v.videoHeight;
+        ctx.drawImage(v,0,sy*sourceH,sourceW,sh*sourceH,0,0,w,h);
+      }
+    }catch(e){}
+  };
+  draw(top,0,0.5);draw(bottom,0.5,0.5);
+  restaurantCanvasRAF=requestAnimationFrame(drawRestaurantCanvases);
+}
+function stopRestaurantCanvas(){if(restaurantCanvasRAF){cancelAnimationFrame(restaurantCanvasRAF);restaurantCanvasRAF=0}}
 function openRestaurantOffer(){
   if(restaurantOfferHandled||restaurantOfferOpen)return;
   restaurantOfferOpen=true;
@@ -183,10 +205,10 @@ function openRestaurantOffer(){
     v.setAttribute('muted','');v.setAttribute('autoplay','');v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');
     const playNow=()=>{try{const p=v.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}};
     if(v.readyState<2)v.load();
-    playNow();setTimeout(playNow,180);setTimeout(playNow,650);setTimeout(playNow,1400);
+    playNow();setTimeout(playNow,180);setTimeout(playNow,650);setTimeout(playNow,1400);stopRestaurantCanvas();restaurantCanvasRAF=requestAnimationFrame(drawRestaurantCanvases);
   }catch(e){}
 }
-function closeRestaurantOffer(){const m=$('restaurantOffer');restaurantOfferOpen=false;if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');m.querySelectorAll('video').forEach(v=>{try{v.pause();v.muted=true;v.volume=0;v.currentTime=0}catch(e){}})}try{if(currentVideo){currentVideo.muted=!soundOn;currentVideo.volume=soundOn?1:0;currentVideo.play().catch(()=>{})}}catch(e){}}
+function closeRestaurantOffer(){stopRestaurantCanvas();const m=$('restaurantOffer');restaurantOfferOpen=false;if(m){m.classList.remove('open');m.setAttribute('aria-hidden','true');m.querySelectorAll('video').forEach(v=>{try{v.pause();v.muted=true;v.volume=0;v.currentTime=0}catch(e){}})}try{if(currentVideo){currentVideo.muted=!soundOn;currentVideo.volume=soundOn?1:0;currentVideo.play().catch(()=>{})}}catch(e){}}
 function maybeOfferRestaurant(a){if(!a||restaurantOfferHandled||restaurantOfferOpen)return;if(a.pais==='Brasil'||a.pais==='Paraguay')setTimeout(openRestaurantOffer,180)}
 function chooseRestaurant(choice){restaurantOfferHandled=true;if(choice!=='none'){const name=restaurantName(choice);cart.bonus_restaurant={id:'bonus_restaurant',nombre:name,bandera:'🎁',kind:tt('restKind'),price:0,duracion:tt('restDuration'),bonus:true}}closeRestaurantOffer();updateActions()}
 function resetPassengerSession(){try{stopVideo()}catch(e){}cart={};restaurantOfferHandled=false;restaurantOfferOpen=false;audioDecisionDone=false;soundOn=false;activeFilter='Todos';active=0;document.querySelectorAll('.sheet.open,.admin.open,.wa.open,.restaurantOffer.open').forEach(x=>x.classList.remove('open'));updateTrip();showOnboarding()}

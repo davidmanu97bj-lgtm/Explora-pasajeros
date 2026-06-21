@@ -1,4 +1,4 @@
-const CACHE_NAME = 'explora-pwa-v7-dual-restaurants';
+const CACHE_NAME = 'explora-pwa-v8-canvas-restaurants';
 const APP_SHELL = [
   './', './index.html', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png',
