@@ -1,41 +1,56 @@
-const CACHE_NAME = 'explora-presupuesto-v20260609-i18n-capture-final';
+const CACHE_NAME = 'explora-pwa-v2';
 const APP_SHELL = [
   './',
   './index.html',
-  './manifest.json',
-  './icon-192.png',
-  './icon-512.png'
+  './manifest.webmanifest',
+  './icons/icon-192.png',
+  './icons/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(APP_SHELL))
-      .then(() => self.skipWaiting())
-  );
+  self.skipWaiting();
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)));
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys()
-      .then(keys => Promise.all(keys
-        .filter(key => key.startsWith('explora-presupuesto-') && key !== CACHE_NAME)
-        .map(key => caches.delete(key))
-      ))
-      .then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    const keys = await caches.keys();
+    await Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)));
+    await self.clients.claim();
+  })());
 });
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
-  event.respondWith(
-    caches.match(event.request).then(cached => {
-      if (cached) return cached;
-      return fetch(event.request).then(response => {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(() => {});
-        return response;
-      }).catch(() => caches.match('./index.html'));
-    })
-  );
+  const url = new URL(event.request.url);
+  if (url.origin !== self.location.origin) return;
+
+  if (event.request.mode === 'navigate') {
+    event.respondWith((async () => {
+      try {
+        const network = await fetch(event.request);
+        const cache = await caches.open(CACHE_NAME);
+        cache.put('./index.html', network.clone()).catch(() => {});
+        return network;
+      } catch (e) {
+        return (await caches.match('./index.html')) || (await caches.match('./'));
+      }
+    })());
+    return;
+  }
+
+  event.respondWith((async () => {
+    const cached = await caches.match(event.request);
+    if (cached) return cached;
+    try {
+      const network = await fetch(event.request);
+      if (network && network.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        cache.put(event.request, network.clone()).catch(() => {});
+      }
+      return network;
+    } catch (e) {
+      return Response.error();
+    }
+  })());
 });

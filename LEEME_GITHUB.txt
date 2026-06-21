@@ -1,0 +1,18 @@
+EXPLORA PWA PARA GITHUB PAGES
+
+Esta versión separa los videos del index.html.
+- Videos: 24
+- index.html: 3.96 MB
+- Video más pesado: videos/templo.mp4 (15.27 MB)
+- Todos los archivos están por debajo de 25 MB: SÍ
+
+SUBIDA A GITHUB:
+1. Subí index.html, manifest.webmanifest, service-worker.js y LEEME_GITHUB.txt.
+2. Subí completas las carpetas icons y videos.
+3. Activá GitHub Pages desde Settings > Pages.
+4. Abrí el enlace HTTPS en Chrome de la tablet.
+5. Dejá la app abierta con internet unos minutos para que guarde los 24 videos.
+6. Instalá desde el menú de Chrome.
+7. Probá después en modo avión.
+
+No subas este ZIP al repositorio. Extraelo y subí sus archivos internos.

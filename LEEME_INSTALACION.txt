@@ -1,0 +1,10 @@
+EXPLORA PWA INSTALABLE
+
+1. Subir todos estos archivos a GitHub Pages conservando las carpetas.
+2. Abrir el enlace HTTPS en Chrome de la tablet.
+3. Esperar a que cargue completamente y mantener la página abierta unos minutos para guardar el archivo grande offline.
+4. Recargar una vez la página.
+5. Menú de Chrome > Instalar aplicación o Agregar a pantalla principal.
+6. Probar luego con modo avión.
+
+IMPORTANTE: una PWA no se puede instalar correctamente abriendo index.html como archivo local. Debe abrirse desde un enlace HTTPS, por ejemplo GitHub Pages.
