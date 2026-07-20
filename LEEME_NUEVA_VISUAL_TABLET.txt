@@ -1,0 +1,23 @@
+EXPLORA PASAJEROS — NUEVA VISUAL PARA TABLET
+
+Cambios aplicados:
+- Galería posterior al acceso organizada por Argentina, Brasil y Paraguay.
+- Cuatro tarjetas por fila en tablets y orientación horizontal.
+- Todos los videos aparecen pausados con imagen previa.
+- Toque sobre el centro del video: reproduce o pausa con sonido, sin ampliar la tarjeta.
+- Sólo se reproduce un video por vez.
+- Botón AGREGAR debajo de cada video y QUITAR después de seleccionarlo.
+- Tarjeta seleccionada con borde, fondo y sello verde AGREGADO.
+- Total del viaje actualizado automáticamente en un resumen inferior discreto.
+- Ponto Certo y Rafain ubicados al final de Brasil.
+- Restaurantes bloqueados hasta seleccionar al menos una excursión de Brasil.
+- Restaurantes identificados como TRASLADO GRATIS y con valor $0.
+- Si se quitan todas las excursiones de Brasil, cualquier restaurante seleccionado se quita y vuelve a bloquearse.
+- Se mantienen idioma, moneda, tarjeta, presupuestos y edición de precios.
+- Acceso privado al panel de precios: mantener presionado el logo EXPLORA durante 1,2 segundos.
+- Nuevas miniaturas locales para todos los videos y caché PWA actualizado.
+
+Archivos principales modificados:
+- index.html
+- service-worker.js
+- posters/generated/*.jpg

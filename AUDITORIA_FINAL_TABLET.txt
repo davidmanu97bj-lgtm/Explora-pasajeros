@@ -1,0 +1,24 @@
+AUDITORÍA FINAL — VISUAL TABLET EXPLORA
+Fecha: 20/07/2026
+
+CONTROLES REALIZADOS
+[OK] Sintaxis JavaScript de index.html validada con Node.
+[OK] Sintaxis JavaScript de service-worker.js validada con Node.
+[OK] 26 tarjetas configuradas: 11 Argentina, 13 Brasil y 2 Paraguay.
+[OK] Ponto Certo y Rafain están dentro de Brasil y al final del bloque.
+[OK] Todos los archivos de video y todas las miniaturas referenciadas existen.
+[OK] Todos los MP4 pudieron ser leídos con ffprobe.
+[OK] No existen IDs HTML duplicados.
+[OK] Cuatro columnas activas desde 680 px de ancho, adecuado para tablet Blackview en horizontal.
+[OK] Videos con playsinline, sin controles de pantalla completa y con reproducción por toque.
+[OK] Sólo un video puede quedar reproduciéndose a la vez.
+[OK] Tarjetas seleccionadas muestran estado verde AGREGADO y botón QUITAR.
+[OK] El total se recalcula al agregar o quitar.
+[OK] Restaurantes bloqueados sin excursión de Brasil.
+[OK] Restaurantes desbloqueados con cualquier excursión de Brasil seleccionada.
+[OK] Restaurantes tienen valor cero y etiqueta TRASLADO GRATIS.
+[OK] Al quitar todas las excursiones de Brasil, los restaurantes se deseleccionan y vuelven a bloquearse.
+[OK] Caché PWA actualizado con miniaturas y soporte para reproducción parcial de videos almacenados.
+
+NOTA
+La interfaz conserva el selector inicial de idioma y moneda, los presupuestos y el panel privado de precios. El panel privado se abre manteniendo presionado el logo EXPLORA durante 1,2 segundos.
