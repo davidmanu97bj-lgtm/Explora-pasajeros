@@ -2,237 +2,280 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
 <title>EXPLORA · Experiencias</title>
 <link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <meta name="theme-color" content="#030504">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="EXPLORA">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
-:root{--gold:#e2bc24;--gold2:#ffe66b;--green:#12e77d;--greenDark:#02653b;--red:#e84d4d;--ink:#050706;--panel:#101411;--muted:#a9b1ab;--line:rgba(255,255,255,.12)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html{background:#020302;color:#fff;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;scroll-behavior:smooth}
-body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% -20%,rgba(226,188,36,.13),transparent 35%),#020302;overflow-x:hidden}
-button,input,select,textarea{font:inherit}
-button{cursor:pointer}
-.hidden{display:none!important}
-
-/* Acceso existente: idioma + moneda */
-.onboarding{position:fixed;z-index:5000;inset:0;display:grid;place-items:center;background:#000;padding:24px}
-.loginShell{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:26px}
-.loginLogo{width:min(220px,54vw);aspect-ratio:1;object-fit:contain;border-radius:28px;filter:drop-shadow(0 24px 55px rgba(226,188,36,.12))}
-.loginTitle{font-size:clamp(24px,4vw,38px);font-weight:900;letter-spacing:-.045em}
-.loginSub{margin-top:-16px;color:rgba(255,255,255,.66);font-size:14px;font-weight:700}
-.loginOptions{width:min(430px,100%);display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.loginOptions.currency{grid-template-columns:1fr}
-.loginChoice{min-height:58px;border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:14px 18px;background:linear-gradient(90deg,var(--gold2),var(--gold));color:#211900;font-size:16px;font-weight:950;box-shadow:0 14px 35px rgba(0,0,0,.34)}
-.loginChoice.secondary{background:rgba(255,255,255,.07);color:#fff}
-
-/* Pantalla del pasajero: sólo marca, países y tarjetas */
-.app{min-height:100dvh;padding:12px 16px calc(86px + env(safe-area-inset-bottom));max-width:1500px;margin:0 auto}
-.brandHeader{height:74px;display:flex;align-items:center;justify-content:center;position:sticky;top:0;z-index:80;background:linear-gradient(180deg,rgba(2,3,2,.98) 0%,rgba(2,3,2,.91) 72%,rgba(2,3,2,0) 100%);margin:0 -16px 5px;padding:7px 16px 18px}
-.brandLogo{width:220px;height:58px;object-fit:contain;border-radius:14px;user-select:none;-webkit-user-drag:none;filter:drop-shadow(0 8px 22px rgba(226,188,36,.12))}
-.countrySection{margin:8px 0 28px;scroll-margin-top:74px}
-.countryHeading{display:flex;align-items:center;gap:10px;margin:0 2px 12px;font-size:20px;line-height:1;font-weight:950;letter-spacing:-.035em}
-.countryHeading:after{content:"";height:1px;flex:1;background:linear-gradient(90deg,rgba(226,188,36,.48),transparent)}
-.countryFlag{font-size:24px}
-.cardGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.experienceCard{position:relative;min-width:0;height:286px;display:grid;grid-template-rows:minmax(0,1fr) 46px;overflow:hidden;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:linear-gradient(180deg,#111512,#070907);box-shadow:0 16px 34px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.055);transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease,background .18s ease}
-.experienceCard:active{transform:scale(.992)}
-.experienceCard.selected{border-color:rgba(18,231,125,.86);background:rgba(6,70,42,.34);box-shadow:0 0 0 3px rgba(18,231,125,.13),0 18px 42px rgba(0,0,0,.48),inset 0 0 34px rgba(18,231,125,.08)}
-.experienceCard.locked{border-color:rgba(255,255,255,.08);filter:saturate(.4)}
-.videoBox{position:relative;min-height:0;overflow:hidden;background:#000;isolation:isolate}
-.videoBox video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000}
-.videoShade{position:absolute;z-index:2;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08) 30%,rgba(0,0,0,.84) 100%);pointer-events:none}
-.cardTitle{position:absolute;z-index:4;left:12px;right:12px;bottom:10px;font-size:clamp(14px,1.45vw,18px);line-height:1.05;font-weight:950;letter-spacing:-.025em;text-shadow:0 3px 15px rgba(0,0,0,.92);pointer-events:none}
-.playButton{position:absolute;z-index:7;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,255,255,.45);display:grid;place-items:center;background:rgba(0,0,0,.58);color:#fff;box-shadow:0 10px 28px rgba(0,0,0,.54),0 0 0 5px rgba(255,255,255,.06);backdrop-filter:blur(7px);-webkit-backdrop-filter:blur(7px);font-size:23px;padding-left:4px}
-.playButton.playing{padding-left:0;font-size:20px;background:rgba(0,0,0,.42)}
-.selectedWash{position:absolute;z-index:3;inset:0;background:linear-gradient(180deg,rgba(18,231,125,.04),rgba(18,231,125,.28));opacity:0;pointer-events:none;transition:opacity .18s ease}
-.selected .selectedWash{opacity:1}
-.selectedBadge{position:absolute;z-index:8;left:10px;top:10px;display:none;align-items:center;gap:6px;padding:7px 10px;border-radius:999px;background:rgba(0,92,52,.86);border:1px solid rgba(132,255,193,.52);color:#d9ffeb;font-size:10px;font-weight:1000;letter-spacing:.08em;box-shadow:0 8px 20px rgba(0,0,0,.3)}
-.selected .selectedBadge{display:inline-flex}
-.freeBadge{position:absolute;z-index:12;right:10px;top:10px;padding:7px 9px;border-radius:999px;background:linear-gradient(90deg,#ffe982,#d5a80b);color:#241a00;font-size:9px;font-weight:1000;letter-spacing:.07em;box-shadow:0 8px 22px rgba(0,0,0,.35)}
-.lockCover{position:absolute;z-index:10;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:18px;background:rgba(1,3,2,.73);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px)}
-.locked .lockCover{display:flex}.locked .cardTitle{z-index:12}
-.lockMessage{max-width:210px;font-size:12px;line-height:1.32;font-weight:850;color:rgba(255,255,255,.88)}
-.lockIcon{display:block;font-size:27px;margin-bottom:7px}
-.cardAction{border:0;border-top:1px solid rgba(255,255,255,.09);background:linear-gradient(90deg,#f8dc61,#d5a80b);color:#201800;font-size:12px;font-weight:1000;letter-spacing:.075em;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:7px;min-width:0}
-.cardAction small{font-size:10px;letter-spacing:0;text-transform:none;opacity:.75;white-space:nowrap}
-.cardAction.remove{background:rgba(5,55,34,.93);color:#baffd6;border-top-color:rgba(91,255,166,.28)}
-.cardAction:disabled{cursor:not-allowed;background:#171b18;color:#777f79;border-top-color:rgba(255,255,255,.05)}
-
-/* Resumen discreto; aparece sólo después de seleccionar */
-.tripDock{position:fixed;z-index:100;left:50%;bottom:calc(12px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(720px,calc(100% - 24px));min-height:58px;border:1px solid rgba(91,255,166,.25);border-radius:21px;background:rgba(7,15,10,.94);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 18px 54px rgba(0,0,0,.62),inset 0 1px 0 rgba(255,255,255,.07);display:flex;align-items:center;gap:12px;padding:8px 9px 8px 16px}
-.tripDockInfo{min-width:0;flex:1}
-.tripDockCount{font-size:11px;color:rgba(255,255,255,.7);font-weight:800}
-.tripDockTotal{font-size:20px;line-height:1.05;color:#63ffa8;font-weight:1000;letter-spacing:-.035em}
-.tripDockButton{height:42px;border:0;border-radius:15px;padding:0 18px;background:linear-gradient(90deg,#f8dc61,#d5a80b);color:#211900;font-size:12px;font-weight:1000;letter-spacing:.06em}
-
-/* Paneles secundarios */
-.modal{position:fixed;z-index:6000;inset:0;display:none;align-items:flex-end;justify-content:center;padding:12px;background:rgba(0,0,0,.76);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
-.modal.open{display:flex}
-.modalPanel{width:min(760px,100%);max-height:88dvh;overflow:auto;border:1px solid rgba(255,255,255,.14);border-radius:28px;background:linear-gradient(180deg,#131814,#050706);box-shadow:0 -25px 80px rgba(0,0,0,.74);padding:18px;padding-bottom:calc(18px + env(safe-area-inset-bottom))}
-.modalTitle{margin:0 0 4px;text-align:center;font-size:24px;letter-spacing:-.04em}
-.modalSub{text-align:center;color:var(--muted);font-size:12px;font-weight:700;margin-bottom:14px}
-.tripItem{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,.08)}
-.tripItemName{font-size:14px;font-weight:900}
-.tripItemMeta{font-size:11px;color:rgba(255,255,255,.63);margin-top:4px}
-.miniRemove{border:1px solid rgba(255,110,110,.35);border-radius:12px;background:rgba(104,18,18,.45);color:#ffd7d7;padding:8px 10px;font-size:10px;font-weight:950}
-.sheetTotal{font-size:28px;text-align:center;color:#63ffa8;font-weight:1000;margin:18px 0 14px}
-.sheetButtons{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
-.actionBtn{min-height:47px;border:0;border-radius:16px;padding:11px 12px;font-size:12px;font-weight:950}
-.actionBtn.gold{background:linear-gradient(90deg,#f8dc61,#d5a80b);color:#211900}
-.actionBtn.green{background:linear-gradient(90deg,#17eb83,#08b866);color:#002a18}
-.actionBtn.ghost{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);color:#fff}
-.actionBtn.red{background:rgba(112,20,20,.7);border:1px solid rgba(255,100,100,.25);color:#fff}
-.field{width:100%;margin:6px 0;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:rgba(0,0,0,.38);color:#fff;padding:13px;font-weight:800}
-.adminTabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
-.priceRow{display:grid;grid-template-columns:1.25fr .8fr .8fr;align-items:end;gap:8px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.07)}
-.priceRow strong{font-size:12px;align-self:center}
-.priceRow label{font-size:10px;color:rgba(255,255,255,.68);font-weight:800}
-.priceRow input{width:100%;margin-top:4px;border:1px solid rgba(255,255,255,.12);border-radius:11px;background:#060806;color:#fff;padding:9px;font-weight:850}
-.savedCard{border:1px solid rgba(255,255,255,.1);border-radius:17px;background:rgba(255,255,255,.045);padding:12px;margin:9px 0}
-.savedCard textarea{width:100%;min-height:145px;margin:9px 0;border:1px solid rgba(255,255,255,.1);border-radius:12px;background:#050605;color:#fff;padding:10px;font-size:11px}
-.empty{text-align:center;color:rgba(255,255,255,.58);padding:22px;font-size:13px}
-
-@media(min-width:680px){
-  .app{padding-left:22px;padding-right:22px}
-  .brandHeader{margin-left:-22px;margin-right:-22px}
-  .cardGrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}
-  .experienceCard{height:294px}
+:root{
+  --gold:#e7bf2d;--gold-light:#ffe477;--ink:#030504;--panel:#0b0f0d;--panel-2:#121814;
+  --green:#19e47c;--green-dark:#087b48;--red:#dc3c42;--white:#fff;--muted:rgba(255,255,255,.72);
+  --card-radius:22px;--gap:16px;
 }
-@media(min-width:1180px){.experienceCard{height:310px}.cardGrid{gap:18px}.countrySection{margin-bottom:34px}}
-@media(max-width:679px){.experienceCard{height:245px}.playButton{width:52px;height:52px}.sheetButtons{grid-template-columns:1fr}.priceRow{grid-template-columns:1fr}}
-@media(orientation:landscape) and (max-height:720px) and (min-width:680px){.brandHeader{height:62px}.experienceCard{height:238px}.countrySection{margin-bottom:22px}.cardGrid{gap:12px}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{background:#030504;color-scheme:dark;scroll-behavior:smooth}
+body{margin:0;min-height:100dvh;background:radial-gradient(circle at 50% -12%,rgba(231,191,45,.16),transparent 28%),linear-gradient(180deg,#080d0a,#020302 72%);color:#fff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;overscroll-behavior:none}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+[hidden]{display:none!important}
+
+/* Login */
+.login-screen{position:fixed;z-index:500;inset:0;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 24%,rgba(231,191,45,.20),transparent 31%),#020302}
+.login-card{width:min(510px,100%);display:flex;flex-direction:column;align-items:center;text-align:center;gap:22px}
+.login-logo{width:148px;height:148px;border-radius:34px;box-shadow:0 28px 70px rgba(0,0,0,.58),0 0 0 1px rgba(255,226,105,.22)}
+.login-title{margin:0;font-size:clamp(27px,4vw,42px);line-height:1.04;letter-spacing:-.045em;font-weight:900}
+.login-sub{margin:-10px 0 0;color:var(--muted);font-size:14px;font-weight:650}
+.login-options{display:grid;grid-template-columns:1fr 1fr;gap:11px;width:100%}
+.login-options.currency{grid-template-columns:1fr}
+.login-option{min-height:60px;border:1px solid rgba(255,255,255,.13);border-radius:18px;padding:14px 18px;background:rgba(255,255,255,.07);color:#fff;font-weight:850;font-size:17px;box-shadow:0 14px 35px rgba(0,0,0,.25)}
+.login-option.primary{background:linear-gradient(135deg,var(--gold-light),#c58e08);color:#231a00;border-color:transparent}
+
+/* Main gallery */
+.app-shell{height:100dvh;padding:calc(12px + env(safe-area-inset-top)) 18px calc(92px + env(safe-area-inset-bottom));display:grid;grid-template-rows:auto 1fr;gap:10px;overflow:hidden}
+.brand-header{height:78px;display:flex;align-items:center;justify-content:center}
+.brand-button{appearance:none;border:0;background:transparent;padding:0;border-radius:20px;cursor:default}
+.brand-logo{display:block;width:78px;height:78px;border-radius:22px;box-shadow:0 18px 44px rgba(0,0,0,.46),0 0 0 1px rgba(231,191,45,.24)}
+.gallery{width:min(1920px,100%);margin:0 auto;min-height:0;display:grid;grid-template-rows:repeat(3,minmax(0,1fr));gap:18px}
+.country-section{min-height:0;display:grid;grid-template-rows:auto 1fr;gap:10px;margin:0;scroll-margin-top:0}
+.country-heading{display:flex;align-items:center;gap:10px;margin:0;padding:0 4px}
+.country-flag{font-size:22px;line-height:1}
+.country-heading h2{margin:0;font-size:clamp(19px,1.55vw,28px);letter-spacing:-.03em;font-weight:900}
+.cards-grid{min-height:0;display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 4px 10px;scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none}
+.cards-grid::-webkit-scrollbar{display:none}
+.video-card{position:relative;flex:0 0 clamp(154px,14.4vw,212px);min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:linear-gradient(180deg,rgba(20,27,23,.98),rgba(7,10,8,.98));box-shadow:0 18px 45px rgba(0,0,0,.34);display:grid;grid-template-rows:minmax(0,1fr) 42px;transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;scroll-snap-align:start}
+.video-card:active{transform:scale(.992)}
+.media-stage{position:relative;min-height:0;aspect-ratio:2/3;overflow:hidden;background:#000;isolation:isolate}
+.media-stage video,.media-stage .poster-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#000}
+.media-stage video{z-index:1}
+.media-stage::before{content:"";position:absolute;z-index:2;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.92));pointer-events:none}
+.media-stage::after{content:"";position:absolute;z-index:3;inset:0;background:rgba(9,226,115,0);pointer-events:none;transition:background .22s ease}
+.card-copy{position:absolute;z-index:5;left:12px;right:12px;bottom:12px;text-shadow:0 3px 18px rgba(0,0,0,.95);pointer-events:none}
+.card-copy h3{margin:0;font-size:clamp(15px,1.1vw,22px);line-height:1.02;letter-spacing:-.03em;font-weight:900}
+.card-copy p{display:none}
+.play-button{position:absolute;z-index:8;left:50%;top:50%;transform:translate(-50%,-50%);width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,255,255,.42);background:rgba(0,0,0,.58);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);box-shadow:0 14px 34px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.22);display:grid;place-items:center;color:#fff;transition:opacity .18s ease,transform .18s ease,background .18s ease}
+.play-button::before{content:"";display:block;margin-left:4px;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid currentColor}
+.video-card.playing .play-button{opacity:0;transform:translate(-50%,-50%) scale(.82);pointer-events:none}
+.media-stage:hover .play-button{background:rgba(0,0,0,.72)}
+.select-button{appearance:none;border:0;border-top:1px solid rgba(255,255,255,.09);min-height:42px;padding:8px 10px;background:linear-gradient(135deg,#f6d64f,#c18a06);color:#271d00;font-size:13px;font-weight:950;letter-spacing:.015em;cursor:pointer}
+.select-button:disabled{cursor:not-allowed;background:rgba(255,255,255,.07);color:rgba(255,255,255,.46)}
+.free-badge,.selected-badge{position:absolute;z-index:10;top:9px;border-radius:999px;padding:6px 9px;font-size:10px;line-height:1;font-weight:950;letter-spacing:.07em;text-transform:uppercase;box-shadow:0 7px 20px rgba(0,0,0,.34)}
+.free-badge{left:9px;background:linear-gradient(135deg,#ffed82,#c88f08);color:#261c00}
+.selected-badge{right:9px;display:none;background:rgba(1,76,39,.90);border:1px solid rgba(60,255,155,.62);color:#baffd8}
+.lock-layer{position:absolute;z-index:12;inset:0;display:none;align-items:center;justify-content:center;padding:18px;text-align:center;background:rgba(1,3,2,.70);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
+.lock-content{max-width:230px;display:flex;flex-direction:column;align-items:center;gap:9px;font-size:11px;line-height:1.3;font-weight:820;color:rgba(255,255,255,.92)}
+.lock-icon{width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.17);font-size:20px}
+.video-card.locked .lock-layer{display:flex}
+.video-card.locked video{filter:grayscale(1);opacity:.62}
+.video-card.selected{border-color:rgba(35,247,137,.92);box-shadow:0 0 0 3px rgba(25,228,124,.14),0 20px 50px rgba(0,0,0,.40)}
+.video-card.selected .media-stage::after{background:rgba(8,214,108,.22)}
+.video-card.selected .selected-badge{display:block}
+.video-card.selected .select-button{background:linear-gradient(135deg,#ed565b,#a8141c);color:#fff}
+
+/* Dock shown only after a selection */
+.selection-dock{position:fixed;z-index:80;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100% - 24px));padding:7px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(6,10,8,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.62)}
+.selection-open{width:100%;min-height:54px;border:0;border-radius:16px;padding:10px 15px;background:linear-gradient(135deg,#0c2a1c,#0a1710);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800}
+.selection-open strong{color:#4cff9f;font-size:20px;white-space:nowrap}
+
+/* Modals */
+.modal{position:fixed;z-index:300;inset:0;display:none;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.76);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px)}
+.modal.open{display:flex}
+.modal-panel{width:min(640px,100%);max-height:min(88dvh,900px);overflow:auto;border:1px solid rgba(255,255,255,.14);border-radius:26px;padding:19px;background:linear-gradient(180deg,#121914,#050706);box-shadow:0 30px 90px rgba(0,0,0,.72)}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.modal-head h2{margin:0;font-size:24px;letter-spacing:-.035em}
+.icon-close{width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);color:#fff;font-size:22px}
+.choice-list{display:grid;gap:10px}
+.choice-button{border:1px solid rgba(255,255,255,.12);border-radius:18px;min-height:64px;padding:12px 15px;background:rgba(255,255,255,.07);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;font-weight:850}
+.choice-button strong{color:var(--gold-light);font-size:18px;white-space:nowrap}
+.selection-list{display:grid;gap:9px;margin:10px 0}
+.selection-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:12px;border:1px solid rgba(255,255,255,.10);border-radius:16px;background:rgba(255,255,255,.05)}
+.selection-item small{display:block;margin-top:4px;color:var(--muted);font-weight:650}
+.mini-remove{border:1px solid rgba(255,91,99,.34);border-radius:12px;padding:9px 11px;background:rgba(160,22,30,.45);color:#fff;font-weight:850}
+.modal-total{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 4px;font-size:18px;font-weight:850}
+.modal-total strong{font-size:26px;color:#48ff9c}
+.modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px}
+.action{min-height:50px;border:0;border-radius:15px;padding:11px 14px;font-weight:900}
+.action.primary{background:linear-gradient(135deg,#29ed88,#08a85b);color:#022313}
+.action.secondary{background:rgba(255,255,255,.09);color:#fff;border:1px solid rgba(255,255,255,.12)}
+.action.danger{background:linear-gradient(135deg,#e44c52,#9f1119);color:#fff}
+.field{display:block;width:100%;margin:9px 0;border:1px solid rgba(255,255,255,.14);border-radius:15px;background:rgba(0,0,0,.33);color:#fff;padding:13px;font-weight:750}
+.hint{margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.4}
+.toast{position:fixed;z-index:900;left:50%;bottom:calc(88px + env(safe-area-inset-bottom));transform:translate(-50%,18px);max-width:min(520px,calc(100% - 30px));padding:11px 15px;border:1px solid rgba(255,255,255,.15);border-radius:15px;background:rgba(10,14,12,.94);color:#fff;box-shadow:0 20px 55px rgba(0,0,0,.58);font-size:13px;font-weight:800;text-align:center;opacity:0;pointer-events:none;transition:.22s ease}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+
+/* Hidden owner panel */
+.admin-tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.admin-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(100px,.6fr);gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.admin-grid input{width:100%;border:1px solid rgba(255,255,255,.13);border-radius:12px;background:rgba(0,0,0,.32);color:#fff;padding:10px;font-weight:750}
+.saved-budget{padding:12px;margin:9px 0;border:1px solid rgba(255,255,255,.10);border-radius:15px;background:rgba(255,255,255,.05)}
+.saved-budget small{display:block;color:var(--muted);margin-top:4px}
+
+@media (min-width:1050px){.app-shell{padding-left:26px;padding-right:26px}.brand-header{height:84px}.brand-logo{width:84px;height:84px}.video-card{flex-basis:clamp(166px,14vw,220px)}}
+@media (orientation:landscape) and (min-width:1050px){.gallery{gap:16px}.country-section{gap:8px}.video-card{flex-basis:clamp(160px,12vw,200px)}}
+@media (max-width:760px){.app-shell{padding-left:10px;padding-right:10px;padding-bottom:calc(88px + env(safe-area-inset-bottom))}.brand-header{height:68px}.brand-logo{width:66px;height:66px;border-radius:18px}.gallery{gap:14px}.video-card{flex-basis:140px;border-radius:12px}.play-button{width:48px;height:48px}.play-button::before{border-top-width:8px;border-bottom-width:8px;border-left-width:13px}.card-copy{left:10px;right:10px;bottom:10px}.card-copy h3{font-size:14px}.select-button{font-size:12px;padding:7px 8px}.modal-actions{grid-template-columns:1fr}.login-options{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
 </style>
 </head>
 <body>
-<div class="onboarding" id="onboarding">
-  <div class="loginShell">
-    <img class="loginLogo" src="icon-512.png" alt="EXPLORA Iguazú">
+<section class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <img src="icon-512.png" alt="EXPLORA Iguazú" class="login-logo">
     <div id="loginContent"></div>
   </div>
+</section>
+
+<div class="app-shell" id="appShell" hidden>
+  <header class="brand-header">
+    <button class="brand-button" id="brandButton" aria-label="EXPLORA"><img class="brand-logo" src="icon-512.png" alt="EXPLORA Iguazú"></button>
+  </header>
+  <main class="gallery" id="gallery"></main>
 </div>
 
-<main class="app hidden" id="appRoot">
-  <header class="brandHeader"><img id="brandLogo" class="brandLogo" src="assets/logo-explora-horizontal.webp" alt="EXPLORA Iguazú"></header>
-  <div id="countries"></div>
-</main>
-
-<div class="tripDock hidden" id="tripDock">
-  <div class="tripDockInfo"><div class="tripDockCount" id="tripCount"></div><div class="tripDockTotal" id="tripTotal"></div></div>
-  <button class="tripDockButton" id="openTrip">VER</button>
+<div class="selection-dock" id="selectionDock" hidden>
+  <button class="selection-open" id="openSelection"><span id="dockCount"></span><strong id="dockTotal"></strong></button>
 </div>
 
-<div class="modal" id="tripModal"><div class="modalPanel">
-  <h2 class="modalTitle" id="tripTitle">Mi viaje EXPLORA</h2>
-  <div class="modalSub" id="tripSubtitle"></div>
-  <div id="tripList"></div>
-  <div class="sheetTotal" id="sheetTotal"></div>
-  <div class="sheetButtons">
-    <button class="actionBtn green" id="openSave">Guardar presupuesto</button>
-    <button class="actionBtn ghost" id="clearTrip">Limpiar viaje</button>
-    <button class="actionBtn red" data-close="tripModal">Cerrar</button>
-  </div>
+<div class="modal" id="choiceModal" aria-hidden="true"><div class="modal-panel">
+  <div class="modal-head"><h2 id="choiceTitle"></h2><button class="icon-close" data-close="choiceModal">×</button></div>
+  <p class="hint" id="choiceHint"></p><div class="choice-list" id="choiceList"></div>
 </div></div>
 
-<div class="modal" id="saveModal"><div class="modalPanel">
-  <h2 class="modalTitle" id="saveTitle">Guardar presupuesto</h2>
-  <div class="modalSub" id="saveSubtitle">Cargá los datos del pasajero.</div>
-  <input class="field" id="passengerName" placeholder="Nombre del pasajero">
+<div class="modal" id="selectionModal" aria-hidden="true"><div class="modal-panel">
+  <div class="modal-head"><h2 id="selectionTitle">Mi selección</h2><button class="icon-close" data-close="selectionModal">×</button></div>
+  <div class="selection-list" id="selectionList"></div>
+  <div class="modal-total"><span id="totalLabel">Total</span><strong id="selectionTotal"></strong></div>
+  <div class="modal-actions"><button class="action primary" id="openPassenger">Guardar presupuesto</button><button class="action danger" id="clearSelection">Limpiar</button></div>
+</div></div>
+
+<div class="modal" id="passengerModal" aria-hidden="true"><div class="modal-panel">
+  <div class="modal-head"><h2 id="passengerTitle">Guardar presupuesto</h2><button class="icon-close" data-close="passengerModal">×</button></div>
+  <p class="hint" id="passengerHint">Los datos quedan guardados solamente en esta tablet.</p>
+  <input class="field" id="passengerName" placeholder="Nombre del pasajero" autocomplete="off">
   <select class="field" id="countryCode"><option value="54">🇦🇷 Argentina +54</option><option value="55">🇧🇷 Brasil +55</option><option value="595">🇵🇾 Paraguay +595</option><option value="598">🇺🇾 Uruguay +598</option><option value="56">🇨🇱 Chile +56</option><option value="1">🇺🇸 Estados Unidos +1</option><option value="51">🇵🇪 Perú +51</option><option value="591">🇧🇴 Bolivia +591</option></select>
-  <input class="field" id="phoneNumber" inputmode="tel" placeholder="WhatsApp del pasajero">
-  <div class="sheetButtons" style="margin-top:10px">
-    <button class="actionBtn green" id="saveBudget">Guardar presupuesto</button>
-    <button class="actionBtn red" data-close="saveModal">Cerrar</button>
-  </div>
+  <input class="field" id="phoneNumber" inputmode="tel" placeholder="Número sin código de país" autocomplete="off">
+  <div class="modal-actions"><button class="action primary" id="saveBudget">Guardar</button><button class="action secondary" data-close="passengerModal">Cancelar</button></div>
 </div></div>
 
-<div class="modal" id="adminModal"><div class="modalPanel">
-  <h2 class="modalTitle">Panel EXPLORA</h2>
-  <div class="modalSub">Acceso privado mediante pulsación prolongada del logo.</div>
-  <div class="adminTabs"><button class="actionBtn gold" id="showPrices">Precios</button><button class="actionBtn green" id="showBudgets">Presupuestos</button></div>
-  <div id="pricesPanel"></div><div id="budgetsPanel" class="hidden"></div>
-  <button class="actionBtn red" data-close="adminModal" style="width:100%;margin-top:12px">Cerrar</button>
+<div class="modal" id="adminModal" aria-hidden="true"><div class="modal-panel">
+  <div class="modal-head"><h2>Panel EXPLORA</h2><button class="icon-close" data-close="adminModal">×</button></div>
+  <div class="admin-tabs"><button class="action primary" id="adminPricesTab">Precios</button><button class="action secondary" id="adminBudgetsTab">Presupuestos</button></div>
+  <div id="adminContent"></div>
 </div></div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-const ITEMS=[{"id":"cat_arg","pais":"Argentina","bandera":"🇦🇷","nombre":"Cataratas lado argentino","tipo":"Naturaleza principal","duracion":"4 a 6 horas","baseRoundTrip":55000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/cat_arg.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/cat_arg.jpg"},{"id":"volver_aero","pais":"Argentina","bandera":"🇦🇷","nombre":"Volver al aeropuerto","tipo":"Traslado","duracion":"30 minutos","baseRoundTrip":25000,"oneWayOnly":true,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/volver_aero.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/volver_aero.jpg"},{"id":"wanda","pais":"Argentina","bandera":"🇦🇷","nombre":"Minas de Wanda","tipo":"Piedras preciosas","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/wanda.mp4","startAt":3.0,"restaurant":false,"poster":"posters/generated/wanda.jpg"},{"id":"catamaran","pais":"Argentina","bandera":"🇦🇷","nombre":"Cruceros Catamarán","tipo":"Paseo náutico","duracion":"2 horas","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/catamaran.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/catamaran.jpg"},{"id":"hito","pais":"Argentina","bandera":"🇦🇷","nombre":"Hito de las Tres Fronteras","tipo":"Paseo urbano","duracion":"30 minutos","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/hito.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/hito.jpg"},{"id":"guiraoga","pais":"Argentina","bandera":"🇦🇷","nombre":"Güirá Oga","tipo":"Naturaleza / animales","duracion":"1 hora y media","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/guiraoga.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/guiraoga.jpg"},{"id":"dutyfree","pais":"Argentina","bandera":"🇦🇷","nombre":"Shopping Duty Free Shop","tipo":"Compras","duracion":"Flexible","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/dutyfree.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/dutyfree.jpg"},{"id":"aripuca","pais":"Argentina","bandera":"🇦🇷","nombre":"La Aripuca","tipo":"Cultura / naturaleza","duracion":"1 hora","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/aripuca.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/aripuca.jpg"},{"id":"icebar","pais":"Argentina","bandera":"🇦🇷","nombre":"Icebar Iguazú","tipo":"Experiencia","duracion":"30 minutos a 1 hora","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/icebar.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/icebar.jpg"},{"id":"feirinha","pais":"Argentina","bandera":"🇦🇷","nombre":"La Feirinha","tipo":"Gastronomía / paseo","duracion":"Flexible","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/feirinha.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/feirinha.jpg"},{"id":"guarani","pais":"Argentina","bandera":"🇦🇷","nombre":"Conocé la comunidad guaraní","tipo":"Cultura","duracion":"3 horas","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/guarani.mp4","startAt":7.0,"restaurant":false,"poster":"posters/generated/guarani.jpg"},{"id":"cat_bra","pais":"Brasil","bandera":"🇧🇷","nombre":"Cataratas lado brasileño","tipo":"Naturaleza principal","duracion":"2 horas y media a 3 horas","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/cat_bra.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/cat_bra.jpg"},{"id":"aves","pais":"Brasil","bandera":"🇧🇷","nombre":"Parque das Aves","tipo":"Naturaleza / animales","duracion":"1 hora a 1 hora y media","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":true,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/aves.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/aves.jpg"},{"id":"aquafoz","pais":"Brasil","bandera":"🇧🇷","nombre":"Aquafoz Acuario","tipo":"Acuario","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":true,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/aquafoz.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/aquafoz.jpg"},{"id":"helisul","pais":"Brasil","bandera":"🇧🇷","nombre":"Vuelo en helicóptero Helisul","tipo":"Aventura / aéreo","duracion":"10 minutos","baseRoundTrip":80000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/helisul.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/helisul.jpg"},{"id":"itaipu_br","pais":"Brasil","bandera":"🇧🇷","nombre":"Itaipú Binacional","tipo":"Tecnología / paseo","duracion":"3 horas","baseRoundTrip":80000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/itaipu_br.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/itaipu_br.jpg"},{"id":"marco_br","pais":"Brasil","bandera":"🇧🇷","nombre":"Marco das Três Fronteiras","tipo":"Atardecer / show","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/marco_br.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/marco_br.jpg"},{"id":"templo","pais":"Brasil","bandera":"🇧🇷","nombre":"Templo Budista Chen Tien","tipo":"Cultura","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/templo.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/templo.jpg"},{"id":"mezquita","pais":"Brasil","bandera":"🇧🇷","nombre":"Mezquita Omar Ibn Al-Khattab","tipo":"Cultura","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/mezquita.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/mezquita.jpg"},{"id":"yupstar","pais":"Brasil","bandera":"🇧🇷","nombre":"Yup Star Foz","tipo":"Rueda gigante","duracion":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/yupstar.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/yupstar.jpg"},{"id":"aquamania","pais":"Brasil","bandera":"🇧🇷","nombre":"Aqua Mania","tipo":"Parque acuático","duracion":"Flexible","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/aquamania.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/aquamania.jpg"},{"id":"bluepark","pais":"Brasil","bandera":"🇧🇷","nombre":"Blue Park","tipo":"Parque acuático","duracion":"Flexible","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/bluepark.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/bluepark.jpg"},{"id":"compras_py","pais":"Paraguay","bandera":"🇵🇾","nombre":"Tour de compras Ciudad del Este","tipo":"Compras","duracion":"3 a 5 horas","baseRoundTrip":100000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/compras_py.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/compras_py.jpg"},{"id":"monday","pais":"Paraguay","bandera":"🇵🇾","nombre":"Saltos del Monday","tipo":"Naturaleza","duracion":"1 hora y media","baseRoundTrip":100000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"videoSrc":"videos/monday.mp4","startAt":0,"restaurant":false,"poster":"posters/generated/monday.jpg"},{"id":"rafain","pais":"Brasil","bandera":"🇧🇷","nombre":"Rafain Churrascaria Show","tipo":"Restaurante","duracion":"Consultar","baseRoundTrip":0,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":0,"videoSrc":"videos/rafain.mp4","startAt":0,"restaurant":true,"poster":"posters/generated/rafain.jpg"},{"id":"ponto_certo","pais":"Brasil","bandera":"🇧🇷","nombre":"Ponto Certo Churrascaria","tipo":"Restaurante","duracion":"Consultar","baseRoundTrip":0,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":0,"videoSrc":"videos/ponto_certo.mp4","startAt":0,"restaurant":true,"poster":"posters/generated/ponto_certo.jpg"}];
-const COUNTRIES=['Argentina','Brasil','Paraguay'];
+const ATTRACTIONS=[{"id":"cat_arg","country":"Argentina","flag":"🇦🇷","name":"Cataratas lado argentino","type":"Naturaleza principal","duration":"4 a 6 horas","baseRoundTrip":55000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/cat_arg.mp4","poster":"posters/grid/cat_arg.jpg","startAt":0.0},{"id":"volver_aero","country":"Argentina","flag":"🇦🇷","name":"Volver al aeropuerto","type":"Traslado","duration":"30 minutos","baseRoundTrip":25000,"oneWayOnly":true,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/volver_aero.mp4","poster":"posters/grid/volver_aero.jpg","startAt":0.0},{"id":"wanda","country":"Argentina","flag":"🇦🇷","name":"Minas de Wanda","type":"Piedras preciosas","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/wanda.mp4","poster":"posters/grid/wanda.jpg","startAt":3.0},{"id":"catamaran","country":"Argentina","flag":"🇦🇷","name":"Cruceros Catamarán","type":"Paseo náutico","duration":"2 horas","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/catamaran.mp4","poster":"posters/grid/catamaran.jpg","startAt":0.0},{"id":"hito","country":"Argentina","flag":"🇦🇷","name":"Hito de las Tres Fronteras","type":"Paseo urbano","duration":"30 minutos","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/hito.mp4","poster":"posters/grid/hito.jpg","startAt":0.0},{"id":"guiraoga","country":"Argentina","flag":"🇦🇷","name":"Güirá Oga","type":"Naturaleza / animales","duration":"1 hora y media","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/guiraoga.mp4","poster":"posters/grid/guiraoga.jpg","startAt":0.0},{"id":"dutyfree","country":"Argentina","flag":"🇦🇷","name":"Shopping Duty Free Shop","type":"Compras","duration":"Flexible","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/dutyfree.mp4","poster":"posters/grid/dutyfree.jpg","startAt":0.0},{"id":"aripuca","country":"Argentina","flag":"🇦🇷","name":"La Aripuca","type":"Cultura / naturaleza","duration":"1 hora","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/aripuca.mp4","poster":"posters/grid/aripuca.jpg","startAt":0.0},{"id":"icebar","country":"Argentina","flag":"🇦🇷","name":"Icebar Iguazú","type":"Experiencia","duration":"30 minutos a 1 hora","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/icebar.mp4","poster":"posters/grid/icebar.jpg","startAt":0.0},{"id":"feirinha","country":"Argentina","flag":"🇦🇷","name":"La Feirinha","type":"Gastronomía / paseo","duration":"Flexible","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/feirinha.mp4","poster":"posters/grid/feirinha.jpg","startAt":0.0},{"id":"guarani","country":"Argentina","flag":"🇦🇷","name":"Conocé la comunidad guaraní","type":"Cultura","duration":"3 horas","baseRoundTrip":20000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/guarani.mp4","poster":"posters/grid/guarani.jpg","startAt":7.0},{"id":"cat_bra","country":"Brasil","flag":"🇧🇷","name":"Cataratas lado brasileño","type":"Naturaleza principal","duration":"2 horas y media a 3 horas","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/cat_bra.mp4","poster":"posters/grid/cat_bra.jpg","startAt":0.0},{"id":"aves","country":"Brasil","flag":"🇧🇷","name":"Parque das Aves","type":"Naturaleza / animales","duration":"1 hora a 1 hora y media","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":true,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/aves.mp4","poster":"posters/grid/aves.jpg","startAt":0.0},{"id":"aquafoz","country":"Brasil","flag":"🇧🇷","name":"Aquafoz Acuario","type":"Acuario","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":true,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/aquafoz.mp4","poster":"posters/grid/aquafoz.jpg","startAt":0.0},{"id":"helisul","country":"Brasil","flag":"🇧🇷","name":"Vuelo en helicóptero Helisul","type":"Aventura / aéreo","duration":"10 minutos","baseRoundTrip":80000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/helisul.mp4","poster":"posters/grid/helisul.jpg","startAt":0.0},{"id":"itaipu_br","country":"Brasil","flag":"🇧🇷","name":"Itaipú Binacional","type":"Tecnología / paseo","duration":"3 horas","baseRoundTrip":80000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/itaipu_br.mp4","poster":"posters/grid/itaipu_br.jpg","startAt":0.0},{"id":"marco_br","country":"Brasil","flag":"🇧🇷","name":"Marco das Três Fronteiras","type":"Atardecer / show","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/marco_br.mp4","poster":"posters/grid/marco_br.jpg","startAt":0.0},{"id":"templo","country":"Brasil","flag":"🇧🇷","name":"Templo Budista Chen Tien","type":"Cultura","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/templo.mp4","poster":"posters/grid/templo.jpg","startAt":0.0},{"id":"mezquita","country":"Brasil","flag":"🇧🇷","name":"Mezquita Omar Ibn Al-Khattab","type":"Cultura","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/mezquita.mp4","poster":"posters/grid/mezquita.jpg","startAt":0.0},{"id":"yupstar","country":"Brasil","flag":"🇧🇷","name":"Yup Star Foz","type":"Rueda gigante","duration":"1 hora","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/yupstar.mp4","poster":"posters/grid/yupstar.jpg","startAt":0.0},{"id":"aquamania","country":"Brasil","flag":"🇧🇷","name":"Aqua Mania","type":"Parque acuático","duration":"Flexible","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/aquamania.mp4","poster":"posters/grid/aquamania.jpg","startAt":0.0},{"id":"bluepark","country":"Brasil","flag":"🇧🇷","name":"Blue Park","type":"Parque acuático","duration":"Flexible","baseRoundTrip":70000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/bluepark.mp4","poster":"posters/grid/bluepark.jpg","startAt":0.0},{"id":"compras_py","country":"Paraguay","flag":"🇵🇾","name":"Tour de compras Ciudad del Este","type":"Compras","duration":"3 a 5 horas","baseRoundTrip":100000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/compras_py.mp4","poster":"posters/grid/compras_py.jpg","startAt":0.0},{"id":"monday","country":"Paraguay","flag":"🇵🇾","name":"Saltos del Monday","type":"Naturaleza","duration":"1 hora y media","baseRoundTrip":100000,"oneWayOnly":false,"comboEligible":false,"comboAfter":"cat_bra","comboRoundTrip":20000,"video":"videos/monday.mp4","poster":"posters/grid/monday.jpg","startAt":0.0},{"id":"ponto_certo","country":"Brasil","flag":"🇧🇷","name":"Ponto Certo Churrascaria","type":"Restaurante","duration":"A elección","baseRoundTrip":0,"oneWayOnly":true,"comboEligible":false,"comboAfter":null,"comboRoundTrip":0,"video":"videos/ponto_certo.mp4","poster":"posters/grid/ponto_certo.jpg","startAt":0,"restaurant":true},{"id":"rafain","country":"Brasil","flag":"🇧🇷","name":"Rafain Churrascaria Show","type":"Restaurante / show","duration":"A elección","baseRoundTrip":0,"oneWayOnly":true,"comboEligible":false,"comboAfter":null,"comboRoundTrip":0,"video":"videos/rafain.mp4","poster":"posters/grid/rafain.jpg","startAt":0,"restaurant":true}];
+const COUNTRY_ORDER=['Argentina','Brasil','Paraguay'];
 const LS_PRICES='explora_reels_prices_v2';
 const LS_BUDGETS='explora_reels_budgets_v2';
 const LS_UI='explora_reels_ui_v2';
 const LS_FX='explora_reels_fx_v2';
-let priceOverrides=safeJson(localStorage.getItem(LS_PRICES),{});
-let savedBudgets=safeJson(localStorage.getItem(LS_BUDGETS),[]);
-let fx=safeJson(localStorage.getItem(LS_FX),{usd:1200,brl:220});
-let lang='es';
-let mode='ars';
-let cart={};
-let playingVideo=null;
-let playingButton=null;
+const state={lang:'es',mode:'ars',cart:{},prices:readJSON(LS_PRICES,{}),budgets:readJSON(LS_BUDGETS,[]),fx:readJSON(LS_FX,{usd:1200,brl:220}),activeVideo:null,pendingChoice:null,ownerTaps:[]};
 const $=id=>document.getElementById(id);
-function safeJson(value,fallback){try{return value?JSON.parse(value):fallback}catch(e){return fallback}}
 const TEXT={
- es:{chooseLang:'Elegí tu idioma',chooseSub:'Seleccioná para continuar',choosePay:'Elegí moneda y forma de pago',paySub:'Después vas a ver todas las experiencias',ars:'Pesos argentinos',usd:'Dólares',brl:'Reales',card:'Tarjeta',add:'Agregar',remove:'Quitar',added:'AGREGADO',free:'TRASLADO GRATIS',locked:'Seleccioná primero alguna excursión de Brasil para desbloquear este beneficio.',selected:'seleccionados',selectedOne:'seleccionado',view:'VER',trip:'Mi viaje EXPLORA',save:'Guardar presupuesto',clear:'Limpiar viaje',close:'Cerrar',empty:'Todavía no seleccionaste ninguna experiencia.',passenger:'Cargá los datos del pasajero.',name:'Nombre del pasajero',phone:'WhatsApp del pasajero',fill:'Completá nombre y WhatsApp.',saved:'Presupuesto guardado en esta tablet.',round:'Ida y vuelta',one:'Ida',extension:'Extensión Brasil',benefit:'Beneficio · traslado gratis',total:'TOTAL',prices:'Precios',budgets:'Presupuestos',savePrices:'Guardar precios',pricesSaved:'Precios guardados.',usdRate:'Valor dólar',brlRate:'Valor real',copy:'Copiar',delete:'Eliminar',noneBudgets:'No hay presupuestos guardados.',copied:'Presupuesto copiado.',copyFail:'No se pudo copiar automáticamente.'},
- en:{chooseLang:'Choose your language',chooseSub:'Select to continue',choosePay:'Choose currency and payment method',paySub:'Then you will see all experiences',ars:'Argentine pesos',usd:'US dollars',brl:'Brazilian reais',card:'Card',add:'Add',remove:'Remove',added:'ADDED',free:'FREE TRANSFER',locked:'Select a Brazil excursion first to unlock this benefit.',selected:'selected',selectedOne:'selected',view:'VIEW',trip:'My EXPLORA trip',save:'Save budget',clear:'Clear trip',close:'Close',empty:'You have not selected any experience yet.',passenger:'Enter the passenger details.',name:'Passenger name',phone:'Passenger WhatsApp',fill:'Enter name and WhatsApp.',saved:'Budget saved on this tablet.',round:'Round trip',one:'One way',extension:'Brazil extension',benefit:'Benefit · free transfer',total:'TOTAL',prices:'Prices',budgets:'Budgets',savePrices:'Save prices',pricesSaved:'Prices saved.',usdRate:'Dollar rate',brlRate:'Real rate',copy:'Copy',delete:'Delete',noneBudgets:'No saved budgets.',copied:'Budget copied.',copyFail:'Could not copy automatically.'}
+ es:{chooseLanguage:'Elegí tu idioma',continue:'Seleccioná para continuar',choosePayment:'Elegí moneda y forma de pago',paymentHint:'Después vas a ver todas las experiencias',ars:'Pesos argentinos',usd:'Dólares estadounidenses',brl:'Reales brasileños',card:'Tarjeta (+10%)',Argentina:'Argentina',Brasil:'Brasil',Paraguay:'Paraguay',add:'Agregar',remove:'Quitar',selected:'Agregado',free:'Traslado gratis',locked:'Elegí una excursión en Brasil para desbloquear este beneficio',chooseTrip:'Elegí el tipo de traslado',chooseTripHint:'El valor se agrega automáticamente a la selección.',oneway:'Solo ida',roundtrip:'Ida y vuelta',extension:'Extensión desde Cataratas Brasil',selection:'Mi selección',total:'Total',save:'Guardar presupuesto',clear:'Limpiar',empty:'Todavía no seleccionaste experiencias.',passenger:'Guardar presupuesto',passengerHint:'Los datos quedan guardados solamente en esta tablet.',name:'Nombre del pasajero',phone:'Número sin código de país',saved:'Presupuesto guardado correctamente.',needBrazil:'Primero seleccioná una excursión en Brasil.',restaurantRemoved:'El restaurante se quitó porque ya no hay una excursión seleccionada en Brasil.',items:'seleccionados',item:'seleccionado',confirmClear:'¿Querés quitar toda la selección?',prices:'Precios',budgets:'Presupuestos',savePrices:'Guardar precios',noBudgets:'No hay presupuestos guardados.',priceSaved:'Precios guardados.',restaurantChoice:'Solo podés elegir un restaurante con traslado gratis.'},
+ en:{chooseLanguage:'Choose your language',continue:'Select an option to continue',choosePayment:'Choose currency and payment method',paymentHint:'Then you will see all experiences',ars:'Argentine pesos',usd:'US dollars',brl:'Brazilian reais',card:'Card (+10%)',Argentina:'Argentina',Brasil:'Brazil',Paraguay:'Paraguay',add:'Add',remove:'Remove',selected:'Added',free:'Free transfer',locked:'Choose an excursion in Brazil to unlock this benefit',chooseTrip:'Choose the transfer type',chooseTripHint:'The price is added automatically to your selection.',oneway:'One way',roundtrip:'Round trip',extension:'Brazil Falls extension',selection:'My selection',total:'Total',save:'Save quote',clear:'Clear',empty:'No experiences selected yet.',passenger:'Save quote',passengerHint:'The information is stored only on this tablet.',name:'Passenger name',phone:'Phone number without country code',saved:'Quote saved successfully.',needBrazil:'Choose an excursion in Brazil first.',restaurantRemoved:'The restaurant was removed because no Brazil excursion remains selected.',items:'selected',item:'selected',confirmClear:'Remove the entire selection?',prices:'Prices',budgets:'Quotes',savePrices:'Save prices',noBudgets:'No saved quotes.',priceSaved:'Prices saved.',restaurantChoice:'Only one restaurant can be selected with free transfer.'}
 };
-const EN_NAMES={cat_arg:'Iguazú Falls · Argentina',volver_aero:'Return to the airport',wanda:'Wanda Mines',catamaran:'Catamaran cruises',hito:'Three Borders Landmark',guiraoga:'Güirá Oga',dutyfree:'Duty Free Shop',aripuca:'La Aripuca',icebar:'Icebar Iguazú',feirinha:'La Feirinha',guarani:'Guaraní community',cat_bra:'Iguazú Falls · Brazil',aves:'Parque das Aves',aquafoz:'Aquafoz Aquarium',helisul:'Helicopter flight',itaipu_br:'Itaipu Binational',marco_br:'Marco das Três Fronteiras',templo:'Buddhist Temple',mezquita:'Omar Ibn Al-Khattab Mosque',yupstar:'Yup Star Foz',aquamania:'Aqua Mania',bluepark:'Blue Park',compras_py:'Shopping tour · Ciudad del Este',monday:'Monday Falls',rafain:'Rafain Churrascaria Show',ponto_certo:'Ponto Certo Churrascaria'};
-const FORMATS={ars:new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}),usd:new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}),brl:new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0})};
-function t(key){return TEXT[lang][key]||TEXT.es[key]||key}
-function nameOf(item){return lang==='en'&&EN_NAMES[item.id]?EN_NAMES[item.id]:item.nombre}
-function formatMoney(value){value=Number(value||0);if(mode==='card')return FORMATS.ars.format(value*1.10).replace(',00','');if(mode==='usd')return FORMATS.usd.format(value/Number(fx.usd||1200));if(mode==='brl')return FORMATS.brl.format(value/Number(fx.brl||220));return FORMATS.ars.format(value).replace(',00','')}
-function basePrice(item){const over=priceOverrides[item.id]||{};if(item.restaurant)return 0;if(item.comboEligible&&cart.cat_bra)return Number(over.comboRoundTrip||item.comboRoundTrip||20000);return Number(over.baseRoundTrip||item.baseRoundTrip||0)}
-function kindOf(item){if(item.restaurant)return t('benefit');if(item.comboEligible&&cart.cat_bra)return t('extension');return item.oneWayOnly?t('one'):t('round')}
-function total(){return Object.values(cart).reduce((sum,x)=>sum+Number(x.price||0),0)}
-function hasBrazilExcursion(){return Object.values(cart).some(x=>x.pais==='Brasil'&&!x.restaurant)}
-function repriceCart(){Object.keys(cart).forEach(id=>{const item=ITEMS.find(x=>x.id===id);if(item){cart[id].price=basePrice(item);cart[id].kind=kindOf(item)}})}
-function stopOtherVideos(except){document.querySelectorAll('.videoBox video').forEach(video=>{if(video!==except&&!video.paused){video.pause();const btn=video.closest('.videoBox').querySelector('.playButton');if(btn){btn.textContent='▶';btn.classList.remove('playing')}}});if(playingVideo&&playingVideo!==except){playingVideo=null;playingButton=null}}
-function toggleVideo(id){const item=ITEMS.find(x=>x.id===id);const card=document.querySelector(`[data-card="${id}"]`);if(!item||!card||card.classList.contains('locked'))return;const video=card.querySelector('video');const btn=card.querySelector('.playButton');if(video.paused){stopOtherVideos(video);video.muted=false;video.volume=1;video.play().then(()=>{btn.textContent='❚❚';btn.classList.add('playing');playingVideo=video;playingButton=btn}).catch(()=>{btn.textContent='▶';btn.classList.remove('playing')})}else{video.pause();btn.textContent='▶';btn.classList.remove('playing');playingVideo=null;playingButton=null}}
-function cardHtml(item){const isRestaurant=!!item.restaurant;return `<article class="experienceCard" data-card="${item.id}">
- <div class="videoBox" data-video="${item.id}">
-  <video playsinline webkit-playsinline preload="metadata" poster="${item.poster}" src="${item.videoSrc}" disablepictureinpicture controlslist="nodownload noplaybackrate nofullscreen"></video>
-  <div class="videoShade"></div><div class="selectedWash"></div>
-  <button class="playButton" type="button" data-play="${item.id}" aria-label="Play">▶</button>
-  <div class="selectedBadge">✓ <span>${t('added')}</span></div>
-  ${isRestaurant?`<div class="freeBadge">${t('free')}</div><div class="lockCover"><div class="lockMessage"><span class="lockIcon">🔒</span>${t('locked')}</div></div>`:''}
-  <div class="cardTitle">${nameOf(item)}</div>
- </div>
- <button class="cardAction" type="button" data-toggle="${item.id}"></button>
- </article>`}
-function renderGallery(){const host=$('countries');host.innerHTML=COUNTRIES.map(country=>{const flag=country==='Argentina'?'🇦🇷':country==='Brasil'?'🇧🇷':'🇵🇾';const label=lang==='en'?(country==='Argentina'?'Argentina':country==='Brasil'?'Brazil':'Paraguay'):country;return `<section class="countrySection" id="country-${country}"><h2 class="countryHeading"><span class="countryFlag">${flag}</span>${label}</h2><div class="cardGrid">${ITEMS.filter(x=>x.pais===country).map(cardHtml).join('')}</div></section>`}).join('');
- document.querySelectorAll('video').forEach(video=>{video.addEventListener('ended',()=>{const btn=video.closest('.videoBox').querySelector('.playButton');btn.textContent='▶';btn.classList.remove('playing');playingVideo=null;playingButton=null});video.addEventListener('pause',()=>{const btn=video.closest('.videoBox').querySelector('.playButton');if(btn){btn.textContent='▶';btn.classList.remove('playing')}});video.addEventListener('dblclick',e=>e.preventDefault())});
- updateCards();}
-function updateCards(){const brazilUnlocked=hasBrazilExcursion();if(!brazilUnlocked){Object.keys(cart).forEach(id=>{const item=ITEMS.find(x=>x.id===id);if(item&&item.restaurant)delete cart[id]})}
- repriceCart();
- ITEMS.forEach(item=>{const card=document.querySelector(`[data-card="${item.id}"]`);if(!card)return;const selected=!!cart[item.id];const locked=item.restaurant&&!brazilUnlocked;card.classList.toggle('selected',selected);card.classList.toggle('locked',locked);const play=card.querySelector('.playButton');const action=card.querySelector('.cardAction');const video=card.querySelector('video');if(locked&&video&&!video.paused){video.pause();video.currentTime=0}play.disabled=locked;action.disabled=locked;action.classList.toggle('remove',selected);if(selected){action.innerHTML=`${t('remove')}`;}else if(item.restaurant){action.innerHTML=`${t('add')} <small>${t('free')}</small>`;}else{action.innerHTML=`${t('add')} <small>${formatMoney(basePrice(item))}</small>`;}});
- renderTrip();}
-function toggleSelection(id){const item=ITEMS.find(x=>x.id===id);if(!item)return;if(item.restaurant&&!hasBrazilExcursion())return;if(cart[id])delete cart[id];else cart[id]={id:item.id,nombre:nameOf(item),pais:item.pais,bandera:item.bandera,restaurant:!!item.restaurant,duracion:item.duracion,price:basePrice(item),kind:kindOf(item)};updateCards()}
-function renderTrip(){const values=Object.values(cart);const dock=$('tripDock');dock.classList.toggle('hidden',values.length===0);$('tripCount').textContent=values.length===1?`1 ${t('selectedOne')}`:`${values.length} ${t('selected')}`;$('tripTotal').textContent=formatMoney(total());$('openTrip').textContent=t('view');$('tripTitle').textContent=t('trip');$('tripSubtitle').textContent=values.length===1?`1 ${t('selectedOne')}`:`${values.length} ${t('selected')}`;$('sheetTotal').textContent=formatMoney(total());$('tripList').innerHTML=values.length?values.map(x=>`<div class="tripItem"><div><div class="tripItemName">${x.bandera} ${x.nombre}</div><div class="tripItemMeta">${x.kind} · ${formatMoney(x.price)}</div></div><button class="miniRemove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<div class="empty">${t('empty')}</div>`;$('openSave').textContent=t('save');$('clearTrip').textContent=t('clear');document.querySelectorAll('[data-close]').forEach(x=>x.textContent=t('close'));$('saveTitle').textContent=t('save');$('saveSubtitle').textContent=t('passenger');$('passengerName').placeholder=t('name');$('phoneNumber').placeholder=t('phone');$('saveBudget').textContent=t('save')}
-function openModal(id){$(id).classList.add('open')}
-function closeModal(id){$(id).classList.remove('open')}
-function budgetText(b){return `EXPLORA · ${lang==='en'?'BUDGET':'PRESUPUESTO'}\n${lang==='en'?'Passenger':'Pasajero'}: ${b.name}\nWhatsApp: +${b.code} ${b.phone}\n${lang==='en'?'Date':'Fecha'}: ${b.when}\n\n${b.items.map(x=>`• ${x.nombre} — ${x.kind} — ${formatMoney(x.price)}`).join('\n')}\n\n${t('total')}: ${formatMoney(b.total)}`}
-function saveCurrentBudget(){const name=$('passengerName').value.trim();const phone=$('phoneNumber').value.replace(/\D/g,'');const code=$('countryCode').value;if(!name||!phone){alert(t('fill'));return}const b={id:Date.now(),name,phone,code,when:new Date().toLocaleString(lang==='en'?'en-US':'es-AR'),items:Object.values(cart).map(x=>({...x})),total:total(),mode,lang};savedBudgets.unshift(b);localStorage.setItem(LS_BUDGETS,JSON.stringify(savedBudgets));closeModal('saveModal');closeModal('tripModal');alert(t('saved'));renderAdminBudgets()}
-function renderAdminPrices(){const panel=$('pricesPanel');panel.classList.remove('hidden');$('budgetsPanel').classList.add('hidden');panel.innerHTML=`<div class="priceRow"><strong>${t('usdRate')}</strong><label>ARS<input data-fx="usd" inputmode="numeric" value="${fx.usd||1200}"></label><span></span></div><div class="priceRow"><strong>${t('brlRate')}</strong><label>ARS<input data-fx="brl" inputmode="numeric" value="${fx.brl||220}"></label><span></span></div>`+ITEMS.filter(x=>!x.restaurant).map(item=>{const over=priceOverrides[item.id]||{};const base=over.baseRoundTrip||item.baseRoundTrip||0;const combo=over.comboRoundTrip||item.comboRoundTrip||20000;return `<div class="priceRow"><strong>${item.bandera} ${nameOf(item)}</strong><label>${item.oneWayOnly?t('one'):t('round')}<input data-price="${item.id}" data-field="baseRoundTrip" inputmode="numeric" value="${base}"></label>${item.comboEligible?`<label>${t('extension')}<input data-price="${item.id}" data-field="comboRoundTrip" inputmode="numeric" value="${combo}"></label>`:'<span></span>'}</div>`}).join('')+`<button class="actionBtn green" id="savePrices" style="width:100%;margin-top:12px">${t('savePrices')}</button>`;$('savePrices').onclick=()=>{document.querySelectorAll('[data-fx]').forEach(input=>{const value=Number(String(input.value).replace(/\D/g,''));if(value>0)fx[input.dataset.fx]=value});localStorage.setItem(LS_FX,JSON.stringify(fx));document.querySelectorAll('[data-price]').forEach(input=>{const value=Number(String(input.value).replace(/\D/g,''));if(!priceOverrides[input.dataset.price])priceOverrides[input.dataset.price]={};if(value>=0)priceOverrides[input.dataset.price][input.dataset.field]=value});localStorage.setItem(LS_PRICES,JSON.stringify(priceOverrides));updateCards();renderAdminPrices();alert(t('pricesSaved'))}}
-function renderAdminBudgets(){const panel=$('budgetsPanel');if(!panel)return;panel.innerHTML=savedBudgets.length?savedBudgets.map(b=>`<div class="savedCard"><strong>${b.name} · +${b.code}${b.phone}</strong><div class="tripItemMeta">${b.when} · ${formatMoney(b.total)}</div><textarea readonly>${budgetText(b)}</textarea><div class="sheetButtons"><button class="actionBtn green" data-copy="${b.id}">${t('copy')}</button><button class="actionBtn red" data-delete-budget="${b.id}">${t('delete')}</button></div></div>`).join(''):`<div class="empty">${t('noneBudgets')}</div>`}
-function showBudgets(){ $('pricesPanel').classList.add('hidden');$('budgetsPanel').classList.remove('hidden');renderAdminBudgets() }
-function renderLoginLanguage(){$('loginContent').innerHTML=`<div class="loginTitle">${t('chooseLang')}</div><div class="loginSub">${t('chooseSub')}</div><div class="loginOptions"><button class="loginChoice" data-lang="es">Español</button><button class="loginChoice secondary" data-lang="en">English</button></div>`}
-function renderLoginCurrency(){$('loginContent').innerHTML=`<div class="loginTitle">${t('choosePay')}</div><div class="loginSub">${t('paySub')}</div><div class="loginOptions currency"><button class="loginChoice" data-mode="ars">${t('ars')}</button><button class="loginChoice" data-mode="usd">${t('usd')}</button><button class="loginChoice" data-mode="brl">${t('brl')}</button><button class="loginChoice" data-mode="card">${t('card')}</button></div>`}
-function startApp(){document.documentElement.lang=lang;$('onboarding').classList.add('hidden');$('appRoot').classList.remove('hidden');renderGallery();renderTrip()}
-$('loginContent').addEventListener('click',e=>{const langBtn=e.target.closest('[data-lang]');const modeBtn=e.target.closest('[data-mode]');if(langBtn){lang=langBtn.dataset.lang;renderLoginCurrency()}else if(modeBtn){mode=modeBtn.dataset.mode;localStorage.setItem(LS_UI,JSON.stringify({lang,mode}));startApp()}});
-$('countries').addEventListener('click',e=>{const play=e.target.closest('[data-play]');const box=e.target.closest('[data-video]');const toggle=e.target.closest('[data-toggle]');if(toggle){toggleSelection(toggle.dataset.toggle);return}if(play){toggleVideo(play.dataset.play);return}if(box){toggleVideo(box.dataset.video)}});
-$('openTrip').onclick=()=>openModal('tripModal');$('openSave').onclick=()=>{if(Object.keys(cart).length)openModal('saveModal')};$('clearTrip').onclick=()=>{cart={};updateCards()};$('saveBudget').onclick=saveCurrentBudget;
-$('tripList').onclick=e=>{const btn=e.target.closest('[data-remove]');if(btn)toggleSelection(btn.dataset.remove)};
-document.addEventListener('click',e=>{const close=e.target.closest('[data-close]');if(close)closeModal(close.dataset.close)});
-$('showPrices').onclick=renderAdminPrices;$('showBudgets').onclick=showBudgets;
-$('budgetsPanel').onclick=async e=>{const copy=e.target.closest('[data-copy]');const del=e.target.closest('[data-delete-budget]');if(copy){const b=savedBudgets.find(x=>String(x.id)===String(copy.dataset.copy));try{await navigator.clipboard.writeText(budgetText(b));alert(t('copied'))}catch(err){alert(t('copyFail'))}}if(del){savedBudgets=savedBudgets.filter(x=>String(x.id)!==String(del.dataset.deleteBudget));localStorage.setItem(LS_BUDGETS,JSON.stringify(savedBudgets));renderAdminBudgets()}};
-let holdTimer=null;const logo=$('brandLogo');const cancelHold=()=>{clearTimeout(holdTimer);holdTimer=null};logo.addEventListener('pointerdown',()=>{cancelHold();holdTimer=setTimeout(()=>{renderAdminPrices();renderAdminBudgets();openModal('adminModal')},1200)});['pointerup','pointercancel','pointerleave'].forEach(type=>logo.addEventListener(type,cancelHold));
-document.addEventListener('visibilitychange',()=>{if(document.hidden)stopOtherVideos(null)});
-renderLoginLanguage();
-if('serviceWorker' in navigator){window.addEventListener('load',()=>{navigator.serviceWorker.register('./service-worker.js',{scope:'./'}).then(async reg=>{await navigator.serviceWorker.ready;if(reg.active)reg.active.postMessage({type:'CACHE_APP'});const doneKey='explora_media_offline_gallery_v1';if(localStorage.getItem(doneKey)==='ok')return;const cacheMedia=async()=>{for(const item of ITEMS){try{await fetch(item.videoSrc,{cache:'reload'})}catch(e){}await new Promise(r=>setTimeout(r,120))}localStorage.setItem(doneKey,'ok')};setTimeout(cacheMedia,5000)}).catch(e=>console.warn('PWA no disponible',e))})}
+const NAME_EN={cat_arg:'Argentine Falls',volver_aero:'Return to the airport',wanda:'Wanda Mines',catamaran:'Catamaran cruises',hito:'Three Borders Landmark',guiraoga:'Güirá Oga',dutyfree:'Duty Free Shop',aripuca:'La Aripuca',icebar:'Icebar Iguazú',feirinha:'La Feirinha',guarani:'Guaraní community experience',cat_bra:'Brazilian Falls',aves:'Bird Park',aquafoz:'Aquafoz Aquarium',helisul:'Helisul helicopter flight',itaipu_br:'Itaipu Binational',marco_br:'Three Borders Landmark',templo:'Chen Tien Buddhist Temple',mezquita:'Omar Ibn Al-Khattab Mosque',yupstar:'Yup Star Foz',aquamania:'Aqua Mania',bluepark:'Blue Park',compras_py:'Ciudad del Este shopping tour',monday:'Monday Falls',ponto_certo:'Ponto Certo Churrascaria',rafain:'Rafain Churrascaria Show'};
+function readJSON(key,fallback){try{return JSON.parse(localStorage.getItem(key)||JSON.stringify(fallback))}catch{return fallback}}
+function t(key){return (TEXT[state.lang]&&TEXT[state.lang][key])||TEXT.es[key]||key}
+function itemName(item){return state.lang==='en'?(NAME_EN[item.id]||item.name):item.name}
+function formatMoney(ars){const n=Number(ars||0);if(state.mode==='usd')return new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(n/Number(state.fx.usd||1200));if(state.mode==='brl')return new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL',maximumFractionDigits:0}).format(n/Number(state.fx.brl||220));const total=state.mode==='card'?n*1.10:n;return new Intl.NumberFormat('es-AR',{style:'currency',currency:'ARS',maximumFractionDigits:0}).format(total).replace(',00','')}
+function roundTripPrice(item){const o=state.prices[item.id]||{};return Number(o.baseRoundTrip||item.baseRoundTrip||0)}
+function oneWayPrice(item){if(item.oneWayOnly)return roundTripPrice(item);return Math.round(roundTripPrice(item)*.60)}
+function comboPrice(item){const o=state.prices[item.id]||{};return Number(o.comboRoundTrip||item.comboRoundTrip||20000)}
+function totalArs(){return Object.values(state.cart).reduce((sum,x)=>sum+Number(x.price||0),0)}
+function hasBrazilExcursion(){return Object.values(state.cart).some(x=>x.country==='Brasil'&&!x.restaurant)}
+function getItem(id){return ATTRACTIONS.find(x=>x.id===id)}
+
+function renderLanguage(){document.documentElement.lang='es';$('loginContent').innerHTML=`<h1 class="login-title">Elegí tu idioma</h1><p class="login-sub">Seleccioná para continuar</p><div class="login-options"><button class="login-option primary" data-lang="es">Español</button><button class="login-option" data-lang="en">English</button></div>`}
+function renderPayment(){document.documentElement.lang=state.lang;$('loginContent').innerHTML=`<h1 class="login-title">${t('choosePayment')}</h1><p class="login-sub">${t('paymentHint')}</p><div class="login-options currency"><button class="login-option primary" data-mode="ars">${t('ars')}</button><button class="login-option" data-mode="usd">${t('usd')}</button><button class="login-option" data-mode="brl">${t('brl')}</button><button class="login-option" data-mode="card">${t('card')}</button></div>`}
+function startApp(){localStorage.setItem(LS_UI,JSON.stringify({lang:state.lang,mode:state.mode}));$('loginScreen').hidden=true;$('appShell').hidden=false;buildGallery();updateUI();setTimeout(()=>window.scrollTo({top:0,behavior:'instant'}),0)}
+
+function buildGallery(){
+  const gallery=$('gallery');gallery.innerHTML='';
+  COUNTRY_ORDER.forEach(country=>{
+    const section=document.createElement('section');section.className='country-section';section.dataset.country=country;
+    const flag=country==='Argentina'?'🇦🇷':country==='Brasil'?'🇧🇷':'🇵🇾';
+    section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="cards-grid"></div>`;
+    const grid=section.querySelector('.cards-grid');
+    ATTRACTIONS.filter(x=>x.country===country).forEach(item=>grid.appendChild(createCard(item)));
+    gallery.appendChild(section);
+  });
+  setupVideoObserver();
+}
+function createCard(item){
+  const card=document.createElement('article');card.className='video-card';card.id=`card-${item.id}`;card.dataset.id=item.id;
+  card.innerHTML=`<div class="media-stage" data-media="${item.id}"><video playsinline webkit-playsinline preload="none" poster="${item.poster}" data-src="${item.video}" data-start="${item.startAt||0}" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback" aria-label="${itemName(item)}"></video><button class="play-button" data-play="${item.id}" aria-label="Reproducir ${itemName(item)}"></button>${item.restaurant?`<span class="free-badge">${t('free')}</span>`:''}<span class="selected-badge">${t('selected')}</span><div class="card-copy"><h3>${itemName(item)}</h3><p>${item.type} · ${item.duration}</p></div>${item.restaurant?`<div class="lock-layer"><div class="lock-content"><span class="lock-icon">🔒</span><span>${t('locked')}</span></div></div>`:''}</div><button class="select-button" data-action="${item.id}">${t('add')}</button>`;
+  const video=card.querySelector('video');
+  video.addEventListener('play',()=>card.classList.add('playing'));
+  video.addEventListener('pause',()=>card.classList.remove('playing'));
+  video.addEventListener('ended',()=>{card.classList.remove('playing');try{video.currentTime=Number(video.dataset.start||0)}catch{}});
+  video.addEventListener('webkitbeginfullscreen',()=>{try{video.webkitExitFullscreen()}catch{}});
+  return card;
+}
+let videoObserver;
+function setupVideoObserver(){if(videoObserver)videoObserver.disconnect();videoObserver=new IntersectionObserver(entries=>entries.forEach(entry=>{const video=entry.target;if(entry.isIntersecting){ensureVideoSource(video)}else if(!video.paused){video.pause()}}),{rootMargin:'450px 0px'});document.querySelectorAll('.media-stage video').forEach(v=>videoObserver.observe(v))}
+function ensureVideoSource(video){if(video.src)return;video.src=video.dataset.src;video.load();const seek=()=>{try{const at=Number(video.dataset.start||0);if(at>0&&Number.isFinite(video.duration)&&at<video.duration)video.currentTime=at}catch{}};video.addEventListener('loadedmetadata',seek,{once:true})}
+function pauseAll(except=null){document.querySelectorAll('.media-stage video').forEach(v=>{if(v!==except&&!v.paused)v.pause()})}
+async function toggleVideo(id){const item=getItem(id);const card=$(`card-${id}`);if(!item||!card)return;if(item.restaurant&&!hasBrazilExcursion()){showToast(t('needBrazil'));return}const video=card.querySelector('video');ensureVideoSource(video);if(!video.paused){video.pause();return}pauseAll(video);video.muted=false;video.volume=1;try{await video.play();state.activeVideo=video}catch{showToast(state.lang==='en'?'Tap again to play the video with sound.':'Tocá nuevamente para reproducir el video con sonido.') }}
+
+function updateUI(){
+  const brazil=hasBrazilExcursion();
+  ATTRACTIONS.forEach(item=>{
+    const card=$(`card-${item.id}`);if(!card)return;const selected=Boolean(state.cart[item.id]);const locked=Boolean(item.restaurant&&!brazil);
+    card.classList.toggle('selected',selected);card.classList.toggle('locked',locked);
+    const btn=card.querySelector('.select-button');btn.textContent=selected?t('remove'):t('add');btn.disabled=locked&&!selected;
+    const badge=card.querySelector('.selected-badge');if(badge)badge.textContent=t('selected');
+    const free=card.querySelector('.free-badge');if(free)free.textContent=t('free');
+    const lock=card.querySelector('.lock-content span:last-child');if(lock)lock.textContent=t('locked');
+  });
+  const values=Object.values(state.cart);const dock=$('selectionDock');dock.hidden=values.length===0;
+  $('dockCount').textContent=values.length===1?`1 ${t('item')}`:`${values.length} ${t('items')}`;$('dockTotal').textContent=formatMoney(totalArs());
+  renderSelection();
+}
+function handleAction(id){const item=getItem(id);if(!item)return;if(state.cart[id]){removeItem(id);return}if(item.restaurant){if(!hasBrazilExcursion()){showToast(t('needBrazil'));return}selectRestaurant(item);return}if(item.oneWayOnly){addItem(item,t('oneway'),oneWayPrice(item));return}openChoices(item)}
+function openChoices(item){state.pendingChoice=item.id;$('choiceTitle').textContent=itemName(item);$('choiceHint').textContent=t('chooseTripHint');const list=$('choiceList');const combo=item.comboEligible&&Boolean(state.cart[item.comboAfter]);if(combo){const price=comboPrice(item);list.innerHTML=choiceButton(t('extension'),price,'extension');}else{list.innerHTML=choiceButton(t('oneway'),oneWayPrice(item),'oneway')+choiceButton(t('roundtrip'),roundTripPrice(item),'roundtrip')}openModal('choiceModal')}
+function choiceButton(label,price,kind){return `<button class="choice-button" data-choice="${kind}" data-price="${price}"><span>${label}</span><strong>${formatMoney(price)}</strong></button>`}
+function addItem(item,kind,price){state.cart[item.id]={id:item.id,name:itemName(item),country:item.country,flag:item.flag,kind,price:Number(price),duration:item.duration,restaurant:Boolean(item.restaurant)};closeModal('choiceModal');updateUI();showToast(`${itemName(item)} · ${formatMoney(price)}`)}
+function selectRestaurant(item){Object.keys(state.cart).forEach(id=>{const existing=getItem(id);if(existing&&existing.restaurant)delete state.cart[id]});state.cart[item.id]={id:item.id,name:itemName(item),country:item.country,flag:item.flag,kind:t('free'),price:0,duration:item.duration,restaurant:true};updateUI();showToast(`${itemName(item)} · ${t('free')}`)}
+function removeItem(id){const wasBrazil=hasBrazilExcursion();delete state.cart[id];const nowBrazil=hasBrazilExcursion();let restaurantRemoved=false;if(wasBrazil&&!nowBrazil){Object.keys(state.cart).forEach(key=>{const item=getItem(key);if(item&&item.restaurant){delete state.cart[key];restaurantRemoved=true}})}updateUI();if(restaurantRemoved)showToast(t('restaurantRemoved'))}
+
+function renderSelection(){const values=Object.values(state.cart);$('selectionTitle').textContent=t('selection');$('totalLabel').textContent=t('total');$('openPassenger').textContent=t('save');$('clearSelection').textContent=t('clear');$('selectionTotal').textContent=formatMoney(totalArs());$('selectionList').innerHTML=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${x.kind} · ${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:18px">${t('empty')}</p>`}
+function openModal(id){const modal=$(id);modal.classList.add('open');modal.setAttribute('aria-hidden','false');pauseAll()}
+function closeModal(id){const modal=$(id);modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
+function clearSelection(){if(Object.keys(state.cart).length&&confirm(t('confirmClear'))){state.cart={};updateUI();closeModal('selectionModal')}}
+function openPassenger(){if(!Object.keys(state.cart).length)return;$('passengerTitle').textContent=t('passenger');$('passengerHint').textContent=t('passengerHint');$('passengerName').placeholder=t('name');$('phoneNumber').placeholder=t('phone');openModal('passengerModal')}
+function saveBudget(){const name=$('passengerName').value.trim();const phone=$('phoneNumber').value.replace(/\D/g,'');if(!name||!phone){showToast(state.lang==='en'?'Enter passenger name and phone number.':'Ingresá el nombre y el teléfono del pasajero.');return}const budget={id:Date.now(),name,code:$('countryCode').value,phone,when:new Date().toLocaleString(state.lang==='en'?'en-US':'es-AR'),items:Object.values(state.cart),total:totalArs(),mode:state.mode};state.budgets.unshift(budget);localStorage.setItem(LS_BUDGETS,JSON.stringify(state.budgets));$('passengerName').value='';$('phoneNumber').value='';closeModal('passengerModal');closeModal('selectionModal');showToast(t('saved'))}
+
+function showToast(message){const toast=$('toast');toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2600)}
+
+function registerOwnerTap(){const now=Date.now();state.ownerTaps=state.ownerTaps.filter(x=>now-x<2600);state.ownerTaps.push(now);if(state.ownerTaps.length>=7){state.ownerTaps=[];renderAdminPrices();openModal('adminModal')}}
+function renderAdminPrices(){
+  $('adminPricesTab').className='action primary';$('adminBudgetsTab').className='action secondary';
+  const fx=`<div class="admin-grid"><strong>Cotización USD</strong><input inputmode="numeric" data-fx="usd" value="${state.fx.usd||1200}"></div><div class="admin-grid"><strong>Cotización BRL</strong><input inputmode="numeric" data-fx="brl" value="${state.fx.brl||220}"></div>`;
+  const rows=ATTRACTIONS.filter(x=>!x.restaurant).map(item=>`<div class="admin-grid"><strong>${item.flag} ${item.name}</strong><input inputmode="numeric" data-price="${item.id}" value="${roundTripPrice(item)}"></div>`).join('');
+  $('adminContent').innerHTML=fx+rows+`<button class="action primary" id="savePrices" style="width:100%;margin-top:14px">${t('savePrices')}</button>`;$('savePrices').onclick=savePrices;
+}
+function savePrices(){document.querySelectorAll('[data-fx]').forEach(input=>{const value=Number(input.value.replace(/\D/g,''));if(value>0)state.fx[input.dataset.fx]=value});document.querySelectorAll('[data-price]').forEach(input=>{const value=Number(input.value.replace(/\D/g,''));if(value>0){state.prices[input.dataset.price]={...(state.prices[input.dataset.price]||{}),baseRoundTrip:value}}});localStorage.setItem(LS_FX,JSON.stringify(state.fx));localStorage.setItem(LS_PRICES,JSON.stringify(state.prices));updateUI();showToast(t('priceSaved'))}
+function renderAdminBudgets(){$('adminPricesTab').className='action secondary';$('adminBudgetsTab').className='action primary';$('adminContent').innerHTML=state.budgets.length?state.budgets.map(b=>`<div class="saved-budget"><strong>${b.name} · +${b.code} ${b.phone}</strong><small>${b.when} · ${formatMoney(b.total)}</small><small>${b.items.map(x=>x.name).join(' · ')}</small></div>`).join(''):`<p class="hint" style="text-align:center;padding:20px">${t('noBudgets')}</p>`}
+
+$('loginContent').addEventListener('click',e=>{const lang=e.target.closest('[data-lang]');const mode=e.target.closest('[data-mode]');if(lang){state.lang=lang.dataset.lang;renderPayment();return}if(mode){state.mode=mode.dataset.mode;startApp()}});
+$('gallery').addEventListener('click',e=>{const action=e.target.closest('[data-action]');if(action){handleAction(action.dataset.action);return}const play=e.target.closest('[data-play]');const media=e.target.closest('[data-media]');if(play||media)toggleVideo((play||media).dataset.play||(play||media).dataset.media)});
+$('choiceList').addEventListener('click',e=>{const choice=e.target.closest('[data-choice]');if(!choice)return;const item=getItem(state.pendingChoice);if(item)addItem(item,t(choice.dataset.choice),Number(choice.dataset.price))});
+$('selectionList').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]');if(remove)removeItem(remove.dataset.remove)});
+$('openSelection').onclick=()=>openModal('selectionModal');$('clearSelection').onclick=clearSelection;$('openPassenger').onclick=openPassenger;$('saveBudget').onclick=saveBudget;$('brandButton').onclick=registerOwnerTap;$('adminPricesTab').onclick=renderAdminPrices;$('adminBudgetsTab').onclick=renderAdminBudgets;
+document.addEventListener('click',e=>{const close=e.target.closest('[data-close]');if(close)closeModal(close.dataset.close);if(e.target.classList.contains('modal'))closeModal(e.target.id)});
+document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAll()});
+window.addEventListener('pagehide',()=>pauseAll());
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal.open').forEach(m=>closeModal(m.id))});
+
+renderLanguage();
+if('serviceWorker'in navigator){window.addEventListener('load',async()=>{try{const reg=await navigator.serviceWorker.register('./service-worker.js',{scope:'./'});await navigator.serviceWorker.ready;const worker=reg.active||reg.waiting||reg.installing;if(worker)worker.postMessage({type:'CACHE_APP'})}catch{}})}
 </script>
 </body>
 </html>
