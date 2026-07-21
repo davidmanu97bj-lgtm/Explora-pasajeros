@@ -75,6 +75,23 @@ button{touch-action:manipulation}
 .video-card.selected .selected-badge{display:block}
 .video-card.selected .select-button{background:linear-gradient(135deg,#ed565b,#a8141c);color:#fff}
 
+
+.country-body{min-height:0}
+.country-body.paraguay-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:stretch;min-height:0}
+.country-body.paraguay-layout .cards-grid{padding-right:0}
+.inline-selection{min-height:0;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:linear-gradient(180deg,rgba(18,25,20,.98),rgba(8,11,9,.98));box-shadow:0 18px 45px rgba(0,0,0,.34);padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.inline-selection h3{margin:0;font-size:20px;letter-spacing:-.03em;font-weight:900}
+.inline-selection-list{display:grid;gap:8px;min-height:0;max-height:295px;overflow:auto;padding-right:2px}
+.inline-selection-list .selection-item{padding:10px 11px;grid-template-columns:minmax(0,1fr) auto;gap:10px;border-radius:14px;background:rgba(255,255,255,.04)}
+.inline-selection-list .selection-item strong{display:block;font-size:14px;line-height:1.1}
+.inline-selection-list .selection-item small{font-size:12px;margin-top:4px}
+.inline-selection-list .mini-remove{padding:8px 10px;min-width:84px;font-size:12px}
+.inline-total{display:flex;align-items:end;justify-content:space-between;gap:10px;padding-top:2px;margin-top:auto}
+.inline-total span{font-size:15px;font-weight:800;color:rgba(255,255,255,.8)}
+.inline-total strong{font-size:42px;line-height:1;color:#48ff9c;letter-spacing:-.03em}
+.inline-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:4px}
+.inline-actions .action{min-height:44px;border-radius:14px}
+
 /* Dock shown only after a selection */
 .selection-dock{position:fixed;z-index:80;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100% - 24px));padding:7px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(6,10,8,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.62)}
 .selection-open{width:100%;min-height:54px;border:0;border-radius:16px;padding:10px 15px;background:linear-gradient(135deg,#0c2a1c,#0a1710);color:#fff;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800}
@@ -134,7 +151,7 @@ button{touch-action:manipulation}
   <main class="gallery" id="gallery"></main>
 </div>
 
-<div class="selection-dock" id="selectionDock" hidden>
+<div class="selection-dock" id="selectionDock" hidden style="display:none">
   <button class="selection-open" id="openSelection"><span id="dockCount"></span><strong id="dockTotal"></strong></button>
 </div>
 
@@ -201,11 +218,17 @@ function buildGallery(){
   COUNTRY_ORDER.forEach(country=>{
     const section=document.createElement('section');section.className='country-section';section.dataset.country=country;
     const flag=country==='Argentina'?'🇦🇷':country==='Brasil'?'🇧🇷':'🇵🇾';
-    section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="cards-grid"></div>`;
+    if(country==='Paraguay'){
+      section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="country-body paraguay-layout"><div class="cards-grid"></div><aside class="inline-selection" id="inlineSelectionPanel"><h3 id="inlineSelectionTitle">${t('selection')}</h3><div class="inline-selection-list" id="inlineSelectionList"></div><div class="inline-total"><span id="inlineTotalLabel">${t('total')}</span><strong id="inlineSelectionTotal">${formatMoney(0)}</strong></div><div class="inline-actions"><button class="action primary" id="inlineOpenPassenger">${t('save')}</button><button class="action danger" id="inlineClearSelection">${t('clear')}</button></div></aside></div>`;
+    }else{
+      section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="country-body"><div class="cards-grid"></div></div>`;
+    }
     const grid=section.querySelector('.cards-grid');
     ATTRACTIONS.filter(x=>x.country===country).forEach(item=>grid.appendChild(createCard(item)));
     gallery.appendChild(section);
   });
+  const inlineOpen=$('inlineOpenPassenger');if(inlineOpen)inlineOpen.onclick=openPassenger;
+  const inlineClear=$('inlineClearSelection');if(inlineClear)inlineClear.onclick=clearSelection;
   setupVideoObserver();
 }
 function createCard(item){
@@ -234,8 +257,7 @@ function updateUI(){
     const free=card.querySelector('.free-badge');if(free)free.textContent=t('free');
     const lock=card.querySelector('.lock-content span:last-child');if(lock)lock.textContent=t('locked');
   });
-  const values=Object.values(state.cart);const dock=$('selectionDock');dock.hidden=values.length===0;
-  $('dockCount').textContent=values.length===1?`1 ${t('item')}`:`${values.length} ${t('items')}`;$('dockTotal').textContent=formatMoney(totalArs());
+  const values=Object.values(state.cart);const dock=$('selectionDock');if(dock)dock.hidden=true;
   renderSelection();
 }
 function handleAction(id){const item=getItem(id);if(!item)return;if(state.cart[id]){removeItem(id);return}if(item.restaurant){if(!hasBrazilExcursion()){showToast(t('needBrazil'));return}selectRestaurant(item);return}if(item.oneWayOnly){addItem(item,t('oneway'),oneWayPrice(item));return}openChoices(item)}
@@ -245,12 +267,12 @@ function addItem(item,kind,price){state.cart[item.id]={id:item.id,name:itemName(
 function selectRestaurant(item){Object.keys(state.cart).forEach(id=>{const existing=getItem(id);if(existing&&existing.restaurant)delete state.cart[id]});state.cart[item.id]={id:item.id,name:itemName(item),country:item.country,flag:item.flag,kind:t('free'),price:0,duration:item.duration,restaurant:true};updateUI();showToast(`${itemName(item)} · ${t('free')}`)}
 function removeItem(id){const wasBrazil=hasBrazilExcursion();delete state.cart[id];const nowBrazil=hasBrazilExcursion();let restaurantRemoved=false;if(wasBrazil&&!nowBrazil){Object.keys(state.cart).forEach(key=>{const item=getItem(key);if(item&&item.restaurant){delete state.cart[key];restaurantRemoved=true}})}updateUI();if(restaurantRemoved)showToast(t('restaurantRemoved'))}
 
-function renderSelection(){const values=Object.values(state.cart);$('selectionTitle').textContent=t('selection');$('totalLabel').textContent=t('total');$('openPassenger').textContent=t('save');$('clearSelection').textContent=t('clear');$('selectionTotal').textContent=formatMoney(totalArs());$('selectionList').innerHTML=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${x.kind} · ${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:18px">${t('empty')}</p>`}
+function renderSelection(){const values=Object.values(state.cart);const listMarkup=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${x.kind} · ${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:18px">${t('empty')}</p>`;$('selectionTitle').textContent=t('selection');$('totalLabel').textContent=t('total');$('openPassenger').textContent=t('save');$('clearSelection').textContent=t('clear');$('selectionTotal').textContent=formatMoney(totalArs());$('selectionList').innerHTML=listMarkup;const inlineTitle=$('inlineSelectionTitle');if(inlineTitle)inlineTitle.textContent=t('selection');const inlineLabel=$('inlineTotalLabel');if(inlineLabel)inlineLabel.textContent=t('total');const inlineTotal=$('inlineSelectionTotal');if(inlineTotal)inlineTotal.textContent=formatMoney(totalArs());const inlineList=$('inlineSelectionList');if(inlineList)inlineList.innerHTML=listMarkup;const inlineOpen=$('inlineOpenPassenger');if(inlineOpen)inlineOpen.textContent=t('save');const inlineClear=$('inlineClearSelection');if(inlineClear)inlineClear.textContent=t('clear')}
 function openModal(id){const modal=$(id);modal.classList.add('open');modal.setAttribute('aria-hidden','false');pauseAll()}
 function closeModal(id){const modal=$(id);modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
-function clearSelection(){if(Object.keys(state.cart).length&&confirm(t('confirmClear'))){state.cart={};updateUI();closeModal('selectionModal')}}
+function clearSelection(){if(Object.keys(state.cart).length&&confirm(t('confirmClear'))){state.cart={};updateUI();const modal=$('selectionModal');if(modal&&modal.classList.contains('open'))closeModal('selectionModal')}}
 function openPassenger(){if(!Object.keys(state.cart).length)return;$('passengerTitle').textContent=t('passenger');$('passengerHint').textContent=t('passengerHint');$('passengerName').placeholder=t('name');$('phoneNumber').placeholder=t('phone');openModal('passengerModal')}
-function saveBudget(){const name=$('passengerName').value.trim();const phone=$('phoneNumber').value.replace(/\D/g,'');if(!name||!phone){showToast(state.lang==='en'?'Enter passenger name and phone number.':'Ingresá el nombre y el teléfono del pasajero.');return}const budget={id:Date.now(),name,code:$('countryCode').value,phone,when:new Date().toLocaleString(state.lang==='en'?'en-US':'es-AR'),items:Object.values(state.cart),total:totalArs(),mode:state.mode};state.budgets.unshift(budget);localStorage.setItem(LS_BUDGETS,JSON.stringify(state.budgets));$('passengerName').value='';$('phoneNumber').value='';closeModal('passengerModal');closeModal('selectionModal');showToast(t('saved'))}
+function saveBudget(){const name=$('passengerName').value.trim();const phone=$('phoneNumber').value.replace(/\D/g,'');if(!name||!phone){showToast(state.lang==='en'?'Enter passenger name and phone number.':'Ingresá el nombre y el teléfono del pasajero.');return}const budget={id:Date.now(),name,code:$('countryCode').value,phone,when:new Date().toLocaleString(state.lang==='en'?'en-US':'es-AR'),items:Object.values(state.cart),total:totalArs(),mode:state.mode};state.budgets.unshift(budget);localStorage.setItem(LS_BUDGETS,JSON.stringify(state.budgets));$('passengerName').value='';$('phoneNumber').value='';closeModal('passengerModal');const selModal=$('selectionModal');if(selModal&&selModal.classList.contains('open'))closeModal('selectionModal');showToast(t('saved'))}
 
 function showToast(message){const toast=$('toast');toast.textContent=message;toast.classList.add('show');clearTimeout(showToast.timer);showToast.timer=setTimeout(()=>toast.classList.remove('show'),2600)}
 
@@ -267,7 +289,7 @@ function renderAdminBudgets(){$('adminPricesTab').className='action secondary';$
 $('loginContent').addEventListener('click',e=>{const lang=e.target.closest('[data-lang]');const mode=e.target.closest('[data-mode]');if(lang){state.lang=lang.dataset.lang;renderPayment();return}if(mode){state.mode=mode.dataset.mode;startApp()}});
 $('gallery').addEventListener('click',e=>{const action=e.target.closest('[data-action]');if(action){handleAction(action.dataset.action);return}const play=e.target.closest('[data-play]');const media=e.target.closest('[data-media]');if(play||media)toggleVideo((play||media).dataset.play||(play||media).dataset.media)});
 $('choiceList').addEventListener('click',e=>{const choice=e.target.closest('[data-choice]');if(!choice)return;const item=getItem(state.pendingChoice);if(item)addItem(item,t(choice.dataset.choice),Number(choice.dataset.price))});
-$('selectionList').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]');if(remove)removeItem(remove.dataset.remove)});
+$('selectionList').addEventListener('click',e=>{const remove=e.target.closest('[data-remove]');if(remove)removeItem(remove.dataset.remove)});document.addEventListener('click',e=>{const inlineRemove=e.target.closest('#inlineSelectionList [data-remove]');if(inlineRemove)removeItem(inlineRemove.dataset.remove)});
 $('openSelection').onclick=()=>openModal('selectionModal');$('clearSelection').onclick=clearSelection;$('openPassenger').onclick=openPassenger;$('saveBudget').onclick=saveBudget;$('brandButton').onclick=registerOwnerTap;$('adminPricesTab').onclick=renderAdminPrices;$('adminBudgetsTab').onclick=renderAdminBudgets;
 document.addEventListener('click',e=>{const close=e.target.closest('[data-close]');if(close)closeModal(close.dataset.close);if(e.target.classList.contains('modal'))closeModal(e.target.id)});
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pauseAll()});
