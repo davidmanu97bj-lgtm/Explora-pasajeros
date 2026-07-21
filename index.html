@@ -44,12 +44,12 @@ button{touch-action:manipulation}
 .country-heading{display:flex;align-items:center;gap:10px;margin:0;padding:0 4px}
 .country-flag{font-size:22px;line-height:1}
 .country-heading h2{margin:0;font-size:clamp(19px,1.55vw,28px);letter-spacing:-.03em;font-weight:900}
-.cards-grid{min-height:0;height:100%;display:flex;align-items:stretch;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px;scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none}
+.cards-grid{min-width:0;max-width:100%;width:100%;min-height:0;height:100%;display:flex;align-items:stretch;gap:12px;overflow-x:scroll;overflow-y:hidden;padding:4px 8px 4px 4px;scroll-snap-type:x proximity;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;user-select:none;-webkit-user-select:none}
 .cards-grid::-webkit-scrollbar{display:none}
 .video-card{position:relative;flex:0 0 clamp(154px,14.4vw,212px);min-width:0;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:14px;background:linear-gradient(180deg,rgba(20,27,23,.98),rgba(7,10,8,.98));box-shadow:0 18px 45px rgba(0,0,0,.34);display:grid;grid-template-rows:minmax(0,1fr) 44px;transition:border-color .22s ease,box-shadow .22s ease,transform .22s ease;scroll-snap-align:start}
 .video-card:active{transform:scale(.992)}
 .media-stage{position:relative;min-height:0;height:100%;overflow:hidden;background:#000;isolation:isolate}
-.media-stage video,.media-stage .poster-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#000}
+.media-stage video,.media-stage .poster-fallback{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;background:#000}.media-stage video{pointer-events:none}.media-stage{touch-action:pan-x}
 .media-stage video{z-index:1}
 .media-stage::before{content:"";position:absolute;z-index:2;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.08),transparent 42%,rgba(0,0,0,.92));pointer-events:none}
 .media-stage::after{content:"";position:absolute;z-index:3;inset:0;background:rgba(9,226,115,0);pointer-events:none;transition:background .22s ease}
@@ -76,21 +76,24 @@ button{touch-action:manipulation}
 .video-card.selected .select-button{background:linear-gradient(135deg,#ed565b,#a8141c);color:#fff}
 
 
-.country-body{min-height:0}
-.country-body.paraguay-layout{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:14px;align-items:stretch;min-height:0}
-.country-body.paraguay-layout .cards-grid{padding-right:0}
-.inline-selection{min-height:0;border:1px solid rgba(255,255,255,.14);border-radius:18px;background:linear-gradient(180deg,rgba(18,25,20,.98),rgba(8,11,9,.98));box-shadow:0 18px 45px rgba(0,0,0,.34);padding:14px 14px 12px;display:flex;flex-direction:column;gap:10px}
-.inline-selection h3{margin:0;font-size:20px;letter-spacing:-.03em;font-weight:900}
-.inline-selection-list{display:grid;gap:8px;min-height:0;max-height:295px;overflow:auto;padding-right:2px}
-.inline-selection-list .selection-item{padding:10px 11px;grid-template-columns:minmax(0,1fr) auto;gap:10px;border-radius:14px;background:rgba(255,255,255,.04)}
-.inline-selection-list .selection-item strong{display:block;font-size:14px;line-height:1.1}
-.inline-selection-list .selection-item small{font-size:12px;margin-top:4px}
-.inline-selection-list .mini-remove{padding:8px 10px;min-width:84px;font-size:12px}
-.inline-total{display:flex;align-items:end;justify-content:space-between;gap:10px;padding-top:2px;margin-top:auto}
-.inline-total span{font-size:15px;font-weight:800;color:rgba(255,255,255,.8)}
-.inline-total strong{font-size:42px;line-height:1;color:#48ff9c;letter-spacing:-.03em}
-.inline-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:4px}
-.inline-actions .action{min-height:44px;border-radius:14px}
+.country-body{min-width:0;min-height:0;overflow:hidden}
+.paraguay-strip{min-width:0;min-height:0;height:100%;display:grid;grid-template-columns:clamp(250px,40vw,320px) minmax(250px,1fr);gap:12px;align-items:stretch;overflow:hidden;padding:4px}
+.paraguay-cards{min-width:0;min-height:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:stretch}
+.paraguay-cards .video-card{width:100%;min-width:0;max-width:none;flex:none;height:100%}
+.inline-selection{min-width:0;min-height:0;height:100%;overflow:hidden;border:1px solid rgba(255,255,255,.14);border-radius:16px;background:linear-gradient(180deg,rgba(18,25,20,.98),rgba(8,11,9,.98));box-shadow:0 18px 45px rgba(0,0,0,.34);padding:11px 12px 10px;display:flex;flex-direction:column;gap:7px}
+.inline-selection h3{margin:0;font-size:17px;line-height:1;font-weight:900;letter-spacing:-.025em}
+.inline-selection-list{display:grid;align-content:start;gap:5px;min-height:0;flex:1 1 auto;overflow-y:auto;overflow-x:hidden;padding-right:2px;scrollbar-width:thin}
+.inline-selection-list .selection-item{min-width:0;padding:6px 7px;grid-template-columns:minmax(0,1fr) 26px;gap:5px;border-radius:9px;background:rgba(255,255,255,.045)}
+.inline-selection-list .selection-item strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10.5px;line-height:1.08;font-weight:850}
+.inline-selection-list .selection-item small{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:9.5px;line-height:1.08;margin-top:2px;color:rgba(255,255,255,.66)}
+.inline-selection-list .mini-remove{width:26px;height:26px;min-width:26px;padding:0;border-radius:8px;font-size:16px;line-height:1;display:grid;place-items:center}
+.inline-selection-list .hint{font-size:10.5px!important;line-height:1.25;padding:8px!important;margin:auto!important}
+.inline-total{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding-top:6px;border-top:1px solid rgba(255,255,255,.09)}
+.inline-total span{font-size:11px;font-weight:800;color:rgba(255,255,255,.68)}
+.inline-total strong{font-size:clamp(27px,4.1vw,42px);line-height:.95;color:#48ff9c;letter-spacing:-.045em;white-space:nowrap}
+.inline-actions{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:2px}
+.inline-actions .action{min-height:34px;border-radius:10px;padding:6px 7px;font-size:10px}
+@media(max-width:620px){.paraguay-strip{grid-template-columns:230px minmax(220px,1fr);gap:8px}.paraguay-cards{gap:8px}.inline-selection{padding:9px}.inline-total strong{font-size:25px}}
 
 /* Dock shown only after a selection */
 .selection-dock{position:fixed;z-index:80;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);width:min(620px,calc(100% - 24px));padding:7px;border:1px solid rgba(255,255,255,.13);border-radius:22px;background:rgba(6,10,8,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 20px 60px rgba(0,0,0,.62)}
@@ -218,13 +221,15 @@ function buildGallery(){
   COUNTRY_ORDER.forEach(country=>{
     const section=document.createElement('section');section.className='country-section';section.dataset.country=country;
     const flag=country==='Argentina'?'🇦🇷':country==='Brasil'?'🇧🇷':'🇵🇾';
+    let cardHost;
     if(country==='Paraguay'){
-      section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="country-body paraguay-layout"><div class="cards-grid"></div><aside class="inline-selection" id="inlineSelectionPanel"><h3 id="inlineSelectionTitle">${t('selection')}</h3><div class="inline-selection-list" id="inlineSelectionList"></div><div class="inline-total"><span id="inlineTotalLabel">${t('total')}</span><strong id="inlineSelectionTotal">${formatMoney(0)}</strong></div><div class="inline-actions"><button class="action primary" id="inlineOpenPassenger">${t('save')}</button><button class="action danger" id="inlineClearSelection">${t('clear')}</button></div></aside></div>`;
+      section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="paraguay-strip"><div class="paraguay-cards"></div><aside class="inline-selection" id="inlineSelectionPanel"><h3 id="inlineSelectionTitle">${t('selection')}</h3><div class="inline-selection-list" id="inlineSelectionList"></div><div class="inline-total"><span id="inlineTotalLabel">${t('total')}</span><strong id="inlineSelectionTotal">${formatMoney(0)}</strong></div><div class="inline-actions"><button class="action primary" id="inlineOpenPassenger">${t('save')}</button><button class="action danger" id="inlineClearSelection">${t('clear')}</button></div></aside></div>`;
+      cardHost=section.querySelector('.paraguay-cards');
     }else{
       section.innerHTML=`<div class="country-heading"><span class="country-flag">${flag}</span><h2>${t(country)}</h2></div><div class="country-body"><div class="cards-grid"></div></div>`;
+      cardHost=section.querySelector('.cards-grid');
     }
-    const grid=section.querySelector('.cards-grid');
-    ATTRACTIONS.filter(x=>x.country===country).forEach(item=>grid.appendChild(createCard(item)));
+    ATTRACTIONS.filter(x=>x.country===country).forEach(item=>cardHost.appendChild(createCard(item)));
     gallery.appendChild(section);
   });
   const inlineOpen=$('inlineOpenPassenger');if(inlineOpen)inlineOpen.onclick=openPassenger;
@@ -267,7 +272,7 @@ function addItem(item,kind,price){state.cart[item.id]={id:item.id,name:itemName(
 function selectRestaurant(item){Object.keys(state.cart).forEach(id=>{const existing=getItem(id);if(existing&&existing.restaurant)delete state.cart[id]});state.cart[item.id]={id:item.id,name:itemName(item),country:item.country,flag:item.flag,kind:t('free'),price:0,duration:item.duration,restaurant:true};updateUI();showToast(`${itemName(item)} · ${t('free')}`)}
 function removeItem(id){const wasBrazil=hasBrazilExcursion();delete state.cart[id];const nowBrazil=hasBrazilExcursion();let restaurantRemoved=false;if(wasBrazil&&!nowBrazil){Object.keys(state.cart).forEach(key=>{const item=getItem(key);if(item&&item.restaurant){delete state.cart[key];restaurantRemoved=true}})}updateUI();if(restaurantRemoved)showToast(t('restaurantRemoved'))}
 
-function renderSelection(){const values=Object.values(state.cart);const listMarkup=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${x.kind} · ${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:18px">${t('empty')}</p>`;$('selectionTitle').textContent=t('selection');$('totalLabel').textContent=t('total');$('openPassenger').textContent=t('save');$('clearSelection').textContent=t('clear');$('selectionTotal').textContent=formatMoney(totalArs());$('selectionList').innerHTML=listMarkup;const inlineTitle=$('inlineSelectionTitle');if(inlineTitle)inlineTitle.textContent=t('selection');const inlineLabel=$('inlineTotalLabel');if(inlineLabel)inlineLabel.textContent=t('total');const inlineTotal=$('inlineSelectionTotal');if(inlineTotal)inlineTotal.textContent=formatMoney(totalArs());const inlineList=$('inlineSelectionList');if(inlineList)inlineList.innerHTML=listMarkup;const inlineOpen=$('inlineOpenPassenger');if(inlineOpen)inlineOpen.textContent=t('save');const inlineClear=$('inlineClearSelection');if(inlineClear)inlineClear.textContent=t('clear')}
+function renderSelection(){const values=Object.values(state.cart);const listMarkup=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${x.kind} · ${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}">${t('remove')}</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:18px">${t('empty')}</p>`;const inlineMarkup=values.length?values.map(x=>`<div class="selection-item"><div><strong>${x.flag} ${x.name}</strong><small>${formatMoney(x.price)}</small></div><button class="mini-remove" data-remove="${x.id}" aria-label="${t('remove')}">×</button></div>`).join(''):`<p class="hint" style="text-align:center;padding:8px">${t('empty')}</p>`;$('selectionTitle').textContent=t('selection');$('totalLabel').textContent=t('total');$('openPassenger').textContent=t('save');$('clearSelection').textContent=t('clear');$('selectionTotal').textContent=formatMoney(totalArs());$('selectionList').innerHTML=listMarkup;const inlineTitle=$('inlineSelectionTitle');if(inlineTitle)inlineTitle.textContent=t('selection');const inlineLabel=$('inlineTotalLabel');if(inlineLabel)inlineLabel.textContent=t('total');const inlineTotal=$('inlineSelectionTotal');if(inlineTotal)inlineTotal.textContent=formatMoney(totalArs());const inlineList=$('inlineSelectionList');if(inlineList)inlineList.innerHTML=inlineMarkup;const inlineOpen=$('inlineOpenPassenger');if(inlineOpen)inlineOpen.textContent=t('save');const inlineClear=$('inlineClearSelection');if(inlineClear)inlineClear.textContent=t('clear')}
 function openModal(id){const modal=$(id);modal.classList.add('open');modal.setAttribute('aria-hidden','false');pauseAll()}
 function closeModal(id){const modal=$(id);modal.classList.remove('open');modal.setAttribute('aria-hidden','true')}
 function clearSelection(){if(Object.keys(state.cart).length&&confirm(t('confirmClear'))){state.cart={};updateUI();const modal=$('selectionModal');if(modal&&modal.classList.contains('open'))closeModal('selectionModal')}}
